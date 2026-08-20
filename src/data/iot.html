@@ -425,8 +425,35 @@
       } catch (e) { console.error(e); }
     }
 
+    let failCount = 0;
+    let isOffline = false;
+
+    function showOfflineOverlay() {
+      if (document.getElementById('offlineOverlay')) return;
+      const div = document.createElement('div');
+      div.id = 'offlineOverlay';
+      div.innerHTML = '<div style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;font-family:sans-serif;text-align:center;">' +
+        '<h2 style="margin-bottom:10px;color:#ef4444;">Connection Lost</h2>' +
+        '<p style="color:#aaa;">ESP32 is offline or rebooting...</p>' +
+        '<p style="color:#aaa;font-size:12px;">The page will automatically reload once it reconnects.</p>' +
+        '<div style="margin-top:25px;border:4px solid #333;border-top:4px solid #3b82f6;border-radius:50%;width:40px;height:40px;animation:spin 1s linear infinite;"></div>' +
+        '<style>@keyframes spin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}</style></div>';
+      document.body.appendChild(div);
+    }
+
     async function pollMqttStatus() {
-      try { const d = await (await fetch('/getConfig')).json(); updateMqttStatusBadge(d); } catch (e) { }
+      try {
+        const d = await (await fetch('/getConfig')).json();
+        if (isOffline) { window.location.reload(); return; }
+        failCount = 0;
+        updateMqttStatusBadge(d);
+      } catch (e) {
+        failCount++;
+        if (failCount > 2 && !isOffline) {
+          isOffline = true;
+          showOfflineOverlay();
+        }
+      }
     }
 
     document.getElementById('mqttForm').onsubmit = async function (e) {
