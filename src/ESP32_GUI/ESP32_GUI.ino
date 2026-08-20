@@ -18,6 +18,10 @@
 #include <Wire.h>
 #include <ArduinoOTA.h>
 #include <Update.h>
+#include <HTTPClient.h>
+
+#define FIRMWARE_VERSION 1.0
+
 
 // ─── WebSocket bridge for cloud MQTT ─────────────────────────────
 #define WSBRIDGE_RX_SIZE 1024
@@ -339,6 +343,93 @@ unsigned long getOnTime(int ch) {
   if (diCurrentlyOn[ch])
     t += millis() - lastOnStartMs[ch];
   return t;
+}
+
+// ===========================================================
+//  OTA AUTO UPDATE (GITHUB)
+// ===========================================================
+TaskHandle_t otaTaskHandle = NULL;
+int lastOtaDay = -1;
+
+void performGitHubOTA() {
+  tgSend(F("*OTA Update Check Started*"));
+  Serial.println(F("Checking GitHub for updates..."));
+  
+  WiFiClientSecure *client = new WiFiClientSecure;
+  if (!client) return;
+  client->setInsecure();
+  
+  HTTPClient http;
+  http.begin(*client, "https://raw.githubusercontent.com/imaller43/ESP32_GUI_SIB/main/version.json");
+  int httpCode = http.GET();
+  if (httpCode != HTTP_CODE_OK) {
+    http.end();
+    delete client;
+    return;
+  }
+  String payload = http.getString();
+  http.end();
+  
+  StaticJsonDocument<256> doc;
+  if (deserializeJson(doc, payload)) {
+    delete client;
+    return;
+  }
+  float newVer = doc["version"] | 1.0f;
+  if (newVer <= FIRMWARE_VERSION) {
+    Serial.println(F("Already up to date."));
+    delete client;
+    return;
+  }
+  
+  tgSend("*Downloading firmware v" + String(newVer) + "...*");
+  String binUrl = doc["bin_url"] | "https://raw.githubusercontent.com/imaller43/ESP32_GUI_SIB/main/firmware.bin";
+  
+  http.begin(*client, binUrl);
+  httpCode = http.GET();
+  if (httpCode == HTTP_CODE_OK) {
+    int contentLength = http.getSize();
+    bool canBegin = Update.begin(contentLength, U_FLASH);
+    if (canBegin) {
+      WiFiClient *stream = http.getStreamPtr();
+      size_t written = Update.writeStream(*stream);
+      if (written == (size_t)contentLength && Update.end() && Update.isFinished()) {
+        tgSend(F("*OTA Update Success!* Rebooting..."));
+        delay(1000);
+        ESP.restart();
+      } else {
+        tgSend(F("*OTA Update Failed* during flash."));
+      }
+    }
+  } else {
+    tgSend(F("*OTA Failed* to download firmware."));
+  }
+  http.end();
+  delete client;
+}
+
+void otaTask(void *pv) {
+  performGitHubOTA();
+  vTaskDelete(NULL);
+}
+
+void triggerOTA() {
+  if (otaTaskHandle == NULL || eTaskGetState(otaTaskHandle) == eDeleted) {
+    xTaskCreatePinnedToCore(otaTask, "OTATask", 8192, NULL, 1, &otaTaskHandle, 0);
+  }
+}
+
+void checkDailyOTA() {
+  struct tm timeinfo;
+  if (!getLocalTime(&timeinfo, 10)) return; 
+  
+  // Check between 13:15 and 14:00 (1:15pm - 2:00pm)
+  if (timeinfo.tm_hour == 13 && timeinfo.tm_min >= 15 && timeinfo.tm_min < 60) {
+    if (lastOtaDay != timeinfo.tm_yday) {
+      lastOtaDay = timeinfo.tm_yday;
+      triggerOTA();
+    }
+  }
 }
 
 // ===========================================================
@@ -820,6 +911,11 @@ void mqttCallback(char *topic, byte *payload, unsigned int length) {
     }
     return;
   }
+  if (strcmp(topic, "esp32/ota_trigger") == 0) {
+    triggerOTA();
+    return;
+  }
+  
   char msg[4] = {0};
   memcpy(msg, payload, min(length, (unsigned int)3));
   for (int i = 0; i < 8; i++)
@@ -850,6 +946,7 @@ void reconnectMQTT() {
     mqtt.subscribe("esp32/sd/cmd");
     mqtt.subscribe("esp32/triggercount/set");
     mqtt.subscribe("esp32/triggercount/reset");
+    mqtt.subscribe("esp32/ota_trigger");
   }
 }
 
@@ -1433,6 +1530,13 @@ void loop() {
   if (shouldReboot) {
     delay(500);
     ESP.restart();
+  }
+
+  // Auto Update check once a minute
+  static unsigned long lastOtaCheckMs = 0;
+  if (millis() - lastOtaCheckMs >= 60000) {
+    lastOtaCheckMs = millis();
+    checkDailyOTA();
   }
 
   server.handleClient();
