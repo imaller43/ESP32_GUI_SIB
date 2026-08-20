@@ -382,6 +382,13 @@
     let failCount = 0;
     let isOffline = false;
 
+    const fetchTimeout = (url, ms) => {
+      const controller = new AbortController();
+      const promise = fetch(url, { signal: controller.signal });
+      const timeout = setTimeout(() => controller.abort(), ms);
+      return promise.finally(() => clearTimeout(timeout));
+    };
+
     function showOfflineOverlay() {
       if (document.getElementById('offlineOverlay')) return;
       const div = document.createElement('div');
@@ -397,7 +404,7 @@
 
     async function fetchStatus() {
       try {
-        const d = await (await fetch('/status')).json();
+        const d = await (await fetchTimeout('/status', 2000)).json();
         if (isOffline) { window.location.reload(); return; }
         failCount = 0;
         d.inputs.forEach((v, i) => {
@@ -424,7 +431,7 @@
     // ── Health fetch ──────────────────────────────────────────────────
     async function fetchHealth() {
       try {
-        const h = await (await fetch('/getHealth')).json();
+        const h = await (await fetchTimeout('/getHealth', 2000)).json();
         const t = document.getElementById('hpTemp');
         if (typeof h.temp === 'number') { t.textContent = h.temp.toFixed(1) + ' \u00b0C'; t.className = 'mc-value ' + (h.temp >= 80 ? 'red' : h.temp >= 65 ? 'amber' : 'green'); }
         const he = document.getElementById('hpHeap');
@@ -684,7 +691,7 @@
     // ── Metrics ───────────────────────────────────────────────────────
     async function fetchMetrics() {
       try {
-        const m = await (await fetch('/getMetrics')).json(); latestMetrics = m;
+        const m = await (await fetchTimeout('/getMetrics', 2000)).json(); latestMetrics = m;
         for (let i = 0; i < 8; i++) { document.getElementById('cnt' + i).textContent = m.triggers[i]; document.getElementById('ton' + i).textContent = fmtMs(m.onTimes[i]); }
         document.getElementById('metRuntime').textContent = fmtMs(m.runtime);
         document.getElementById('metDowntime').textContent = fmtMs(m.downtime);

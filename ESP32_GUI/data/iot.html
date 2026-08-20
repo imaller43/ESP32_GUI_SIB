@@ -428,6 +428,13 @@
     let failCount = 0;
     let isOffline = false;
 
+    const fetchTimeout = (url, ms) => {
+      const controller = new AbortController();
+      const promise = fetch(url, { signal: controller.signal });
+      const timeout = setTimeout(() => controller.abort(), ms);
+      return promise.finally(() => clearTimeout(timeout));
+    };
+
     function showOfflineOverlay() {
       if (document.getElementById('offlineOverlay')) return;
       const div = document.createElement('div');
@@ -443,7 +450,7 @@
 
     async function pollMqttStatus() {
       try {
-        const d = await (await fetch('/getConfig')).json();
+        const d = await (await fetchTimeout('/getConfig', 4000)).json();
         if (isOffline) { window.location.reload(); return; }
         failCount = 0;
         updateMqttStatusBadge(d);

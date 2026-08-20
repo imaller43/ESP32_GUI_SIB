@@ -405,7 +405,7 @@ void performGitHubOTA() {
 
   bool rebootNeeded = false;
 
-  if (newFwVer > FIRMWARE_VERSION && fwUrl.length() > 0) {
+  if ((newFwVer - (float)FIRMWARE_VERSION) > 0.001 && fwUrl.length() > 0) {
     tgSend("*Downloading firmware v" + String(newFwVer) + "...*");
     if (downloadAndFlash(client, fwUrl, U_FLASH)) {
       tgSend(F("Firmware updated successfully!"));
@@ -415,7 +415,7 @@ void performGitHubOTA() {
     }
   }
 
-  if (newFsVer > FS_VERSION && fsUrl.length() > 0) {
+  if ((newFsVer - (float)FS_VERSION) > 0.001 && fsUrl.length() > 0) {
     tgSend("*Downloading filesystem v" + String(newFsVer) + "...*");
     // Note: U_SPIFFS is the command used for both SPIFFS and LittleFS in the
     // Update library
