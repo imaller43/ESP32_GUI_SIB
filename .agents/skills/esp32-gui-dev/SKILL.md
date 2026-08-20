@@ -59,19 +59,6 @@ When the ESP32 boots, it loads configurations from the following files:
 - **Telegram Polling**: The Telegram task polls every `TG_POLL_MS` (2.5s). If the bot misses messages, check the `tgTaskHandle` stack and ensure network connectivity.
 - **MQTT Bridge**: The custom `WsClientBridge` converts binary WebSocket payloads into a stream `PubSubClient` can read. If MQTT fails to connect via WSS, inspect this bridge's buffer (`WSBRIDGE_RX_SIZE`).
 
-## Styling and UI Themes (SIB Color Palette)
-The GUI supports a Light/Dark theme toggle, persisting via localStorage.
-CSS variables are defined in `:root` and `[data-theme="dark"]` inside `style.css`.
-The Sapura Industrial Berhad (SIB) Color Palette must be used:
-- **Smooth Orange (Primary/Accents):** `#f92d16`
-- **Dark Blue (Header/Dark Bg):** `#20203b`
-- **Smooth Grey (Text/Borders/Dark Login Box):** `#4a4b54`
-- **Smooth White (Light Bg/Cards):** `#f0f2f5` / `#ffffff`
+## 6. Project Rules
 
-## 6. Frontend Layout & Form Design Patterns
-
-When modifying the web dashboard (iot.html, index.html), adhere to these proven design patterns to avoid layout breaking:
-- **CSS Grid for Rigid Forms**: Use display: grid for complex horizontal form rows (like the DI/DO topic rows). Avoid display: flex for these elements, as long text strings inside inputs can cause the browser to arbitrarily squish or hide adjacent flex items (like PUB MS boxes).
-- **Strict Blanking Logic**: The C++ backend inherently falls back to default values (e.g., wss and 443 for MQTT) if the system is unconfigured. When writing frontend initialization logic (like loadMqttConfig()), explicitly check for these exact factory default combinations and render the inputs as empty/blank, forcing the user to make a deliberate choice rather than assuming the defaults were intentionally saved.
-- **Dynamic Width Scaling**: For long prefix strings, avoid hard-coded pixel max-widths. Instead, use percentage-based constraints (e.g., max-width: 55%;) to allow dynamic scaling that prevents text truncation while preserving space for editable suffixes.
-- **Asset Integrity**: Ensure proper integration of the company branding assets (SIB_White.png for favicon, shrdc_logo.png for headers). Test visibility against both the Light and Dark CSS themes.
+For coding standards, GitHub workflows, and frontend UI design patterns (including the SIB Color Palette), please refer to the `rules.md` file located in `.agents/rules/`.
