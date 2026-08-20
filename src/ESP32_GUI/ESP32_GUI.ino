@@ -6,23 +6,23 @@
 
 #include "FS.h"
 #include <ArduinoJson.h>
+#include <ArduinoOTA.h>
 #include <ETH.h>
+#include <HTTPClient.h>
 #include <HardwareSerial.h>
 #include <LittleFS.h>
 #include <PubSubClient.h>
 #include <UniversalTelegramBot.h>
+#include <Update.h>
 #include <WebServer.h>
 #include <WebSocketsClient.h>
 #include <WiFi.h>
 #include <WiFiClientSecure.h>
 #include <Wire.h>
-#include <ArduinoOTA.h>
-#include <Update.h>
-#include <HTTPClient.h>
+
 
 #define FIRMWARE_VERSION 1.0
 #define FS_VERSION 1.0
-
 
 // ─── WebSocket bridge for cloud MQTT ─────────────────────────────
 #define WSBRIDGE_RX_SIZE 1024
@@ -362,7 +362,8 @@ bool downloadAndFlash(WiFiClientSecure *client, String url, int command) {
     if (Update.begin(contentLength, command)) {
       WiFiClient *stream = http.getStreamPtr();
       size_t written = Update.writeStream(*stream);
-      if (written == (size_t)contentLength && Update.end() && Update.isFinished()) {
+      if (written == (size_t)contentLength && Update.end() &&
+          Update.isFinished()) {
         success = true;
       }
     }
@@ -374,13 +375,15 @@ bool downloadAndFlash(WiFiClientSecure *client, String url, int command) {
 void performGitHubOTA() {
   tgSend(F("*OTA Update Check Started*"));
   Serial.println(F("Checking GitHub for updates..."));
-  
+
   WiFiClientSecure *client = new WiFiClientSecure;
-  if (!client) return;
+  if (!client)
+    return;
   client->setInsecure();
-  
+
   HTTPClient http;
-  http.begin(*client, "https://raw.githubusercontent.com/imaller43/ESP32_GUI_SIB/main/version.json");
+  http.begin(*client, "https://raw.githubusercontent.com/imaller43/"
+                      "ESP32_GUI_SIB/main/version.json");
   int httpCode = http.GET();
   if (httpCode != HTTP_CODE_OK) {
     http.end();
@@ -389,18 +392,18 @@ void performGitHubOTA() {
   }
   String payload = http.getString();
   http.end();
-  
+
   StaticJsonDocument<512> doc;
   if (deserializeJson(doc, payload)) {
     delete client;
     return;
   }
-  
+
   float newFwVer = doc["firmware_version"] | 1.0f;
   float newFsVer = doc["fs_version"] | 1.0f;
   String fwUrl = doc["firmware_url"] | "";
   String fsUrl = doc["fs_url"] | "";
-  
+
   bool rebootNeeded = false;
 
   if (newFwVer > FIRMWARE_VERSION && fwUrl.length() > 0) {
@@ -412,10 +415,11 @@ void performGitHubOTA() {
       tgSend(F("Firmware update failed."));
     }
   }
-  
+
   if (newFsVer > FS_VERSION && fsUrl.length() > 0) {
     tgSend("*Downloading filesystem v" + String(newFsVer) + "...*");
-    // Note: U_SPIFFS is the command used for both SPIFFS and LittleFS in the Update library
+    // Note: U_SPIFFS is the command used for both SPIFFS and LittleFS in the
+    // Update library
     if (downloadAndFlash(client, fsUrl, U_SPIFFS)) {
       tgSend(F("Filesystem updated successfully!"));
       rebootNeeded = true;
@@ -431,7 +435,7 @@ void performGitHubOTA() {
   } else if (newFwVer <= FIRMWARE_VERSION && newFsVer <= FS_VERSION) {
     Serial.println(F("Already up to date."));
   }
-  
+
   delete client;
 }
 
@@ -442,14 +446,16 @@ void otaTask(void *pv) {
 
 void triggerOTA() {
   if (otaTaskHandle == NULL || eTaskGetState(otaTaskHandle) == eDeleted) {
-    xTaskCreatePinnedToCore(otaTask, "OTATask", 8192, NULL, 1, &otaTaskHandle, 0);
+    xTaskCreatePinnedToCore(otaTask, "OTATask", 8192, NULL, 1, &otaTaskHandle,
+                            0);
   }
 }
 
 void checkDailyOTA() {
   struct tm timeinfo;
-  if (!getLocalTime(&timeinfo, 10)) return; 
-  
+  if (!getLocalTime(&timeinfo, 10))
+    return;
+
   // Check between 13:15 and 14:00 (1:15pm - 2:00pm)
   if (timeinfo.tm_hour == 13 && timeinfo.tm_min >= 15 && timeinfo.tm_min < 60) {
     if (lastOtaDay != timeinfo.tm_yday) {
@@ -942,7 +948,7 @@ void mqttCallback(char *topic, byte *payload, unsigned int length) {
     triggerOTA();
     return;
   }
-  
+
   char msg[4] = {0};
   memcpy(msg, payload, min(length, (unsigned int)3));
   for (int i = 0; i < 8; i++)
@@ -1453,76 +1459,93 @@ void setup() {
     server.sendHeader("Location", "/");
     server.send(301);
   });
-  
+
   // Updates
   server.on("/update", HTTP_GET, []() {
-    if (!requireAuth()) return;
+    if (!requireAuth())
+      return;
     serveStatic("/update.html", "text/html", true);
   });
 
-  server.on("/update/firmware", HTTP_POST, []() {
-    if (!isAuthenticated()) { server.send(401, "text/plain", "Unauthorized"); return; }
-    server.sendHeader("Connection", "close");
-    if (Update.hasError()) {
-      server.send(500, "text/plain", "FAIL");
-    } else {
-      server.send(200, "text/plain", "OK");
-      shouldReboot = true;
-    }
-  }, []() {
-    if (!isAuthenticated()) return;
-    HTTPUpload& upload = server.upload();
-    if (upload.status == UPLOAD_FILE_START) {
-      Serial.setDebugOutput(true);
-      Serial.printf("Update FW: %s\n", upload.filename.c_str());
-      if (!Update.begin(UPDATE_SIZE_UNKNOWN, U_FLASH)) {
-        Update.printError(Serial);
-      }
-    } else if (upload.status == UPLOAD_FILE_WRITE) {
-      if (Update.write(upload.buf, upload.currentSize) != upload.currentSize) {
-        Update.printError(Serial);
-      }
-    } else if (upload.status == UPLOAD_FILE_END) {
-      if (Update.end(true)) {
-        Serial.printf("Update FW Success: %u\n", upload.totalSize);
-      } else {
-        Update.printError(Serial);
-      }
-      Serial.setDebugOutput(false);
-    }
-  });
+  server.on(
+      "/update/firmware", HTTP_POST,
+      []() {
+        if (!isAuthenticated()) {
+          server.send(401, "text/plain", "Unauthorized");
+          return;
+        }
+        server.sendHeader("Connection", "close");
+        if (Update.hasError()) {
+          server.send(500, "text/plain", "FAIL");
+        } else {
+          server.send(200, "text/plain", "OK");
+          shouldReboot = true;
+        }
+      },
+      []() {
+        if (!isAuthenticated())
+          return;
+        HTTPUpload &upload = server.upload();
+        if (upload.status == UPLOAD_FILE_START) {
+          Serial.setDebugOutput(true);
+          Serial.printf("Update FW: %s\n", upload.filename.c_str());
+          if (!Update.begin(UPDATE_SIZE_UNKNOWN, U_FLASH)) {
+            Update.printError(Serial);
+          }
+        } else if (upload.status == UPLOAD_FILE_WRITE) {
+          if (Update.write(upload.buf, upload.currentSize) !=
+              upload.currentSize) {
+            Update.printError(Serial);
+          }
+        } else if (upload.status == UPLOAD_FILE_END) {
+          if (Update.end(true)) {
+            Serial.printf("Update FW Success: %u\n", upload.totalSize);
+          } else {
+            Update.printError(Serial);
+          }
+          Serial.setDebugOutput(false);
+        }
+      });
 
-  server.on("/update/filesystem", HTTP_POST, []() {
-    if (!isAuthenticated()) { server.send(401, "text/plain", "Unauthorized"); return; }
-    server.sendHeader("Connection", "close");
-    if (Update.hasError()) {
-      server.send(500, "text/plain", "FAIL");
-    } else {
-      server.send(200, "text/plain", "OK");
-      shouldReboot = true;
-    }
-  }, []() {
-    if (!isAuthenticated()) return;
-    HTTPUpload& upload = server.upload();
-    if (upload.status == UPLOAD_FILE_START) {
-      Serial.setDebugOutput(true);
-      Serial.printf("Update FS: %s\n", upload.filename.c_str());
-      if (!Update.begin(UPDATE_SIZE_UNKNOWN, U_SPIFFS)) {
-        Update.printError(Serial);
-      }
-    } else if (upload.status == UPLOAD_FILE_WRITE) {
-      if (Update.write(upload.buf, upload.currentSize) != upload.currentSize) {
-        Update.printError(Serial);
-      }
-    } else if (upload.status == UPLOAD_FILE_END) {
-      if (Update.end(true)) {
-        Serial.printf("Update FS Success: %u\n", upload.totalSize);
-      } else {
-        Update.printError(Serial);
-      }
-      Serial.setDebugOutput(false);
-    }
-  });
+  server.on(
+      "/update/filesystem", HTTP_POST,
+      []() {
+        if (!isAuthenticated()) {
+          server.send(401, "text/plain", "Unauthorized");
+          return;
+        }
+        server.sendHeader("Connection", "close");
+        if (Update.hasError()) {
+          server.send(500, "text/plain", "FAIL");
+        } else {
+          server.send(200, "text/plain", "OK");
+          shouldReboot = true;
+        }
+      },
+      []() {
+        if (!isAuthenticated())
+          return;
+        HTTPUpload &upload = server.upload();
+        if (upload.status == UPLOAD_FILE_START) {
+          Serial.setDebugOutput(true);
+          Serial.printf("Update FS: %s\n", upload.filename.c_str());
+          if (!Update.begin(UPDATE_SIZE_UNKNOWN, U_SPIFFS)) {
+            Update.printError(Serial);
+          }
+        } else if (upload.status == UPLOAD_FILE_WRITE) {
+          if (Update.write(upload.buf, upload.currentSize) !=
+              upload.currentSize) {
+            Update.printError(Serial);
+          }
+        } else if (upload.status == UPLOAD_FILE_END) {
+          if (Update.end(true)) {
+            Serial.printf("Update FS Success: %u\n", upload.totalSize);
+          } else {
+            Update.printError(Serial);
+          }
+          Serial.setDebugOutput(false);
+        }
+      });
 
   // API
   server.on("/toggle", handleToggle);
@@ -1656,7 +1679,8 @@ void loop() {
         diCurrentlyOn[i] = (logical == 1);
         anyDiChanged = true;
         if (logical == 1) {
-          static const int diMultipliers[8] = {2, 2, 2, 2, 2, 2, 2, 2};  //modify the counter multiplier
+          static const int diMultipliers[8] = {
+              1, 1, 1, 1, 1, 1, 1, 1}; // modify the counter multiplier
           triggerCount[i] += diMultipliers[i];
           lastOnStartMs[i] = now;
           if (i == 3) {
@@ -1668,7 +1692,7 @@ void loop() {
             cycleActive = false;
           }
           if (i == 6) {
-            rejectCount += 3;
+            rejectCount += 1;
             if (tgConfig.rejectThreshold > 0 &&
                 (rejectCount % (unsigned long)tgConfig.rejectThreshold == 0))
               tgSend("*Reject Alert!* Total: *" + String(rejectCount) + "*");
