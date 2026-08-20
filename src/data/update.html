@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>System Update</title>
+  <link rel="stylesheet" href="/style.css">
+
+  <script>
+    (function () {
+      if (localStorage.getItem('theme') === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    })();
+  </script>
+  <link rel="icon" type="image/png" href="/SIB_Favicon.png">
+</head>
+
+<body>
+
+  <nav class="topnav">
+    <img id="navLogo" src="/SIB1_logo.png" alt="SIB">
+    <div class="topnav-links">
+      <a href="/" class="nav-link">Dashboard</a>
+      <a href="/iot" class="nav-link">IoT Configuration</a>
+      <a href="/telegram" class="nav-link">Telegram</a>
+      <a href="/update" class="nav-link active">System Update</a>
+    </div>
+    <div class="topnav-right">
+      <button type="button" class="theme-switch" id="themeToggle" title="Toggle Theme"></button>
+      <a href="/logout" class="btn-logout">Logout</a>
+      <img src="/shrdc_logo.png" alt="SHRDC">
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="dash-header" style="text-align: center; justify-content: center;">
+      <h1 class="dash-title">System Update</h1>
+    </div>
+
+    <div class="io-wrapper" style="margin-top: 20px;">
+      <!-- Firmware Update Box -->
+      <div class="io-box" style="flex: 1;">
+        <h2>Firmware Update</h2>
+        <p style="font-size:13px;color:#888;margin-bottom:15px;">
+          Upload a compiled <b>.bin</b> file to update the main ESP32 code (ESP32_GUI.ino.bin).
+        </p>
+        <form id="fwForm"
+          onsubmit="event.preventDefault(); startUpdate('fwForm', '/update/firmware', 'fwProgress', 'fwStatus');">
+          <input type="file" name="update" accept=".bin" required
+            style="margin: 0 auto 15px auto; display: block; width: fit-content;">
+          <button class="btn-save-formula" type="submit">Update Firmware</button>
+        </form>
+        <div style="margin-top: 15px;">
+          <progress id="fwProgress" value="0" max="100" style="width:100%; display:none;"></progress>
+          <div id="fwStatus" style="font-size:13px;font-weight:600;margin-top:5px;"></div>
+        </div>
+      </div>
+
+      <!-- Filesystem Update Box -->
+      <div class="io-box" style="flex: 1;">
+        <h2>Filesystem Update (LittleFS)</h2>
+        <p style="font-size:13px;color:#888;margin-bottom:15px;">
+          Upload a <b>LittleFS.bin</b> file to update the web interface files (HTML, CSS, JS, images).
+        </p>
+        <form id="fsForm"
+          onsubmit="event.preventDefault(); startUpdate('fsForm', '/update/filesystem', 'fsProgress', 'fsStatus');">
+          <input type="file" name="update" accept=".bin" required
+            style="margin: 0 auto 15px auto; display: block; width: fit-content;">
+          <button class="btn-save-formula" type="submit">Update Filesystem</button>
+        </form>
+        <div style="margin-top: 15px;">
+          <progress id="fsProgress" value="0" max="100" style="width:100%; display:none;"></progress>
+          <div id="fsStatus" style="font-size:13px;font-weight:600;margin-top:5px;"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="site-footer" style="margin-top: 40px;">&copy; SIB. All rights reserved.</div>
+  </div>
+
+  <script>
+    function startUpdate(formId, url, progressId, statusId) {
+      const form = document.getElementById(formId);
+      const fileInput = form.querySelector('input[type="file"]');
+      if (fileInput.files.length === 0) return;
+
+      const progress = document.getElementById(progressId);
+      const status = document.getElementById(statusId);
+      const formData = new FormData(form);
+
+      progress.style.display = 'block';
+      progress.value = 0;
+      status.textContent = 'Uploading... Please wait (Do NOT close page).';
+      status.style.color = 'var(--text-main)';
+
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', url, true);
+      xhr.withCredentials = true;
+
+      xhr.upload.onprogress = function (e) {
+        if (e.lengthComputable) {
+          progress.value = (e.loaded / e.total) * 100;
+        }
+      };
+
+      xhr.onload = function () {
+        if (xhr.status === 200) {
+          status.textContent = 'Update successful! ESP32 is rebooting...';
+          status.style.color = '#16a34a'; // Green
+          setTimeout(() => {
+            window.location.href = '/';
+          }, 10000); // Redirect to dashboard after 10s
+        } else {
+          status.textContent = 'Update failed: ' + xhr.responseText;
+          status.style.color = '#dc2626'; // Red
+        }
+      };
+
+      xhr.onerror = function () {
+        status.textContent = 'Update failed due to network error.';
+        status.style.color = '#dc2626';
+      };
+
+      xhr.send(formData);
+    }
+  </script>
+
+  <script>
+    (function () {
+      const toggleBtn = document.getElementById('themeToggle');
+      const navLogo = document.getElementById('navLogo');
+
+      function updateUI(theme) {
+        if (toggleBtn) {
+          toggleBtn.innerHTML = theme === 'dark' ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>' : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>';
+        }
+        if (navLogo) {
+          navLogo.src = theme === 'dark' ? '/SIB_logo.png' : '/SIB1_logo.png';
+        }
+      }
+
+      updateUI(localStorage.getItem('theme') || 'light');
+
+      if (toggleBtn) {
+        toggleBtn.addEventListener('click', function () {
+          let theme = document.documentElement.getAttribute('data-theme');
+          let newTheme = theme === 'dark' ? 'light' : 'dark';
+
+          if (newTheme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+          } else {
+            document.documentElement.removeAttribute('data-theme');
+          }
+          localStorage.setItem('theme', newTheme);
+          updateUI(newTheme);
+        });
+      }
+    })();
+  </script>
+</body>
+
+</html>
