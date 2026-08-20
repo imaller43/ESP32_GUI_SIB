@@ -99,25 +99,6 @@
 
 ---
 
-## RS485 / Modbus
-
-**All registers show "Error"**
-- Verify slave address, baud rate, parity, stop bits, and data bits match the physical device exactly
-- Check wiring: A(D+) to A(D+), B(D-) to B(D-)
-- Test the slave device independently with a PC and a USB-to-RS485 adapter to confirm it responds
-
-**Some registers read correctly, others fail**
-- A slow slave may time out on some reads — increase the poll interval on the IoT Config page
-- Verify the function code and register address are correct for the failing registers
-
-**FLOAT32 value looks wrong**
-- The firmware assumes **big-endian** byte order (high word first). If your device uses little-endian, swap `hi` and `lo` in the FLOAT32 handling code in `pollRS485Reg()`
-
-**RS485 device shows as disconnected even though registers read OK**
-- The connectivity check polls the first enabled register every 2 seconds. If that register has an error, the device is marked disconnected even if other registers are OK. Make sure the first enabled register in the list is a reliable one.
-
----
-
 ## DO Logic Rules
 
 **A rule is not activating the output**
@@ -130,18 +111,6 @@
 
 ---
 
-## SD Card
-
-**SD card shows "Not Mounted"**
-- The card must be inserted **before** powering the board
-- The card must be **FAT32** formatted — exFAT is not supported
-- Try a different SD card; some are not compatible with 1-bit MMC mode
-
-**Log files not being created**
-- Verify SD is mounted and "Auto Logging" is enabled on the `/sdcard` page
-- NTP sync is required for correct filenames. Ensure `pool.ntp.org` is reachable from the board's network. If NTP fails, files are named with a fallback format.
-
----
 
 ## Telegram
 

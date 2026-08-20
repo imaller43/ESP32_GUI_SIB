@@ -46,9 +46,9 @@ Click **Add Rule**, configure the output, add conditions, then **Save Rules**. R
 
 ---
 
-## `/iot` — IoT Config
+## IoT Config
 
-All connectivity and automation configuration lives on this single page, organised into three sections: **MQTT**, and **RS485 / Modbus**.
+All connectivity and automation configuration lives on this single page for **MQTT** with Prefix Base Topic. 
 
 ---
 
@@ -68,7 +68,7 @@ Connect the ESP32 to an MQTT broker to publish DI/DO state changes and RS485 reg
 | **Local TCP** | Connecting to a broker on your LAN (e.g. Mosquitto on port 1883) |
 | **Local TLS** | Same as above but with TLS encryption (port 8883) |
 | **Cloud WS** | Connecting to a cloud broker over WebSocket (e.g. HiveMQ) |
-| **Cloud WSS** | Cloud broker over secure WebSocket — port 443, path `/mqtt` |
+| **Cloud WSS** | Cloud broker over secure WebSocket — port 8084, path `/mqtt` |
 
 </td>
 <td valign="top" width="40%" align="center">
@@ -95,57 +95,6 @@ Changes take effect immediately after clicking **Save** — no reboot required.
 
 ---
 
-### RS485 / Modbus
-
-Configure the RS485 serial port and define up to **16 Modbus registers** to poll from connected slave devices (PLCs, VFDs, energy meters).
-
-**Port settings:** baud rate, parity, stop bits, data bits, slave address, poll interval (ms), publish interval (ms)
-
-- **Poll interval** — how often (in ms) the next register in the round-robin is polled. Minimum 50 ms.
-- **Publish interval** — how often (in ms) a register's value is published to its MQTT topic, independent of the poll rate.
-
-<p align="center"><img src="https://github.com/user-attachments/assets/d7f3a3e2-04d2-4a7d-b20e-077020390b65" alt="image" width="400" /></p>
-
-**Register table (per register):**
-
-| Field | Description |
-|---|---|
-| Name | Label shown in the UI |
-| Function Code | 1 = Coil, 2 = Discrete Input, 3 = Holding Register, 4 = Input Register |
-| Address | Modbus register address (0-based) |
-| Data Type | UINT16, INT16, FLOAT32 (2 registers), or Scaled |
-| Scale | Multiplier applied when data type is Scaled |
-| MQTT Topic | Topic to publish this register's value to (leave blank to skip MQTT for this register) |
-| Writable | Enables a **Write** button to send a value to Holding/Coil registers |
-| Enabled | Whether this register is actively polled |
-
-Live values and OK/Error status are shown in the table, updated as polls come in.
-
-Click **Add Register**, fill in the fields, then **Save Registers**. Polling begins immediately — no reboot needed. A green/red indicator shows whether the device is responding.
-
----
-
-## `/sdcard` — SD Card Manager
-
-- **Card status** — mounted/unmounted, card type, total/used/free space
-- **Auto logging** — enable periodic CSV row writing; set the interval (5–3600 s) and file rotation period
-- **Manual snapshot** — write one CSV row immediately
-- **File browser** — list all files on the SD card with Download, Preview, and Delete actions
-
-<p align="center"><img src="https://github.com/user-attachments/assets/cdfe5afb-5d45-48a3-963b-988384c4f5c1" alt="image" width="400" /></p>
-
-Log files are named `log_YYYYMMDD_HHmm.csv` (e.g. `log_20240115_0900.csv`).
-
-Each row in the CSV contains:
-
-```
-millis, machine_state, runtime_ms, downtime_ms, cycle_ms, rejects, efficiency_pct,
-trigger_count_di1, trigger_count_di2, ..., trigger_count_di8
-```
-
-> The last 8 columns are cumulative **trigger counts** (rising edge counts) for each DI channel, not the current ON/OFF state.
-
----
 
 ## `/telegram` — Telegram Bot
 
@@ -157,22 +106,6 @@ Configure the Telegram bot for push alerts and remote commands. See [04 — Tele
 - **Send Test Message** button to verify the bot is working
 
 <p align="center"><img src="https://github.com/user-attachments/assets/14acb418-4a95-4ec2-a04d-66e62f4a7687" alt="image" width="400" /></p>
----
-
-## `/update` — System Update (OTA)
-
-Perform Over-The-Air (OTA) firmware updates directly from the browser without needing a USB cable.
-
-- **Firmware Update**: Upload a compiled `.bin` file to update the main ESP32 firmware.
-- **Filesystem Update**: Upload a LittleFS `.bin` file to update the web dashboard assets (`data/` folder).
-
-**How to use:**
-1. Click **Choose File** and select your compiled `.bin` file.
-2. Click **Update Firmware** (or **Update Filesystem**).
-3. Wait for the progress bar to reach 100%. The ESP32 will automatically reboot and apply the update.
-
-> **Warning:** Do not close the browser tab or power off the ESP32 while the update is in progress, as this may corrupt the firmware.
-
 ---
 
 ## Next Step

@@ -27,8 +27,6 @@ A browser-based monitoring and control dashboard running entirely on a **Wavesha
 | **Machine Metrics** | Track runtime, downtime, cycle time, reject count, and efficiency |
 | **DO Logic Rules** | Automatically drive outputs based on input state conditions (AND/OR logic) |
 | **MQTT** | Publish DI/DO states and RS485 values to local or cloud broker; per-topic heartbeat intervals |
-| **RS485 Modbus** | Poll up to 16 registers from PLCs, VFDs, or energy meters; publish each to its own MQTT topic |
-| **SD Card Logging** | Auto-write timestamped CSV logs with configurable interval and file rotation |
 | **Telegram Bot** | Receive push alerts and send control commands from your phone |
 | **Multi-user Login** | Cookie-based authentication with configurable user accounts |
 | **Dual Network** | Ethernet (PoE) with automatic Wi-Fi fallback |
@@ -91,7 +89,6 @@ ESP32_GUI/
     ├── SIB_Favicon.png
     ├── SIB_logo.png
     └── SIB1_logo.png
-
 ```
 
 ---
