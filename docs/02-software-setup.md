@@ -25,7 +25,7 @@ Download **Arduino IDE 2.x** from [arduino.cc/en/software](https://www.arduino.c
 ## Step 3 — Select the Board and Settings
 
 1. **Tools → Board → ESP32 Arduino** → select `Waveshare ESP32-S3-Zero`
-2. **Tools → Partition Scheme** → select `Huge APP (4MB No OTA/1MB SPIFFS)` or any scheme with at least 1 MB for LittleFS
+2. **Tools → Partition Scheme** → select `Default 4MB with spiffs (1.2MB APP/1.5MB SPIFFS)` or any scheme with at least 1 MB for LittleFS and support OTA.
 3. **Tools → Port** → select the COM port that appears when the board is plugged in via USB-C
 
 ---
@@ -46,21 +46,19 @@ The remaining libraries (`LittleFS`, `SD_MMC`, `ETH`, `WebServer`, `WiFiClientSe
 
 ---
 
-## Step 5 — Install the LittleFS Upload Plugin
+## Step 5 — Install the LittleFS Upload Plugin (For Arduino IDE 2.x)
 
-The web files (HTML, CSS, JSON) are stored in the ESP32's flash and uploaded separately from the firmware using a plugin.
+The web files (HTML, CSS, JSON) are stored in the ESP32's flash and must be uploaded separately from the firmware using an extension.
 
-1. Download the latest `.jar` file from [github.com/lorol/arduino-esp32littlefs-plugin/releases](https://github.com/lorol/arduino-esp32fs-plugin/releases)
-2. Find your Arduino sketchbook folder:
-   - Windows: `Documents\Arduino`
-   - macOS / Linux: `~/Arduino`
-3. Create this path and place the `.jar` file inside it:
-   ```
-   tools/ESP32FS/tool/ESP32FS.jar
-   ```
-4. **Restart Arduino IDE completely**
-5. Verify: press `Ctrl+Shift+P`, search for `Upload LittleFS` — it should appear in the list
-
+1. Download the latest `.vsix` file from the official releases page:
+   [github.com/earlephilhower/arduino-littlefs-upload/releases](https://github.com/earlephilhower/arduino-littlefs-upload/releases)
+2. Copy the downloaded `.vsix` file to the Arduino IDE plugins directory:
+   - **Windows:** `C:\Users\<username>\.arduinoIDE\plugins\`
+   - **macOS / Linux:** `~/.arduinoIDE/plugins/`
+   
+   *(Note: You may need to create the `plugins` directory yourself beforehand if it does not exist).*
+3. **Restart the Arduino IDE completely.**
+4. **Verify:** Press `Ctrl + Shift + P` (Windows/Linux) or `Cmd + Shift + P` (macOS), search for `Upload LittleFS` — the option **"Upload LittleFS to Pico/ESP8266/ESP32"** should now appear in the list.
 ---
 
 ## Step 6 — Set Your Wi-Fi Credentials

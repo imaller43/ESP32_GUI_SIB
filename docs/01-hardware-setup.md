@@ -41,21 +41,6 @@ I2C: **SDA = GPIO 42**, **SCL = GPIO 41**
 
 Outputs can be toggled manually from the dashboard, controlled via MQTT, or driven automatically by **DO Logic Rules** configured on the IoT Config page.
 
-### RS485 / Modbus
-
-| Signal | GPIO |
-|---|---|
-| TX (A / D+) | 17 |
-| RX (B / D-) | 18 |
-| DE/RE (direction control) | 21 |
-
-Connect A(D+) on the board to A(D+) on the slave, and B(D-) to B(D-). For cable runs longer than ~10 m, add a 120 Ω termination resistor across A–B at the far end.
-
-### SD Card
-
-Uses SD_MMC in 1-bit mode on GPIO 45 / 47 / 48. The card must be **FAT32 formatted** and inserted before powering the board.
-
----
 
 ## Power Options
 

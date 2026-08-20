@@ -76,19 +76,22 @@ A browser-based monitoring and control dashboard running entirely on a **Wavesha
 ESP32_GUI/
 ├── ESP32_GUI.ino          ← Arduino firmware (flash this first)
 └── data/                   ← Web files (upload separately via LittleFS tool)
+    ├── app.js              ← JavaScript for the web pages (Dark/Light Mode, Responsive Design, etc)
     ├── index.html          ← Dashboard (Machine Metrics, live DI/DO, DO Logic rules)
     ├── iot.html            ← IoT Config (MQTT & RS485)
-    ├── sdcard.html         ← SD Card manager
+    ├── update.html         ← System Update (OTA)
     ├── telegram.html       ← Telegram bot configuration
     ├── login.html          ← Login page
     ├── style.css           ← Shared stylesheet
     ├── config.json         ← MQTT, RS485, and device settings
     ├── users.json          ← Login accounts
     ├── telegram.json       ← Telegram bot credentials
-    ├── do_rules.json       ← DO logic rule definitions
     ├── variables.json      ← Monitoring variable definitions
-    ├── shrdc_logo.png
-    └── msf_logo.png
+    ├──shrdc_logo.png
+    ├── SIB_Favicon.png
+    ├── SIB_logo.png
+    └── SIB1_logo.png
+
 ```
 
 ---
