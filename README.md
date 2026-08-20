@@ -1,3 +1,9 @@
+## Credits & Acknowledgments
+* **Developer:** Mohamad Anass Al Kabbani
+* **Project Context:** Developed during an internship at the **Selangor Human Resource Development Centre (SHRDC)** for the **Malaysian Smart Factory 4.0** department.
+
+---
+
 # Waveshare ESP32 Web GUI
 
 A browser-based monitoring and control dashboard running entirely on a **Waveshare ESP32-S3-POE-ETH-8DI-8DO** board. No app, no cloud, no install — open the dashboard from any browser on your local network.
@@ -13,9 +19,6 @@ A browser-based monitoring and control dashboard running entirely on a **Wavesha
   <img src="https://github.com/user-attachments/assets/8beee67c-5086-4fcf-945f-7296257cb16e" alt="image 1" width="300" />
   <img src="https://github.com/user-attachments/assets/e3f08a49-a7bf-4a93-a800-21e9a4719acb" alt="image 2" width="300" />
 </p>
-
-
-
 
 ---
 
@@ -116,8 +119,3 @@ Change these by editing `data/users.json` before uploading. See [Configuration](
 - RS485 half-duplex port
 <p align="center"><img src="https://github.com/user-attachments/assets/a3708949-8a5a-4634-a5ae-901d249105d2" alt="image" width="400" /></p>
 
----
-
-## Credits & Acknowledgments
-* **Developer:** Mohamad Anass Al Kabbani
-* **Project Context:** Developed during an internship at the **Selangor Human Resource Development Centre (SHRDC)** for the **Malaysian Smart Factory 4.0** department.
