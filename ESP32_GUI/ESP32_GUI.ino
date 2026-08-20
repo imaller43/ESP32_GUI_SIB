@@ -1142,12 +1142,14 @@ void handleGetConfig() {
 void handleGetHealth() {
   if (!requireAuth())
     return;
-  StaticJsonDocument<160> doc;
+  StaticJsonDocument<192> doc;
   doc["temp"] = temperatureRead();
   doc["freeHeap"] = (uint32_t)ESP.getFreeHeap();
   doc["rssi"] = eth_connected ? 0 : (int)WiFi.RSSI();
   doc["cpuFreq"] = getCpuFrequencyMhz();
   doc["uptime"] = millis();
+  doc["fw_ver"] = FIRMWARE_VERSION;
+  doc["fs_ver"] = FS_VERSION;
   String out;
   serializeJson(doc, out);
   server.sendHeader(F("Cache-Control"), F("no-cache"));

@@ -43,6 +43,7 @@
       <!-- Firmware Update Box -->
       <div class="io-box" style="flex: 1;">
         <h2>Firmware Update</h2>
+        <div style="font-size:12px;color:var(--text-main);margin-bottom:8px;font-weight:600;">Current Version: <span id="fwVerDisp" style="color:#2563eb;">Loading...</span></div>
         <p style="font-size:13px;color:#888;margin-bottom:15px;">
           Upload a compiled <b>.bin</b> file to update the main ESP32 code (ESP32_GUI.ino.bin).
         </p>
@@ -61,6 +62,7 @@
       <!-- Filesystem Update Box -->
       <div class="io-box" style="flex: 1;">
         <h2>Filesystem Update (LittleFS)</h2>
+        <div style="font-size:12px;color:var(--text-main);margin-bottom:8px;font-weight:600;">Current Version: <span id="fsVerDisp" style="color:#2563eb;">Loading...</span></div>
         <p style="font-size:13px;color:#888;margin-bottom:15px;">
           Upload a <b>LittleFS.bin</b> file to update the web interface files (HTML, CSS, JS, images).
         </p>
@@ -158,6 +160,19 @@
         });
       }
     })();
+
+    // Fetch versions on load
+    async function fetchVersions() {
+      try {
+        const h = await (await fetch('/getHealth')).json();
+        if (h.fw_ver !== undefined) document.getElementById('fwVerDisp').textContent = 'v' + h.fw_ver.toFixed(1);
+        if (h.fs_ver !== undefined) document.getElementById('fsVerDisp').textContent = 'v' + h.fs_ver.toFixed(1);
+      } catch (e) {
+        document.getElementById('fwVerDisp').textContent = 'Error';
+        document.getElementById('fsVerDisp').textContent = 'Error';
+      }
+    }
+    fetchVersions();
   </script>
 </body>
 
