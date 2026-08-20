@@ -4,7 +4,7 @@ Once logged in, navigate between pages using the top navigation bar.
 
 ---
 
-## `/` — Dashboard
+## Dashboard
 
 The main overview page. Shows everything at a glance:
 
@@ -46,7 +46,7 @@ Click **Add Rule**, configure the output, add conditions, then **Save Rules**. R
 
 ---
 
-## IoT Config
+## `/iot` - IoT Config
 
 All connectivity and automation configuration lives on this single page for **MQTT** with Prefix Base Topic. 
 
@@ -79,9 +79,6 @@ Connect the ESP32 to an MQTT broker to publish DI/DO state changes and RS485 reg
 </tr>
 </table>
 
-
-
-
 **DI/DO Topics:**
 
 Each DI and DO channel has two fields:
@@ -95,7 +92,6 @@ Changes take effect immediately after clicking **Save** — no reboot required.
 
 ---
 
-
 ## `/telegram` — Telegram Bot
 
 Configure the Telegram bot for push alerts and remote commands. See [04 — Telegram Setup](04-telegram-setup.md) for full setup instructions.
@@ -106,8 +102,23 @@ Configure the Telegram bot for push alerts and remote commands. See [04 — Tele
 - **Send Test Message** button to verify the bot is working
 
 <p align="center"><img src="https://github.com/user-attachments/assets/14acb418-4a95-4ec2-a04d-66e62f4a7687" alt="image" width="400" /></p>
+
 ---
 
-## Next Step
+## `/update` — System Update (OTA)
 
+Perform Over-The-Air (OTA) firmware updates directly from the browser without needing a USB cable.
+
+- **Firmware Update**: Upload a compiled `.bin` file to update the main ESP32 firmware.
+- **Filesystem Update**: Upload a LittleFS `.bin` file to update the web dashboard assets (`data/` folder).
+
+**How to use:**
+1. Click **Choose File** and select your compiled `.bin` file.
+2. Click **Update Firmware** (or **Update Filesystem**).
+3. Wait for the progress bar to reach 100%. The ESP32 will automatically reboot and apply the update.
+
+> **Warning:** Do not close the browser tab or power off the ESP32 while the update is in progress, as this may corrupt the firmware.
+
+---
+## Next Step
 → [04 — Telegram Setup](04-telegram-setup.md)

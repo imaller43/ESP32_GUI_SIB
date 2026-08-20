@@ -30,6 +30,7 @@ A browser-based monitoring and control dashboard running entirely on a **Wavesha
 | **Telegram Bot** | Receive push alerts and send control commands from your phone |
 | **Multi-user Login** | Cookie-based authentication with configurable user accounts |
 | **Dual Network** | Ethernet (PoE) with automatic Wi-Fi fallback |
+| **OTA Update** | Over-the-Air update firmware and web files using the web interface |
 
 ---
 
@@ -50,8 +51,8 @@ A browser-based monitoring and control dashboard running entirely on a **Wavesha
 |---|---|
 | `/` | Dashboard — live DI/DO states, machine metrics, ESP32 health |
 | `/iot` | IoT Config — MQTT broker, RS485/Modbus registers |
-| `/sdcard` | SD Card — log settings, file browser |
 | `/telegram` | Telegram Bot — credentials, alerts, command reference |
+| `/update` | OTA Update — update firmware and web files |
 
 ---
 
