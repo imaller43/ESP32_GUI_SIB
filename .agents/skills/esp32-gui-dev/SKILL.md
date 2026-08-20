@@ -17,7 +17,7 @@ It features:
 - **Web Dashboard**: An interactive UI (HTML/CSS/JS) served by the ESP32 from the LittleFS `data/` folder.
 - **Cloud/MQTT Integration**: A WebSocket bridge wrapper (`WsClientBridge`) over `WebSocketsClient` passing data to `PubSubClient` for secure cloud MQTT (e.g., Replit backend).
 - **Telegram Bot**: Responds to commands (`/status`, `/health`, `/metrics`, `/do on N`) and sends alerts.
-
+- **OTA Updates**: Features a System Update section on the Web GUI allowing over-the-air firmware flashes directly via the browser.
 - **Logic Rules Engine**: User-defined rules linking DI states to DO triggers, saved to `do_rules.json`.
 
 ## 2. Directory Structure
@@ -26,7 +26,7 @@ It features:
 - `data/`: Contains the frontend assets flashed to the ESP32's LittleFS.
   - `index.html`: Main dashboard UI.
   - `iot.html`: MQTT configuration page.
-
+  - `update.html`: System Update / OTA page.
   - `telegram.html`: Telegram bot settings.
   - `style.css`: Vanilla CSS for the web interface.
   - `*.json`: Default config files (`config.json`, `users.json`, `variables.json`).
