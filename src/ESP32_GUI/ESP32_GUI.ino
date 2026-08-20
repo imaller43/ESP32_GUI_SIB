@@ -21,6 +21,7 @@
 #include <HTTPClient.h>
 
 #define FIRMWARE_VERSION 1.0
+#define FS_VERSION 1.0
 
 
 // ─── WebSocket bridge for cloud MQTT ─────────────────────────────
@@ -351,6 +352,25 @@ unsigned long getOnTime(int ch) {
 TaskHandle_t otaTaskHandle = NULL;
 int lastOtaDay = -1;
 
+bool downloadAndFlash(WiFiClientSecure *client, String url, int command) {
+  HTTPClient http;
+  http.begin(*client, url);
+  int httpCode = http.GET();
+  bool success = false;
+  if (httpCode == HTTP_CODE_OK) {
+    int contentLength = http.getSize();
+    if (Update.begin(contentLength, command)) {
+      WiFiClient *stream = http.getStreamPtr();
+      size_t written = Update.writeStream(*stream);
+      if (written == (size_t)contentLength && Update.end() && Update.isFinished()) {
+        success = true;
+      }
+    }
+  }
+  http.end();
+  return success;
+}
+
 void performGitHubOTA() {
   tgSend(F("*OTA Update Check Started*"));
   Serial.println(F("Checking GitHub for updates..."));
@@ -370,41 +390,48 @@ void performGitHubOTA() {
   String payload = http.getString();
   http.end();
   
-  StaticJsonDocument<256> doc;
+  StaticJsonDocument<512> doc;
   if (deserializeJson(doc, payload)) {
     delete client;
     return;
   }
-  float newVer = doc["version"] | 1.0f;
-  if (newVer <= FIRMWARE_VERSION) {
-    Serial.println(F("Already up to date."));
-    delete client;
-    return;
-  }
   
-  tgSend("*Downloading firmware v" + String(newVer) + "...*");
-  String binUrl = doc["bin_url"] | "https://raw.githubusercontent.com/imaller43/ESP32_GUI_SIB/main/firmware.bin";
+  float newFwVer = doc["firmware_version"] | 1.0f;
+  float newFsVer = doc["fs_version"] | 1.0f;
+  String fwUrl = doc["firmware_url"] | "";
+  String fsUrl = doc["fs_url"] | "";
   
-  http.begin(*client, binUrl);
-  httpCode = http.GET();
-  if (httpCode == HTTP_CODE_OK) {
-    int contentLength = http.getSize();
-    bool canBegin = Update.begin(contentLength, U_FLASH);
-    if (canBegin) {
-      WiFiClient *stream = http.getStreamPtr();
-      size_t written = Update.writeStream(*stream);
-      if (written == (size_t)contentLength && Update.end() && Update.isFinished()) {
-        tgSend(F("*OTA Update Success!* Rebooting..."));
-        delay(1000);
-        ESP.restart();
-      } else {
-        tgSend(F("*OTA Update Failed* during flash."));
-      }
+  bool rebootNeeded = false;
+
+  if (newFwVer > FIRMWARE_VERSION && fwUrl.length() > 0) {
+    tgSend("*Downloading firmware v" + String(newFwVer) + "...*");
+    if (downloadAndFlash(client, fwUrl, U_FLASH)) {
+      tgSend(F("Firmware updated successfully!"));
+      rebootNeeded = true;
+    } else {
+      tgSend(F("Firmware update failed."));
     }
-  } else {
-    tgSend(F("*OTA Failed* to download firmware."));
   }
-  http.end();
+  
+  if (newFsVer > FS_VERSION && fsUrl.length() > 0) {
+    tgSend("*Downloading filesystem v" + String(newFsVer) + "...*");
+    // Note: U_SPIFFS is the command used for both SPIFFS and LittleFS in the Update library
+    if (downloadAndFlash(client, fsUrl, U_SPIFFS)) {
+      tgSend(F("Filesystem updated successfully!"));
+      rebootNeeded = true;
+    } else {
+      tgSend(F("Filesystem update failed."));
+    }
+  }
+
+  if (rebootNeeded) {
+    tgSend(F("*OTA Update Complete!* Rebooting..."));
+    delay(1000);
+    ESP.restart();
+  } else if (newFwVer <= FIRMWARE_VERSION && newFsVer <= FS_VERSION) {
+    Serial.println(F("Already up to date."));
+  }
+  
   delete client;
 }
 

@@ -1,4 +1,6 @@
 {
-  "version": 1.0,
-  "bin_url": "https://raw.githubusercontent.com/imaller43/ESP32_GUI_SIB/main/firmware.bin"
+  "firmware_version": 1.0,
+  "fs_version": 1.0,
+  "firmware_url": "https://raw.githubusercontent.com/imaller43/ESP32_GUI_SIB/main/firmware.bin",
+  "fs_url": "https://raw.githubusercontent.com/imaller43/ESP32_GUI_SIB/main/littlefs.bin"
 }
