@@ -20,7 +20,7 @@
 #include <WiFiClientSecure.h>
 #include <Wire.h>
 
-#define FIRMWARE_VERSION 1.7
+#define FIRMWARE_VERSION 1.8
 #define FS_VERSION 1.4
 
 // ─── WebSocket bridge for cloud MQTT ─────────────────────────────
@@ -455,7 +455,8 @@ bool downloadAndFlash(WiFiClientSecure *client, String url, int command) {
 
 void performGitHubOTA() {
   tgSend(F("*OTA Update Check Started*"));
-  if (mqtt.connected()) mqtt.publish("esp32/ota/status", "OTA Update Check Started");
+  if (mqtt.connected())
+    mqtt.publish("esp32/ota/status", "OTA Update Check Started");
   Serial.println(F("Checking GitHub for updates..."));
 
   WiFiClientSecure *client = new WiFiClientSecure;
@@ -469,7 +470,9 @@ void performGitHubOTA() {
   int httpCode = http.GET();
   if (httpCode != HTTP_CODE_OK) {
     tgSend(F("OTA failed: Could not fetch version.json"));
-    if (mqtt.connected()) mqtt.publish("esp32/ota/status", "OTA failed: Could not fetch version.json");
+    if (mqtt.connected())
+      mqtt.publish("esp32/ota/status",
+                   "OTA failed: Could not fetch version.json");
     http.end();
     delete client;
     return;
@@ -494,42 +497,54 @@ void performGitHubOTA() {
 
   if ((newFwVer - (float)FIRMWARE_VERSION) > 0.001 && fwUrl.length() > 0) {
     tgSend("*Downloading firmware v" + String(newFwVer, 1) + "...*");
-    if (mqtt.connected()) mqtt.publish("esp32/ota/status", ("Downloading firmware v" + String(newFwVer, 1) + "...").c_str());
+    if (mqtt.connected())
+      mqtt.publish(
+          "esp32/ota/status",
+          ("Downloading firmware v" + String(newFwVer, 1) + "...").c_str());
     if (downloadAndFlash(client, fwUrl, U_FLASH)) {
       tgSend(F("Firmware updated successfully!"));
-      if (mqtt.connected()) mqtt.publish("esp32/ota/status", "Firmware updated successfully!");
+      if (mqtt.connected())
+        mqtt.publish("esp32/ota/status", "Firmware updated successfully!");
       rebootNeeded = true;
     } else {
       tgSend(F("Firmware update failed."));
-      if (mqtt.connected()) mqtt.publish("esp32/ota/status", "Firmware update failed.");
+      if (mqtt.connected())
+        mqtt.publish("esp32/ota/status", "Firmware update failed.");
     }
   }
 
   if ((newFsVer - (float)FS_VERSION) > 0.001 && fsUrl.length() > 0) {
     tgSend("*Downloading filesystem v" + String(newFsVer, 1) + "...*");
-    if (mqtt.connected()) mqtt.publish("esp32/ota/status", ("Downloading filesystem v" + String(newFsVer, 1) + "...").c_str());
+    if (mqtt.connected())
+      mqtt.publish(
+          "esp32/ota/status",
+          ("Downloading filesystem v" + String(newFsVer, 1) + "...").c_str());
     // Note: U_SPIFFS is the command used for both SPIFFS and LittleFS in the
     // Update library
     if (downloadAndFlash(client, fsUrl, U_SPIFFS)) {
       tgSend(F("Filesystem updated successfully!"));
-      if (mqtt.connected()) mqtt.publish("esp32/ota/status", "Filesystem updated successfully!");
+      if (mqtt.connected())
+        mqtt.publish("esp32/ota/status", "Filesystem updated successfully!");
       rebootNeeded = true;
     } else {
       tgSend(F("Filesystem update failed."));
-      if (mqtt.connected()) mqtt.publish("esp32/ota/status", "Filesystem update failed.");
+      if (mqtt.connected())
+        mqtt.publish("esp32/ota/status", "Filesystem update failed.");
     }
   }
 
   if (rebootNeeded) {
     tgSend(F("*OTA Update Complete!* Rebooting..."));
-    if (mqtt.connected()) mqtt.publish("esp32/ota/status", "OTA Update Complete! Rebooting...");
-    
+    if (mqtt.connected())
+      mqtt.publish("esp32/ota/status", "OTA Update Complete! Rebooting...");
+
     // Wait for Telegram task to finish sending messages (max 6 seconds)
     unsigned long waitStart = millis();
-    while (uxQueueMessagesWaiting(tgOutQueue) > 0 && millis() - waitStart < 6000) {
+    while (uxQueueMessagesWaiting(tgOutQueue) > 0 &&
+           millis() - waitStart < 6000) {
       delay(100);
     }
-    
+
     delay(1000);
     ESP.restart();
   } else if ((newFwVer - (float)FIRMWARE_VERSION) <= 0.001 &&
@@ -540,7 +555,9 @@ void performGitHubOTA() {
     msg += "LittleFS: v" + String(FS_VERSION, 1);
     tgSend(msg);
     if (mqtt.connected()) {
-      String mMsg = "System is already up to date. Firmware: v" + String(FIRMWARE_VERSION, 1) + " | LittleFS: v" + String(FS_VERSION, 1);
+      String mMsg = "System is already up to date. Firmware: v" +
+                    String(FIRMWARE_VERSION, 1) + " | LittleFS: v" +
+                    String(FS_VERSION, 1);
       mqtt.publish("esp32/ota/status", mMsg.c_str());
     }
   }
