@@ -689,10 +689,10 @@ String buildHealthMsg() {
     snprintf(up, sizeof(up), "%02lu:%02lu:%02lu", upH, upM % 60, upS % 60);
   snprintf(buf, sizeof(buf),
            "*Health*\nTemp: `%.1f C`\nHeap: `%lu KB`\nNet: `%s`\nCPU: `%u "
-           "MHz`\nUp: `%s`",
+           "MHz`\nUp: `%s`\nFW: `v%.1f` | FS: `v%.1f`",
            temperatureRead(), (unsigned long)(ESP.getFreeHeap() / 1024),
            eth_connected ? "Ethernet" : (String(WiFi.RSSI()) + " dBm").c_str(),
-           getCpuFrequencyMhz(), up);
+           getCpuFrequencyMhz(), up, (float)FIRMWARE_VERSION, (float)FS_VERSION);
   return String(buf);
 }
 
@@ -1705,7 +1705,7 @@ void setup() {
   Serial.println(F("HTTP server started"));
   String ip =
       eth_connected ? ETH.localIP().toString() : WiFi.localIP().toString();
-  tgSend("*ESP32 Online*\nIP: `" + ip + "`");
+  tgSend("*ESP32 Online*\nIP: `" + ip + "`\nFW: `v" + String(FIRMWARE_VERSION, 1) + "` | FS: `v" + String(FS_VERSION, 1) + "`");
 }
 
 // ===========================================================
