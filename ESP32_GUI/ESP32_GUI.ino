@@ -20,7 +20,7 @@
 #include <WiFiClientSecure.h>
 #include <Wire.h>
 
-#define FIRMWARE_VERSION 1.3
+#define FIRMWARE_VERSION 1.4
 #define FS_VERSION 1.3
 
 // ─── WebSocket bridge for cloud MQTT ─────────────────────────────
