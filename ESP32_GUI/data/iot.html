@@ -450,8 +450,9 @@
 
     async function pollMqttStatus() {
       try {
-        const d = await (await fetchTimeout('/getConfig', 4000)).json();
-        if (isOffline) { window.location.reload(); return; }
+        const res = await fetchTimeout('/getConfig', 4000);
+        if (isOffline || res.redirected) { window.location.reload(); return; }
+        const d = await res.json();
         failCount = 0;
         updateMqttStatusBadge(d);
       } catch (e) {

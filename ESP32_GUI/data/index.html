@@ -404,8 +404,9 @@
 
     async function fetchStatus() {
       try {
-        const d = await (await fetchTimeout('/status', 2000)).json();
-        if (isOffline) { window.location.reload(); return; }
+        const res = await fetchTimeout('/status', 2000);
+        if (isOffline || res.redirected) { window.location.reload(); return; }
+        const d = await res.json();
         failCount = 0;
         d.inputs.forEach((v, i) => {
           const b = document.getElementById('di' + i), t = document.getElementById('tbldi' + i);
@@ -431,7 +432,9 @@
     // ── Health fetch ──────────────────────────────────────────────────
     async function fetchHealth() {
       try {
-        const h = await (await fetchTimeout('/getHealth', 2000)).json();
+        const res = await fetchTimeout('/getHealth', 2000);
+        if (res.redirected) { window.location.reload(); return; }
+        const h = await res.json();
         const t = document.getElementById('hpTemp');
         if (typeof h.temp === 'number') { t.textContent = h.temp.toFixed(1) + ' \u00b0C'; t.className = 'mc-value ' + (h.temp >= 80 ? 'red' : h.temp >= 65 ? 'amber' : 'green'); }
         const he = document.getElementById('hpHeap');
@@ -691,7 +694,9 @@
     // ── Metrics ───────────────────────────────────────────────────────
     async function fetchMetrics() {
       try {
-        const m = await (await fetchTimeout('/getMetrics', 2000)).json(); latestMetrics = m;
+        const res = await fetchTimeout('/getMetrics', 2000);
+        if (res.redirected) { window.location.reload(); return; }
+        const m = await res.json(); latestMetrics = m;
         for (let i = 0; i < 8; i++) { document.getElementById('cnt' + i).textContent = m.triggers[i]; document.getElementById('ton' + i).textContent = fmtMs(m.onTimes[i]); }
         document.getElementById('metRuntime').textContent = fmtMs(m.runtime);
         document.getElementById('metDowntime').textContent = fmtMs(m.downtime);
