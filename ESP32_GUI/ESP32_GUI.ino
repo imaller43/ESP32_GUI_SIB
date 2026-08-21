@@ -477,7 +477,7 @@ void performGitHubOTA() {
   String payload = http.getString();
   http.end();
 
-  StaticJsonDocument<256> doc;
+  StaticJsonDocument<512> doc;
   DeserializationError err = deserializeJson(doc, payload);
   if (err) {
     Serial.println(F("Failed to parse version.json"));
@@ -493,7 +493,7 @@ void performGitHubOTA() {
   bool rebootNeeded = false;
 
   if ((newFwVer - (float)FIRMWARE_VERSION) > 0.001 && fwUrl.length() > 0) {
-    tgSend("*Downloading firmware v" + String(newFwVer) + "...*");
+    tgSend("*Downloading firmware v" + String(newFwVer, 1) + "...*");
     if (mqtt.connected()) mqtt.publish("esp32/ota/status", ("Downloading firmware v" + String(newFwVer, 1) + "...").c_str());
     if (downloadAndFlash(client, fwUrl, U_FLASH)) {
       tgSend(F("Firmware updated successfully!"));
@@ -506,7 +506,7 @@ void performGitHubOTA() {
   }
 
   if ((newFsVer - (float)FS_VERSION) > 0.001 && fsUrl.length() > 0) {
-    tgSend("*Downloading filesystem v" + String(newFsVer) + "...*");
+    tgSend("*Downloading filesystem v" + String(newFsVer, 1) + "...*");
     if (mqtt.connected()) mqtt.publish("esp32/ota/status", ("Downloading filesystem v" + String(newFsVer, 1) + "...").c_str());
     // Note: U_SPIFFS is the command used for both SPIFFS and LittleFS in the
     // Update library
@@ -523,6 +523,13 @@ void performGitHubOTA() {
   if (rebootNeeded) {
     tgSend(F("*OTA Update Complete!* Rebooting..."));
     if (mqtt.connected()) mqtt.publish("esp32/ota/status", "OTA Update Complete! Rebooting...");
+    
+    // Wait for Telegram task to finish sending messages (max 6 seconds)
+    unsigned long waitStart = millis();
+    while (uxQueueMessagesWaiting(tgOutQueue) > 0 && millis() - waitStart < 6000) {
+      delay(100);
+    }
+    
     delay(1000);
     ESP.restart();
   } else if ((newFwVer - (float)FIRMWARE_VERSION) <= 0.001 &&
