@@ -348,7 +348,7 @@ unsigned long getOnTime(int ch) {
 // ===========================================================
 //  OTA AUTO UPDATE (GITHUB)
 // ===========================================================
-TaskHandle_t otaTaskHandle = NULL;
+volatile bool otaRunning = false;
 int lastOtaDay = -1;
 
 String bk_config, bk_telegram, bk_do_rules, bk_metrics, bk_users;
@@ -567,13 +567,14 @@ void performGitHubOTA() {
 
 void otaTask(void *pv) {
   performGitHubOTA();
+  otaRunning = false;
   vTaskDelete(NULL);
 }
 
 void triggerOTA() {
-  if (otaTaskHandle == NULL || eTaskGetState(otaTaskHandle) == eDeleted) {
-    xTaskCreatePinnedToCore(otaTask, "OTATask", 8192, NULL, 1, &otaTaskHandle,
-                            0);
+  if (!otaRunning) {
+    otaRunning = true;
+    xTaskCreatePinnedToCore(otaTask, "OTATask", 8192, NULL, 1, NULL, 0);
   }
 }
 
