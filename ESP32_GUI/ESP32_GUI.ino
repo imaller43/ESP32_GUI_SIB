@@ -20,8 +20,8 @@
 #include <WiFiClientSecure.h>
 #include <Wire.h>
 
-#define FIRMWARE_VERSION 1.9
-#define FS_VERSION 1.4
+#define FIRMWARE_VERSION 2.0
+#define FS_VERSION 1.5
 
 // ─── WebSocket bridge for cloud MQTT ─────────────────────────────
 #define WSBRIDGE_RX_SIZE 1024
@@ -692,7 +692,8 @@ String buildHealthMsg() {
            "MHz`\nUp: `%s`\nFW: `v%.1f` | FS: `v%.1f`",
            temperatureRead(), (unsigned long)(ESP.getFreeHeap() / 1024),
            eth_connected ? "Ethernet" : (String(WiFi.RSSI()) + " dBm").c_str(),
-           getCpuFrequencyMhz(), up, (float)FIRMWARE_VERSION, (float)FS_VERSION);
+           getCpuFrequencyMhz(), up, (float)FIRMWARE_VERSION,
+           (float)FS_VERSION);
   return String(buf);
 }
 
@@ -1705,7 +1706,9 @@ void setup() {
   Serial.println(F("HTTP server started"));
   String ip =
       eth_connected ? ETH.localIP().toString() : WiFi.localIP().toString();
-  tgSend("*ESP32 Online*\nIP: `" + ip + "`\nFW: `v" + String(FIRMWARE_VERSION, 1) + "` | FS: `v" + String(FS_VERSION, 1) + "`");
+  tgSend("*ESP32 Online*\nIP: `" + ip + "`\nFW: `v" +
+         String(FIRMWARE_VERSION, 1) + "` | FS: `v" + String(FS_VERSION, 1) +
+         "`");
 }
 
 // ===========================================================
