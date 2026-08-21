@@ -516,8 +516,8 @@ void performGitHubOTA() {
   } else if ((newFwVer - (float)FIRMWARE_VERSION) <= 0.001 &&
              (newFsVer - (float)FS_VERSION) <= 0.001) {
     Serial.println(F("Already up to date."));
-    String msg = "*System is already up to date.*%0A";
-    msg += "Firmware: v" + String(FIRMWARE_VERSION, 1) + "%0A";
+    String msg = "*System is already up to date.*\n";
+    msg += "Firmware: v" + String(FIRMWARE_VERSION, 1) + "\n";
     msg += "LittleFS: v" + String(FS_VERSION, 1);
     tgSend(msg);
   }
