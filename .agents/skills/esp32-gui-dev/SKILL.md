@@ -44,14 +44,19 @@ It features:
 - **Endpoint Structure**: The JS fetches real-time data via specific endpoints (e.g., `/status`, `/getHealth`, `/getDoRules`). If you add UI elements requiring new backend data, implement the corresponding `server.on("/...", ...)` handler in the `.ino` file.
 - **File Limits**: Keep frontend files lightweight. Avoid importing large external libraries unless absolutely necessary.
 
-## 4. Key JSON Configuration Files (Stored in LittleFS)
+## 4. Key JSON Configuration Files (LittleFS)
 
-When the ESP32 boots, it loads configurations from the following files:
-- `config.json`: Network and MQTT defaults.
-- `do_rules.json`: The dynamic logic rules (AND/OR/IF) linking inputs to outputs.
+The filesystem splits files into two categories: **Static** (served as-is to the frontend, overwritten during updates) and **Stateful** (dynamically created/modified by ESP32 logic, backed up to RAM during LittleFS updates).
+
+**Stateful Configs (Must survive reboots/OTA):**
+- `config.json`: Network and MQTT credentials.
+- `do_rules.json`: Dynamic logic rules (AND/OR/IF) linking inputs to outputs. Generated dynamically when rules are saved.
 - `telegram.json`: Bot token, chat ID, and notification thresholds.
-- `metrics.json`: Persists the machine state, runtime, downtime, and trigger counts to survive reboots.
-- `users.json`: Credentials for the web server basic auth.
+- `metrics.json`: Persists machine state, runtime, downtime, and counts. Created and overwritten dynamically by the ESP32.
+- `users.json`: Credentials for web server basic auth.
+
+**Static Configs (Overwritten by developer):**
+- `variables.json`: Pre-defined logical variables and mathematical bounds used by the frontend dashboard. (DO NOT back this up during OTA).
 
 ## 5. Troubleshooting & Debugging
 
