@@ -1,5 +1,5 @@
 {
-  "firmware_version": 1.8,
+  "firmware_version": 1.9,
   "fs_version": 1.4,
   "firmware_url": "https://raw.githubusercontent.com/imaller43/ESP32_GUI_SIB/main/firmware.bin",
   "fs_url": "https://raw.githubusercontent.com/imaller43/ESP32_GUI_SIB/main/littlefs.bin"
