@@ -351,18 +351,44 @@ unsigned long getOnTime(int ch) {
 TaskHandle_t otaTaskHandle = NULL;
 int lastOtaDay = -1;
 
+String bk_config, bk_telegram, bk_do_rules, bk_metrics, bk_users;
+
+void backupConfigs() {
+  Serial.println(F("Backing up JSON configs to RAM..."));
+  bk_config = ""; bk_telegram = ""; bk_do_rules = ""; bk_metrics = ""; bk_users = "";
+  File f;
+  f = LittleFS.open("/config.json", "r"); if(f){ bk_config = f.readString(); f.close(); }
+  f = LittleFS.open("/telegram.json", "r"); if(f){ bk_telegram = f.readString(); f.close(); }
+  f = LittleFS.open("/do_rules.json", "r"); if(f){ bk_do_rules = f.readString(); f.close(); }
+  f = LittleFS.open("/metrics.json", "r"); if(f){ bk_metrics = f.readString(); f.close(); }
+  f = LittleFS.open("/users.json", "r"); if(f){ bk_users = f.readString(); f.close(); }
+}
+
+void restoreConfigs() {
+  Serial.println(F("Restoring JSON configs from RAM..."));
+  LittleFS.begin(true); // Mount the new filesystem
+  File f;
+  if(bk_config.length() > 0) { f = LittleFS.open("/config.json", "w"); if(f){ f.print(bk_config); f.close(); } }
+  if(bk_telegram.length() > 0) { f = LittleFS.open("/telegram.json", "w"); if(f){ f.print(bk_telegram); f.close(); } }
+  if(bk_do_rules.length() > 0) { f = LittleFS.open("/do_rules.json", "w"); if(f){ f.print(bk_do_rules); f.close(); } }
+  if(bk_metrics.length() > 0) { f = LittleFS.open("/metrics.json", "w"); if(f){ f.print(bk_metrics); f.close(); } }
+  if(bk_users.length() > 0) { f = LittleFS.open("/users.json", "w"); if(f){ f.print(bk_users); f.close(); } }
+}
+
 bool downloadAndFlash(WiFiClientSecure *client, String url, int command) {
   HTTPClient http;
   http.begin(*client, url);
   int httpCode = http.GET();
   bool success = false;
   if (httpCode == HTTP_CODE_OK) {
+    if (command == U_SPIFFS) backupConfigs();
     int contentLength = http.getSize();
     if (Update.begin(contentLength, command)) {
       WiFiClient *stream = http.getStreamPtr();
       size_t written = Update.writeStream(*stream);
       if (written == (size_t)contentLength && Update.end() &&
           Update.isFinished()) {
+        if (command == U_SPIFFS) restoreConfigs();
         success = true;
       }
     }
@@ -1530,6 +1556,7 @@ void setup() {
         if (upload.status == UPLOAD_FILE_START) {
           Serial.setDebugOutput(true);
           Serial.printf("Update FS: %s\n", upload.filename.c_str());
+          backupConfigs();
           if (!Update.begin(UPDATE_SIZE_UNKNOWN, U_SPIFFS)) {
             Update.printError(Serial);
           }
@@ -1540,12 +1567,17 @@ void setup() {
           }
         } else if (upload.status == UPLOAD_FILE_END) {
           if (Update.end(true)) {
-            Serial.printf("Update FS Success: %u\n", upload.totalSize);
+            restoreConfigs();
+            Serial.printf("Update Success: %uB\n", upload.totalSize);
           } else {
             Update.printError(Serial);
           }
           Serial.setDebugOutput(false);
+        } else if (upload.status == UPLOAD_FILE_ABORTED) {
+          Update.end();
+          Serial.println("Update was aborted");
         }
+        delay(0);
       });
 
   // API
