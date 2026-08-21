@@ -457,8 +457,12 @@ void performGitHubOTA() {
     tgSend(F("*OTA Update Complete!* Rebooting..."));
     delay(1000);
     ESP.restart();
-  } else if (newFwVer <= FIRMWARE_VERSION && newFsVer <= FS_VERSION) {
+  } else if ((newFwVer - (float)FIRMWARE_VERSION) <= 0.001 && (newFsVer - (float)FS_VERSION) <= 0.001) {
     Serial.println(F("Already up to date."));
+    String msg = "*System is already up to date.*%0A";
+    msg += "Firmware: v" + String(FIRMWARE_VERSION, 1) + "%0A";
+    msg += "LittleFS: v" + String(FS_VERSION, 1);
+    tgSend(msg);
   }
 
   delete client;
