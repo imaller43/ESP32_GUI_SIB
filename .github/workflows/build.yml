@@ -1,0 +1,60 @@
+name: Auto-Build ESP32 Firmware
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'ESP32_GUI/**'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Arduino CLI
+        uses: arduino/setup-arduino-cli@v1.1.2
+
+      - name: Install ESP32 Core
+        run: |
+          arduino-cli core update-index --additional-urls https://espressif.github.io/arduino-esp32/package_esp32_index.json
+          arduino-cli core install esp32:esp32 --additional-urls https://espressif.github.io/arduino-esp32/package_esp32_index.json
+
+      - name: Install Libraries
+        run: |
+          arduino-cli lib install ArduinoJson
+          arduino-cli lib install PubSubClient
+          arduino-cli lib install UniversalTelegramBot
+          arduino-cli lib install WebSockets
+
+      - name: Compile Firmware
+        run: |
+          # FQBN for generic ESP32-S3 with Default 4MB (1.2MB APP / 1.5MB SPIFFS) Partition Scheme
+          arduino-cli compile --fqbn esp32:esp32:esp32s3:CDCOnBoot=cdc,PartitionScheme=default ESP32_GUI/ESP32_GUI.ino --output-dir build
+
+      - name: Setup mklittlefs
+        run: |
+          wget https://github.com/earlephilhower/mklittlefs/releases/download/3.2.0/x86_64-linux-gnu-mklittlefs-c41e51a.tar.gz
+          tar -zxvf x86_64-linux-gnu-mklittlefs-c41e51a.tar.gz
+          sudo cp mklittlefs /usr/local/bin/
+          mklittlefs --version
+
+      - name: Build LittleFS (.bin)
+        run: |
+          # 1.5MB SPIFFS size is exactly 0x170000 = 1507328 bytes
+          mklittlefs -c ESP32_GUI/data -p 256 -b 4096 -s 1507328 build/littlefs.bin
+
+      - name: Commit and Push Binaries back to GitHub
+        run: |
+          cp build/ESP32_GUI.ino.bin firmware.bin
+          cp build/littlefs.bin littlefs.bin
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add firmware.bin littlefs.bin
+          git commit -m "chore: Auto-build firmware and LittleFS [skip ci]" || echo "No changes to commit"
+          git push origin main
