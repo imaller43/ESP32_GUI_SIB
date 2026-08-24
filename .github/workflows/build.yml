@@ -41,7 +41,7 @@ jobs:
         run: |
           wget https://github.com/earlephilhower/mklittlefs/releases/download/4.1.0/x86_64-linux-gnu-mklittlefs-42acb97.tar.gz
           tar -zxvf x86_64-linux-gnu-mklittlefs-42acb97.tar.gz
-          sudo cp mklittlefs /usr/local/bin/
+          sudo cp mklittlefs/mklittlefs /usr/local/bin/
           mklittlefs --version
 
       - name: Build LittleFS (.bin)
