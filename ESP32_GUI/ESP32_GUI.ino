@@ -21,7 +21,7 @@
 #include <Wire.h>
 
 #define FIRMWARE_VERSION 2.0
-#define FS_VERSION 1.6
+float currentFsVersion = 1.0;
 
 // ─── WebSocket bridge for cloud MQTT ─────────────────────────────
 #define WSBRIDGE_RX_SIZE 1024
@@ -513,7 +513,7 @@ void performGitHubOTA() {
     }
   }
 
-  if ((newFsVer - (float)FS_VERSION) > 0.001 && fsUrl.length() > 0) {
+  if ((newFsVer - currentFsVersion) > 0.001 && fsUrl.length() > 0) {
     tgSend("*Downloading filesystem v" + String(newFsVer, 1) + "...*");
     if (mqtt.connected())
       mqtt.publish(
@@ -548,16 +548,16 @@ void performGitHubOTA() {
     delay(1000);
     ESP.restart();
   } else if ((newFwVer - (float)FIRMWARE_VERSION) <= 0.001 &&
-             (newFsVer - (float)FS_VERSION) <= 0.001) {
+             (newFsVer - currentFsVersion) <= 0.001) {
     Serial.println(F("Already up to date."));
     String msg = "*System is already up to date.*\n";
     msg += "Firmware: v" + String(FIRMWARE_VERSION, 1) + "\n";
-    msg += "LittleFS: v" + String(FS_VERSION, 1);
+    msg += "LittleFS: v" + String(currentFsVersion, 1);
     tgSend(msg);
     if (mqtt.connected()) {
       String mMsg = "System is already up to date. Firmware: v" +
                     String(FIRMWARE_VERSION, 1) + " | LittleFS: v" +
-                    String(FS_VERSION, 1);
+                    String(currentFsVersion, 1);
       mqtt.publish("esp32/ota/status", mMsg.c_str());
     }
   }
@@ -693,7 +693,7 @@ String buildHealthMsg() {
            temperatureRead(), (unsigned long)(ESP.getFreeHeap() / 1024),
            eth_connected ? "Ethernet" : (String(WiFi.RSSI()) + " dBm").c_str(),
            getCpuFrequencyMhz(), up, (float)FIRMWARE_VERSION,
-           (float)FS_VERSION);
+           currentFsVersion);
   return String(buf);
 }
 
@@ -1278,7 +1278,7 @@ void handleGetHealth() {
   doc["cpuFreq"] = getCpuFrequencyMhz();
   doc["uptime"] = millis();
   doc["fw_ver"] = FIRMWARE_VERSION;
-  doc["fs_ver"] = FS_VERSION;
+  doc["fs_ver"] = currentFsVersion;
   String out;
   serializeJson(doc, out);
   server.sendHeader(F("Cache-Control"), F("no-cache"));
@@ -1483,10 +1483,17 @@ void setup() {
 
   writeOutputs(); // initialise all DO OFF
 
-  if (!LittleFS.begin(true))
+  if (!LittleFS.begin(true)) {
     Serial.println(F("LittleFS failed!"));
-  else
+  } else {
     Serial.println(F("LittleFS OK"));
+    File f = LittleFS.open("/fs_version.txt", "r");
+    if (f) {
+      String verStr = f.readString();
+      currentFsVersion = verStr.toFloat();
+      f.close();
+    }
+  }
 
   loadConfig();
   loadUsers();
@@ -1707,7 +1714,7 @@ void setup() {
   String ip =
       eth_connected ? ETH.localIP().toString() : WiFi.localIP().toString();
   tgSend("*ESP32 Online*\nIP: `" + ip + "`\nFW: `v" +
-         String(FIRMWARE_VERSION, 1) + "` | FS: `v" + String(FS_VERSION, 1) +
+         String(FIRMWARE_VERSION, 1) + "` | FS: `v" + String(currentFsVersion, 1) +
          "`");
 }
 
