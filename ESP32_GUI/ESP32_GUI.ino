@@ -20,7 +20,7 @@
 #include <WiFiClientSecure.h>
 #include <Wire.h>
 
-#define FIRMWARE_VERSION 2.1
+#define FIRMWARE_VERSION 2.2
 float currentFsVersion = 1.0;
 
 // ─── WebSocket bridge for cloud MQTT ─────────────────────────────
@@ -455,7 +455,8 @@ bool downloadAndFlash(WiFiClientSecure *client, String url, int command) {
 
 void performGitHubOTA() {
   tgSend(F("*OTA Update Check Started*"));
-  if (mqtt.connected()) mqtt.publish("esp32/ota/status", "OTA Update Check Started");
+  if (mqtt.connected())
+    mqtt.publish("esp32/ota/status", "OTA Update Check Started");
 
   WiFiClientSecure *client = new WiFiClientSecure;
   if (!client)
@@ -1450,8 +1451,6 @@ void handleTelegramTest() {
 void WiFiEvent(WiFiEvent_t event) {
   if (event == ARDUINO_EVENT_ETH_GOT_IP) {
     eth_connected = true;
-
-
   }
 }
 
@@ -1460,7 +1459,6 @@ void WiFiEvent(WiFiEvent_t event) {
 // ===========================================================
 void setup() {
   Serial.begin(115200);
-
 
   for (int i = 0; i < 8; i++) {
     pinMode(inputPins[i], INPUT_PULLUP);
@@ -1509,14 +1507,11 @@ void setup() {
 
   if (eth_connected) {
 
-
   } else if (WiFi.status() == WL_CONNECTED) {
-
 
   } else
 
-
-  lastMetricTickMs = millis();
+    lastMetricTickMs = millis();
   lastMetricAccMs = millis();
   lastMetricsSaveMs = millis();
 
@@ -1617,7 +1612,6 @@ void setup() {
         HTTPUpload &upload = server.upload();
         if (upload.status == UPLOAD_FILE_START) {
 
-
           if (!Update.begin(UPDATE_SIZE_UNKNOWN, U_FLASH)) {
             Update.printError(Serial);
           }
@@ -1632,7 +1626,6 @@ void setup() {
           } else {
             Update.printError(Serial);
           }
-
         }
       });
 
@@ -1657,7 +1650,6 @@ void setup() {
         HTTPUpload &upload = server.upload();
         if (upload.status == UPLOAD_FILE_START) {
 
-
           backupConfigs();
           if (!Update.begin(UPDATE_SIZE_UNKNOWN, U_SPIFFS)) {
             Update.printError(Serial);
@@ -1677,7 +1669,6 @@ void setup() {
 
         } else if (upload.status == UPLOAD_FILE_ABORTED) {
           Update.end();
-
         }
         delay(0);
       });
