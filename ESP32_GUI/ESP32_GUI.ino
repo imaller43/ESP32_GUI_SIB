@@ -354,7 +354,7 @@ int lastOtaDay = -1;
 String bk_config, bk_telegram, bk_do_rules, bk_metrics, bk_users;
 
 void backupConfigs() {
-  Serial.println(F("Backing up JSON configs to RAM..."));
+
   bk_config = "";
   bk_telegram = "";
   bk_do_rules = "";
@@ -389,7 +389,7 @@ void backupConfigs() {
 }
 
 void restoreConfigs() {
-  Serial.println(F("Restoring JSON configs from RAM..."));
+
   LittleFS.begin(true); // Mount the new filesystem
   File f;
   if (bk_config.length() > 0) {
@@ -1450,8 +1450,8 @@ void handleTelegramTest() {
 void WiFiEvent(WiFiEvent_t event) {
   if (event == ARDUINO_EVENT_ETH_GOT_IP) {
     eth_connected = true;
-    Serial.print(F("ETH IP: "));
-    Serial.println(ETH.localIP());
+
+
   }
 }
 
@@ -1460,7 +1460,7 @@ void WiFiEvent(WiFiEvent_t event) {
 // ===========================================================
 void setup() {
   Serial.begin(115200);
-  Serial.println(F("Booting..."));
+
 
   for (int i = 0; i < 8; i++) {
     pinMode(inputPins[i], INPUT_PULLUP);
@@ -1503,18 +1503,18 @@ void setup() {
   while (!eth_connected && WiFi.status() != WL_CONNECTED) {
     if (millis() - cs > 15000)
       break;
-    Serial.print(F("."));
+
     delay(200);
   }
-  Serial.println();
+
   if (eth_connected) {
-    Serial.print(F("ETH IP: "));
-    Serial.println(ETH.localIP());
+
+
   } else if (WiFi.status() == WL_CONNECTED) {
-    Serial.print(F("WiFi IP: "));
-    Serial.println(WiFi.localIP());
+
+
   } else
-    Serial.println(F("No network"));
+
 
   lastMetricTickMs = millis();
   lastMetricAccMs = millis();
@@ -1616,8 +1616,8 @@ void setup() {
           return;
         HTTPUpload &upload = server.upload();
         if (upload.status == UPLOAD_FILE_START) {
-          Serial.setDebugOutput(true);
-          Serial.printf("Update FW: %s\n", upload.filename.c_str());
+
+
           if (!Update.begin(UPDATE_SIZE_UNKNOWN, U_FLASH)) {
             Update.printError(Serial);
           }
@@ -1628,11 +1628,11 @@ void setup() {
           }
         } else if (upload.status == UPLOAD_FILE_END) {
           if (Update.end(true)) {
-            Serial.printf("Update FW Success: %u\n", upload.totalSize);
+
           } else {
             Update.printError(Serial);
           }
-          Serial.setDebugOutput(false);
+
         }
       });
 
@@ -1656,8 +1656,8 @@ void setup() {
           return;
         HTTPUpload &upload = server.upload();
         if (upload.status == UPLOAD_FILE_START) {
-          Serial.setDebugOutput(true);
-          Serial.printf("Update FS: %s\n", upload.filename.c_str());
+
+
           backupConfigs();
           if (!Update.begin(UPDATE_SIZE_UNKNOWN, U_SPIFFS)) {
             Update.printError(Serial);
@@ -1670,14 +1670,14 @@ void setup() {
         } else if (upload.status == UPLOAD_FILE_END) {
           if (Update.end(true)) {
             restoreConfigs();
-            Serial.printf("Update Success: %uB\n", upload.totalSize);
+
           } else {
             Update.printError(Serial);
           }
-          Serial.setDebugOutput(false);
+
         } else if (upload.status == UPLOAD_FILE_ABORTED) {
           Update.end();
-          Serial.println("Update was aborted");
+
         }
         delay(0);
       });
@@ -1702,7 +1702,7 @@ void setup() {
   ArduinoOTA.begin();
 
   server.begin();
-  Serial.println(F("HTTP server started"));
+
   String ip =
       eth_connected ? ETH.localIP().toString() : WiFi.localIP().toString();
   tgSend("*ESP32 Online*\nIP: `" + ip + "`\nFW: `v" +
