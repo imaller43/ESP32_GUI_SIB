@@ -20,7 +20,7 @@
 #include <WiFiClientSecure.h>
 #include <Wire.h>
 
-#define FIRMWARE_VERSION 2.0
+#define FIRMWARE_VERSION 2.1
 float currentFsVersion = 1.0;
 
 // ─── WebSocket bridge for cloud MQTT ─────────────────────────────
@@ -455,9 +455,7 @@ bool downloadAndFlash(WiFiClientSecure *client, String url, int command) {
 
 void performGitHubOTA() {
   tgSend(F("*OTA Update Check Started*"));
-  if (mqtt.connected())
-    mqtt.publish("esp32/ota/status", "OTA Update Check Started");
-  Serial.println(F("Checking GitHub for updates..."));
+  if (mqtt.connected()) mqtt.publish("esp32/ota/status", "OTA Update Check Started");
 
   WiFiClientSecure *client = new WiFiClientSecure;
   if (!client)
@@ -483,7 +481,6 @@ void performGitHubOTA() {
   StaticJsonDocument<512> doc;
   DeserializationError err = deserializeJson(doc, payload);
   if (err) {
-    Serial.println(F("Failed to parse version.json"));
     delete client;
     return;
   }
@@ -549,7 +546,6 @@ void performGitHubOTA() {
     ESP.restart();
   } else if ((newFwVer - (float)FIRMWARE_VERSION) <= 0.001 &&
              (newFsVer - currentFsVersion) <= 0.001) {
-    Serial.println(F("Already up to date."));
     String msg = "*System is already up to date.*\n";
     msg += "Firmware: v" + String(FIRMWARE_VERSION, 1) + "\n";
     msg += "LittleFS: v" + String(currentFsVersion, 1);
@@ -692,8 +688,7 @@ String buildHealthMsg() {
            "MHz`\nUp: `%s`\nFW: `v%.1f` | FS: `v%.1f`",
            temperatureRead(), (unsigned long)(ESP.getFreeHeap() / 1024),
            eth_connected ? "Ethernet" : (String(WiFi.RSSI()) + " dBm").c_str(),
-           getCpuFrequencyMhz(), up, (float)FIRMWARE_VERSION,
-           currentFsVersion);
+           getCpuFrequencyMhz(), up, (float)FIRMWARE_VERSION, currentFsVersion);
   return String(buf);
 }
 
@@ -1483,10 +1478,7 @@ void setup() {
 
   writeOutputs(); // initialise all DO OFF
 
-  if (!LittleFS.begin(true)) {
-    Serial.println(F("LittleFS failed!"));
-  } else {
-    Serial.println(F("LittleFS OK"));
+  if (LittleFS.begin(true)) {
     File f = LittleFS.open("/fs_version.txt", "r");
     if (f) {
       String verStr = f.readString();
@@ -1714,8 +1706,8 @@ void setup() {
   String ip =
       eth_connected ? ETH.localIP().toString() : WiFi.localIP().toString();
   tgSend("*ESP32 Online*\nIP: `" + ip + "`\nFW: `v" +
-         String(FIRMWARE_VERSION, 1) + "` | FS: `v" + String(currentFsVersion, 1) +
-         "`");
+         String(FIRMWARE_VERSION, 1) + "` | FS: `v" +
+         String(currentFsVersion, 1) + "`");
 }
 
 // ===========================================================
