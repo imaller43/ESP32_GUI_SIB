@@ -21,7 +21,7 @@
 #include <Wire.h>
 
 #define FIRMWARE_VERSION 2.0
-#define FS_VERSION 1.5
+#define FS_VERSION 1.6
 
 // ─── WebSocket bridge for cloud MQTT ─────────────────────────────
 #define WSBRIDGE_RX_SIZE 1024
