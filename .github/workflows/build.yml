@@ -27,7 +27,7 @@ jobs:
 
       - name: Install Libraries
         run: |
-          arduino-cli lib install ArduinoJson
+          arduino-cli lib install "ArduinoJson@6.21.5"
           arduino-cli lib install PubSubClient
           arduino-cli lib install UniversalTelegramBot
           arduino-cli lib install WebSockets
