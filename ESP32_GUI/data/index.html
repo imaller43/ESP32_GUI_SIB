@@ -712,7 +712,13 @@
     }
 
     async function resetTarget(target) {
-      if (!confirm('Reset: ' + target + '?')) return;
+      let disp = target;
+      if (target.startsWith('di')) disp = 'DI' + (parseInt(target.substring(2)) + 1);
+      else if (target === 'all') disp = 'All Counters';
+      else if (target === 'runtime') disp = 'Runtime';
+      else if (target === 'rejects') disp = 'Rejects';
+      
+      if (!confirm('Reset ' + disp + '?')) return;
       await fetch('/resetMetrics', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'target=' + encodeURIComponent(target) });
       fetchMetrics();
     }
