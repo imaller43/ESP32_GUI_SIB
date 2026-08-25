@@ -2,7 +2,7 @@ name: Auto-Build ESP32 Firmware
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "remove-calculator" ]
     paths:
       - 'ESP32_GUI/**'
   workflow_dispatch:
@@ -57,4 +57,4 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add firmware.bin littlefs.bin
           git commit -m "chore: Auto-build firmware and LittleFS [skip ci]" || echo "No changes to commit"
-          git push origin main
+          git push origin ${{ github.ref_name }}
