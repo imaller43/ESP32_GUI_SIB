@@ -278,7 +278,6 @@ unsigned long downtimeMs = 0;
 unsigned long lastMetricTickMs = 0;
 unsigned long lastMetricAccMs = 0;
 unsigned long lastMetricsSaveMs = 0;
-float customEffPct = -1.0f;
 
 // ================= DI DEBOUNCE =================
 #define DEBOUNCE_MS 50
@@ -797,7 +796,6 @@ void saveMetrics() {
   doc["runtime"] = runtimeMs;
   doc["downtime"] = downtimeMs;
   doc["machineState"] = machineStateIdx;
-  doc["customEff"] = customEffPct;
   JsonArray tc = doc.createNestedArray("tc"), ot = doc.createNestedArray("ot");
   for (int i = 0; i < 8; i++) {
     tc.add(triggerCount[i]);
@@ -821,7 +819,6 @@ void loadMetrics() {
     runtimeMs = doc["runtime"] | (unsigned long)0;
     downtimeMs = doc["downtime"] | (unsigned long)0;
     machineStateIdx = doc["machineState"] | (uint8_t)1;
-    customEffPct = doc["customEff"] | -1.0f;
     for (int i = 0; i < 8; i++) {
       triggerCount[i] = doc["tc"][i] | (unsigned long)0;
       totalOnTimeMs[i] = doc["ot"][i] | (unsigned long)0;
@@ -1390,13 +1387,6 @@ void handleSaveDoRules() {
   server.send(200, F("text/plain"), F("OK"));
 }
 
-void handleSetCustomEff() {
-  if (!requireAuth())
-    return;
-  String v = server.arg("eff");
-  customEffPct = v.length() > 0 ? v.toFloat() : -1.0f;
-  server.send(200, F("text/plain"), F("OK"));
-}
 
 // ── Telegram API ──────────────────────────────────────────────────
 void handleGetTelegramConfig() {
@@ -1683,7 +1673,6 @@ void setup() {
   server.on("/resetMetrics", HTTP_POST, handleResetMetrics);
   server.on("/getDoRules", HTTP_GET, handleGetDoRules);
   server.on("/saveDoRules", HTTP_POST, handleSaveDoRules);
-  server.on("/setCustomEff", HTTP_POST, handleSetCustomEff);
 
   server.on("/getTelegramConfig", HTTP_GET, handleGetTelegramConfig);
   server.on("/saveTelegramConfig", HTTP_POST, handleSaveTelegramConfig);
