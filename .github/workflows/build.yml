@@ -2,7 +2,7 @@ name: Auto-Build ESP32 Firmware
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "testing" ]
     paths:
       - 'ESP32_GUI/**'
   workflow_dispatch:
