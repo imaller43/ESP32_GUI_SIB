@@ -279,7 +279,6 @@ unsigned long lastMetricTickMs = 0;
 unsigned long lastMetricAccMs = 0;
 unsigned long lastMetricsSaveMs = 0;
 
-
 // ================= DI DEBOUNCE =================
 #define DEBOUNCE_MS 50
 int lastRawState[8];
@@ -1390,7 +1389,6 @@ void handleSaveDoRules() {
   server.send(200, F("text/plain"), F("OK"));
 }
 
-
 // ── Telegram API ──────────────────────────────────────────────────
 void handleGetTelegramConfig() {
   if (!requireAuth())
@@ -1676,8 +1674,6 @@ void setup() {
   server.on("/resetMetrics", HTTP_POST, handleResetMetrics);
   server.on("/getDoRules", HTTP_GET, handleGetDoRules);
   server.on("/saveDoRules", HTTP_POST, handleSaveDoRules);
-
-
   server.on("/getTelegramConfig", HTTP_GET, handleGetTelegramConfig);
   server.on("/saveTelegramConfig", HTTP_POST, handleSaveTelegramConfig);
   server.on("/telegramTest", HTTP_POST, handleTelegramTest);
