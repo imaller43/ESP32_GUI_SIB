@@ -289,7 +289,6 @@ bool shouldReboot = false;
 
 // ================= TIMING =================
 unsigned long lastDiScanMs = 0;
-
 // ── Per-topic heartbeat timers (DI/DO) ────────────────────────────
 unsigned long diLastPubMs[8] = {0};
 unsigned long doLastPubMs[8] = {0};
