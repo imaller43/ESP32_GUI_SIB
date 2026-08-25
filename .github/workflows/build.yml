@@ -57,4 +57,4 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add firmware.bin littlefs.bin
           git commit -m "chore: Auto-build firmware and LittleFS [skip ci]" || echo "No changes to commit"
-          git push origin main
+          git push origin HEAD:${{ github.ref_name }}
