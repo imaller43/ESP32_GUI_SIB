@@ -47,7 +47,7 @@ jobs:
       - name: Build LittleFS (.bin)
         run: |
           # 1.5MB SPIFFS size is exactly 0x170000 = 1507328 bytes
-          mklittlefs -c ESP32_GUI/data -p 256 -b 4096 -s 1507328 build/littlefs.bin
+          mklittlefs -c ESP32_GUI/data -p 256 -b 4096 -s 1441792 build/littlefs.bin
 
       - name: Commit and Push Binaries back to GitHub
         run: |
