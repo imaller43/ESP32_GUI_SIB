@@ -349,6 +349,7 @@ unsigned long getOnTime(int ch) {
 // ===========================================================
 volatile bool otaRunning = false;
 int lastOtaDay = -1;
+bool autoUpdateEnabled = true;
 
 String bk_config, bk_telegram, bk_do_rules, bk_metrics, bk_users;
 
@@ -583,7 +584,9 @@ void checkDailyOTA() {
   if (timeinfo.tm_hour == 13 && timeinfo.tm_min >= 15 && timeinfo.tm_min < 60) {
     if (lastOtaDay != timeinfo.tm_yday) {
       lastOtaDay = timeinfo.tm_yday;
-      triggerOTA();
+      if (autoUpdateEnabled) {
+        triggerOTA();
+      }
     }
   }
 }
@@ -868,6 +871,7 @@ void loadConfig() {
   strlcpy(mqttCfg.path, doc["mqttPath"] | "/mqtt", sizeof(mqttCfg.path));
   strlcpy(mqttCfg.user, doc["mqttUser"] | "", sizeof(mqttCfg.user));
   strlcpy(mqttCfg.pass, doc["mqttPass"] | "", sizeof(mqttCfg.pass));
+  autoUpdateEnabled = doc.containsKey("autoUpdateEnabled") ? doc["autoUpdateEnabled"].as<bool>() : true;
 
   for (int i = 0; i < 8; i++) {
     strlcpy(inputConfig[i].topic, doc["inputs"][i] | "", 50);
@@ -899,6 +903,7 @@ void saveConfig() {
   doc["mqttPath"] = mqttCfg.path;
   doc["mqttUser"] = mqttCfg.user;
   doc["mqttPass"] = mqttCfg.pass;
+  doc["autoUpdateEnabled"] = autoUpdateEnabled;
   for (int i = 0; i < 8; i++) {
     doc["inputs"][i] = inputConfig[i].topic;
     doc["outputs"][i] = outputConfig[i].topic;
@@ -1071,6 +1076,14 @@ void mqttCallback(char *topic, byte *payload, unsigned int length) {
     triggerOTA();
     return;
   }
+  if (strcmp(topic, "esp32/update/auto") == 0) {
+    char msg[2] = {0};
+    memcpy(msg, payload, min(length, (unsigned int)1));
+    autoUpdateEnabled = (strcmp(msg, "1") == 0);
+    saveConfig();
+    mqtt.publish("esp32/update/auto/status", autoUpdateEnabled ? "1" : "0", true);
+    return;
+  }
 
   char msg[4] = {0};
   memcpy(msg, payload, min(length, (unsigned int)3));
@@ -1103,6 +1116,8 @@ void reconnectMQTT() {
     mqtt.subscribe("esp32/triggercount/set");
     mqtt.subscribe("esp32/triggercount/reset");
     mqtt.subscribe("esp32/ota_trigger");
+    mqtt.subscribe("esp32/update/auto");
+    mqtt.publish("esp32/update/auto/status", autoUpdateEnabled ? "1" : "0", true);
   }
 }
 
@@ -1274,6 +1289,7 @@ void handleGetHealth() {
   doc["uptime"] = millis();
   doc["fw_ver"] = FIRMWARE_VERSION;
   doc["fs_ver"] = currentFsVersion;
+  doc["autoUpdate"] = autoUpdateEnabled;
   String out;
   serializeJson(doc, out);
   server.sendHeader(F("Cache-Control"), F("no-cache"));
@@ -1386,6 +1402,14 @@ void handleSaveDoRules() {
     doRuleCount++;
   }
   saveDoRules();
+  server.send(200, F("text/plain"), F("OK"));
+}
+
+void handleSetAutoUpdate() {
+  if (!requireAuth()) return;
+  autoUpdateEnabled = server.arg("enabled") == "1";
+  saveConfig();
+  mqtt.publish("esp32/update/auto/status", autoUpdateEnabled ? "1" : "0", true);
   server.send(200, F("text/plain"), F("OK"));
 }
 
@@ -1674,6 +1698,7 @@ void setup() {
   server.on("/resetMetrics", HTTP_POST, handleResetMetrics);
   server.on("/getDoRules", HTTP_GET, handleGetDoRules);
   server.on("/saveDoRules", HTTP_POST, handleSaveDoRules);
+  server.on("/setAutoUpdate", HTTP_POST, handleSetAutoUpdate);
   server.on("/getTelegramConfig", HTTP_GET, handleGetTelegramConfig);
   server.on("/saveTelegramConfig", HTTP_POST, handleSaveTelegramConfig);
   server.on("/telegramTest", HTTP_POST, handleTelegramTest);
