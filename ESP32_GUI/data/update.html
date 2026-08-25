@@ -41,14 +41,14 @@
 
     <!-- Auto-Update Toggle -->
     <div class="io-wrapper" style="margin-top: 20px;">
-      <div class="io-box" style="flex: 1; display: flex; justify-content: space-between; align-items: center;">
+      <div class="io-box" style="flex: 1; display: flex; justify-content: space-between; align-items: center; max-width: 600px; margin: 0 auto;">
         <div>
-          <h2 style="margin:0;">Auto-Update (GitHub)</h2>
+          <h2 style="margin:0; font-size:15px; text-transform: uppercase;">DAILY AUTO UPDATE</h2>
           <p style="font-size:13px;color:#888;margin:5px 0 0 0;">Automatically check and apply updates daily at 13:15.</p>
         </div>
         <div style="display:flex; align-items:center; gap: 8px;">
           <input type="checkbox" id="autoUpdateToggle" style="width:18px;height:18px;cursor:pointer;" onchange="toggleAutoUpdate(this.checked)">
-          <label for="autoUpdateToggle" style="font-weight:bold;cursor:pointer;font-size:14px;color:var(--text-main);">Enabled</label>
+          <label id="autoUpdateLabel" for="autoUpdateToggle" style="font-weight:bold;cursor:pointer;font-size:14px;color:var(--text-main);">Enabled</label>
         </div>
       </div>
     </div>
@@ -205,9 +205,11 @@
           body: 'enabled=' + (enabled ? '1' : '0')
         });
         if (!res.ok) throw new Error('Network error');
+        document.getElementById('autoUpdateLabel').textContent = enabled ? 'Enabled' : 'Disabled';
       } catch (e) {
         alert('Failed to set auto-update status: ' + e);
         document.getElementById('autoUpdateToggle').checked = !enabled;
+        document.getElementById('autoUpdateLabel').textContent = !enabled ? 'Enabled' : 'Disabled';
       }
     }
 
@@ -218,7 +220,10 @@
         const h = await res.json();
         if (h.fw_ver !== undefined) document.getElementById('fwVerDisp').textContent = 'v' + h.fw_ver.toFixed(1);
         if (h.fs_ver !== undefined) document.getElementById('fsVerDisp').textContent = 'v' + h.fs_ver.toFixed(1);
-        if (h.autoUpdate !== undefined) document.getElementById('autoUpdateToggle').checked = h.autoUpdate;
+        if (h.autoUpdate !== undefined) {
+          document.getElementById('autoUpdateToggle').checked = h.autoUpdate;
+          document.getElementById('autoUpdateLabel').textContent = h.autoUpdate ? 'Enabled' : 'Disabled';
+        }
       } catch (e) {
         if (!isOffline) {
           isOffline = true;
