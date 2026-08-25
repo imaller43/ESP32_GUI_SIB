@@ -218,75 +218,6 @@
       <tbody id="counterTableBody"></tbody>
     </table>
 
-    <!-- Calc + Formula -->
-    <div class="calc-formula-row">
-      <div class="calc-col">
-        <div class="section-title">Real-Time Calculator</div>
-        <div class="calc-box">
-          <div class="calc-row">
-            <label>Value A</label>
-            <select id="calcA" onchange="toggleCustom('calcA','calcACustom')">
-              <option value="runtime">Runtime (s)</option>
-              <option value="downtime">Downtime (s)</option>
-              <option value="rejects">Rejects</option>
-              <option value="cycle">Cycle Time (s)</option>
-              <option value="custom">Custom number</option>
-            </select>
-            <input type="number" id="calcACustom" placeholder="0" style="display:none;">
-          </div>
-          <div class="calc-row">
-            <label>Operation</label>
-            <select id="calcOp">
-              <option value="add">+ Add</option>
-              <option value="sub">- Subtract</option>
-              <option value="mul">* Multiply</option>
-              <option value="div">/ Divide</option>
-            </select>
-          </div>
-          <div class="calc-row">
-            <label>Value B</label>
-            <select id="calcB" onchange="toggleCustom('calcB','calcBCustom')">
-              <option value="runtime">Runtime (s)</option>
-              <option value="downtime">Downtime (s)</option>
-              <option value="rejects">Rejects</option>
-              <option value="cycle">Cycle Time (s)</option>
-              <option value="custom">Custom number</option>
-            </select>
-            <input type="number" id="calcBCustom" placeholder="0" style="display:none;">
-          </div>
-          <div class="calc-row">
-            <label>Result</label>
-            <div class="calc-result" id="calcResult"></div>
-            <button class="btn-calc" onclick="doCalc()">Calculate</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="calc-col">
-        <div class="section-title">
-          Custom Efficiency Formula
-          <span class="formula-active-badge" id="formulaActiveBadge">&#9679; Active</span>
-        </div>
-        <div class="formula-box">
-          <div class="formula-input-row">
-            <div class="formula-input-wrap">
-              <input type="text" id="formulaInput" placeholder="e.g. Runtime[s] / (Runtime[s] + Downtime[s]) * 100"
-                autocomplete="off" spellcheck="false">
-              <div class="ac-dropdown" id="acDropdown"></div>
-            </div>
-          </div>
-          <div class="formula-btn-row">
-            <button class="btn-save-formula" onclick="saveFormula()">Save Formula</button>
-            <button class="btn-clear-formula" onclick="clearFormula()">Use Default</button>
-          </div>
-          <div class="formula-status" id="formulaStatus"></div>
-          <div class="formula-preview" id="formulaPreview"></div>
-          <p class="formula-hint">Result shown with <b>%</b> &mdash; include <b>*100</b> for 0&ndash;1 ratios. Supports
-            <code>+ - * / ( )</code>
-          </p>
-        </div>
-      </div>
-    </div>
 
     <div class="site-footer">&copy; SIB. All rights reserved.</div>
   </div>
@@ -592,122 +523,27 @@
       } catch (e) { msg.style.color = '#dc2626'; msg.textContent = 'Save failed'; }
     }
 
-    // ══════════════════════════════════════════
-    // FORMULA ENGINE
-    // ══════════════════════════════════════════
-    let availableVars = [], latestMetrics = null;
-
-    async function loadVariables() {
-      try { const d = await (await fetch('/variables.json')).json(); availableVars = d.variables || []; loadSavedFormula(); } catch (e) { }
-    }
-
-    function getVarValues(m) {
-      const map = {};
-      availableVars.forEach(v => {
-        switch (v.key) {
-          case 'Runtime[s]': map[v.key] = m.runtime / 1000; break;
-          case 'Downtime[s]': map[v.key] = m.downtime / 1000; break;
-          case 'Last Cycle[s]': map[v.key] = m.cycleTime / 1000; break;
-          case 'Rejects': map[v.key] = m.rejects; break;
-          case 'Pos Start[s]': map[v.key] = (m.onTimes[3] || 0) / 1000; break;
-          case 'Pos Middle[s]': map[v.key] = (m.onTimes[4] || 0) / 1000; break;
-          case 'Pos End[s]': map[v.key] = (m.onTimes[5] || 0) / 1000; break;
-          case 'Metal Detect[s]': map[v.key] = (m.onTimes[6] || 0) / 1000; break;
-          case 'Emergency Count': map[v.key] = m.triggers[0] || 0; break;
-          case 'Start Seq Count': map[v.key] = m.triggers[1] || 0; break;
-          case 'Reset Seq Count': map[v.key] = m.triggers[2] || 0; break;
-          case 'Pos Start Count': map[v.key] = m.triggers[3] || 0; break;
-          case 'Pos Middle Count': map[v.key] = m.triggers[4] || 0; break;
-          case 'Pos End Count': map[v.key] = m.triggers[5] || 0; break;
-          default: map[v.key] = 0;
-        }
-      });
-      return map;
-    }
-
-    function evaluateFormula(formula, metrics) {
-      const vals = getVarValues(metrics); let expr = formula;
-      Object.keys(vals).sort((a, b) => b.length - a.length).forEach(k => { expr = expr.split(k).join(String(vals[k])); });
-      if (!/^[\d+\-*\/().\s]+$/.test(expr)) throw new Error('Unknown variable');
-      const r = Function('"use strict";return(' + expr + ')')();
-      if (!isFinite(r)) throw new Error('Not finite'); return r;
-    }
-
     function computeEfficiency(m) {
-      const f = localStorage.getItem('customEffFormula');
-      if (f) { try { return { value: evaluateFormula(f, m).toFixed(1), custom: true }; } catch (e) { } }
-      const t = m.runtime + m.downtime; if (t > 0) return { value: ((m.runtime / t) * 100).toFixed(1), custom: false }; return null;
+      const t = m.runtime + m.downtime; 
+      if (t > 0) return { value: ((m.runtime / t) * 100).toFixed(1) }; 
+      return null;
     }
-
-    function updateFormulaPreview() {
-      const f = document.getElementById('formulaInput').value.trim(), p = document.getElementById('formulaPreview');
-      if (!f || !latestMetrics) { p.textContent = ''; return; }
-      try { const r = evaluateFormula(f, latestMetrics); p.textContent = 'Live preview: ' + r.toFixed(2) + '%'; p.style.color = '#16a34a'; }
-      catch (e) { p.textContent = 'Preview error: ' + e.message; p.style.color = '#dc2626'; }
-    }
-
-    function saveFormula() {
-      const f = document.getElementById('formulaInput').value.trim(), s = document.getElementById('formulaStatus');
-      if (!f) { s.textContent = 'Enter a formula first.'; s.className = 'formula-status err'; return; }
-      if (latestMetrics) { try { const r = evaluateFormula(f, latestMetrics); localStorage.setItem('customEffFormula', f); s.textContent = 'Saved. Result: ' + r.toFixed(2) + '%'; s.className = 'formula-status ok'; document.getElementById('formulaActiveBadge').style.display = 'inline'; } catch (e) { s.textContent = 'Error: ' + e.message; s.className = 'formula-status err'; } }
-      else { localStorage.setItem('customEffFormula', f); s.textContent = 'Saved.'; s.className = 'formula-status ok'; document.getElementById('formulaActiveBadge').style.display = 'inline'; }
-    }
-
-    function clearFormula() {
-      localStorage.removeItem('customEffFormula');
-      document.getElementById('formulaInput').value = '';
-      document.getElementById('formulaStatus').textContent = 'Reverted to default.';
-      document.getElementById('formulaStatus').className = 'formula-status ok';
-      document.getElementById('formulaPreview').textContent = '';
-      document.getElementById('formulaActiveBadge').style.display = 'none';
-    }
-
-    function loadSavedFormula() {
-      const s = localStorage.getItem('customEffFormula');
-      if (s) { document.getElementById('formulaInput').value = s; document.getElementById('formulaActiveBadge').style.display = 'inline'; }
-    }
-
-    (function () {
-      const inp = document.getElementById('formulaInput'), drop = document.getElementById('acDropdown');
-      inp.addEventListener('input', function () {
-        updateFormulaPreview();
-        const val = this.value, pos = this.selectionStart;
-        let start = pos; while (start > 0 && !/[+\-*\/()]/.test(val[start - 1])) start--;
-        const raw = val.slice(start, pos), token = raw.trimStart(), tokenStart = start + (raw.length - token.length);
-        if (token.length < 1) { drop.style.display = 'none'; return; }
-        const matches = availableVars.filter(v => v.key.toLowerCase().includes(token.toLowerCase()) && v.key.toLowerCase() !== token.toLowerCase());
-        if (!matches.length) { drop.style.display = 'none'; return; }
-        drop.innerHTML = matches.map(v => '<div class="ac-item" data-key="' + v.key + '" data-ts="' + tokenStart + '" data-te="' + pos + '"><span class="ac-item-key">' + v.key + '</span></div>').join('');
-        drop.style.display = 'block';
-        drop.querySelectorAll('.ac-item').forEach(function (item) {
-          item.addEventListener('mousedown', function (e) {
-            e.preventDefault();
-            const key = this.dataset.key, ts = parseInt(this.dataset.ts), te = parseInt(this.dataset.te);
-            inp.value = val.slice(0, ts) + key + val.slice(te); drop.style.display = 'none'; inp.focus();
-            inp.setSelectionRange(ts + key.length, ts + key.length); updateFormulaPreview();
-          });
-        });
-      });
-      inp.addEventListener('blur', function () { setTimeout(() => { drop.style.display = 'none'; }, 200); });
-    })();
 
     // ── Metrics ───────────────────────────────────────────────────────
     async function fetchMetrics() {
       try {
         const res = await fetchTimeout('/getMetrics', 2000);
         if (res.redirected) { window.location.reload(); return; }
-        const m = await res.json(); latestMetrics = m;
+        const m = await res.json();
         for (let i = 0; i < 8; i++) { document.getElementById('cnt' + i).textContent = m.triggers[i]; document.getElementById('ton' + i).textContent = fmtMs(m.onTimes[i]); }
         document.getElementById('metRuntime').textContent = fmtMs(m.runtime);
         document.getElementById('metDowntime').textContent = fmtMs(m.downtime);
         document.getElementById('metRejects').textContent = m.rejects;
         document.getElementById('metCycle').textContent = m.cycleTime > 0 ? (m.cycleTime / 1000).toFixed(2) + ' s' : '--';
         const effObj = computeEfficiency(m), effEl = document.getElementById('metEfficiency'), subEl = document.getElementById('metEffSub');
-        if (effObj) { const n = parseFloat(effObj.value); effEl.textContent = effObj.value + '%'; effEl.className = 'mc-value ' + (n >= 80 ? 'green' : n >= 50 ? 'amber' : 'red'); subEl.textContent = effObj.custom ? 'Custom formula' : 'Runtime / (Runtime + Downtime)'; }
+        if (effObj) { const n = parseFloat(effObj.value); effEl.textContent = effObj.value + '%'; effEl.className = 'mc-value ' + (n >= 80 ? 'green' : n >= 50 ? 'amber' : 'red'); subEl.textContent = 'Runtime / (Runtime + Downtime)'; }
         else { effEl.textContent = '--'; effEl.className = 'mc-value'; subEl.textContent = 'Runtime / (Runtime + Downtime)'; }
-        const effForSD = (effObj && effObj.custom) ? effObj.value : '-1';
-        fetch('/setCustomEff', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'eff=' + encodeURIComponent(effForSD) }).catch(() => { });
-        updateFormulaPreview();
+        fetch('/setCustomEff', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'eff=-1' }).catch(() => { });
       } catch (e) { console.error(e); }
     }
 
@@ -723,11 +559,6 @@
       fetchMetrics();
     }
 
-    // ── Calculator ─────────────────────────────────────────────────────
-    function toggleCustom(selId, inputId) { document.getElementById(inputId).style.display = document.getElementById(selId).value === 'custom' ? 'inline-block' : 'none'; }
-    function getMetricValue(key, customId) { if (!latestMetrics) return 0; switch (key) { case 'runtime': return latestMetrics.runtime / 1000; case 'downtime': return latestMetrics.downtime / 1000; case 'rejects': return latestMetrics.rejects; case 'cycle': return latestMetrics.cycleTime / 1000; case 'custom': return parseFloat(document.getElementById(customId).value) || 0; default: return 0; } }
-    function doCalc() { const a = getMetricValue(document.getElementById('calcA').value, 'calcACustom'), b = getMetricValue(document.getElementById('calcB').value, 'calcBCustom'), op = document.getElementById('calcOp').value; let r; if (op === 'add') r = a + b; else if (op === 'sub') r = a - b; else if (op === 'mul') r = a * b; else r = b !== 0 ? a / b : 'DIV/0'; document.getElementById('calcResult').textContent = typeof r === 'number' ? r.toFixed(4) : r; }
-
     // ── Init ──────────────────────────────────────────────────────────
     let _fetchingStatus = false, _fetchingMetrics = false, _fetchingHealth = false;
 
@@ -738,7 +569,7 @@
     setInterval(() => { if (document.visibilityState !== 'hidden') fetchStatusGuarded(); }, 500);
     setInterval(() => { if (document.visibilityState !== 'hidden') fetchMetricsGuarded(); }, 1000);
     setInterval(() => { if (document.visibilityState !== 'hidden') fetchHealthGuarded(); }, 2000);
-    fetchStatusGuarded(); fetchMetricsGuarded(); fetchHealthGuarded(); loadVariables(); loadRules();
+    fetchStatusGuarded(); fetchMetricsGuarded(); fetchHealthGuarded(); loadRules();
   </script>
 
   <script>
