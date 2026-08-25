@@ -543,7 +543,7 @@
         const effObj = computeEfficiency(m), effEl = document.getElementById('metEfficiency'), subEl = document.getElementById('metEffSub');
         if (effObj) { const n = parseFloat(effObj.value); effEl.textContent = effObj.value + '%'; effEl.className = 'mc-value ' + (n >= 80 ? 'green' : n >= 50 ? 'amber' : 'red'); subEl.textContent = 'Runtime / (Runtime + Downtime)'; }
         else { effEl.textContent = '--'; effEl.className = 'mc-value'; subEl.textContent = 'Runtime / (Runtime + Downtime)'; }
-        fetch('/setCustomEff', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: 'eff=-1' }).catch(() => { });
+
       } catch (e) { console.error(e); }
     }
 
