@@ -39,33 +39,12 @@
   <div class="container">
     <h1>Telegram Bot</h1>
 
-    <div class="tg-status-banner" id="tgBanner">
-      <span class="tg-status-dot" id="tgDot">&#9679;</span>
-      <span id="tgBannerText">Checking status...</span>
-    </div>
+
 
     <!-- Credentials -->
     <div class="tg-section">
-      <div class="tg-section-title">Credentials</div>
-      <div class="tg-row">
-        <label>Bot Token</label>
-        <input type="password" id="botToken" placeholder="Paste new token (leave blank to keep current)"
-          autocomplete="off" spellcheck="false">
-        <span class="tg-field-hint">
-          Current: <span id="tokenMasked" style="font-family:monospace">—</span>
-          &nbsp;&mdash;&nbsp;
-          <a href="https://t.me/BotFather" target="_blank" rel="noopener">Create or change token via @BotFather</a>
-        </span>
-      </div>
-      <div class="tg-row">
-        <label>Chat ID</label>
-        <input type="text" id="chatId" placeholder="Paste new Chat ID (leave blank to keep current)" autocomplete="off"
-          spellcheck="false">
-        <span class="tg-field-hint">
-          Current: <span id="currentChatId" style="font-family:monospace">-</span> &mdash;
-          <a href="https://t.me/userinfobot" target="_blank" rel="noopener">Get your Chat ID via @userinfobot</a>
-        </span>
-      </div>
+      <div class="tg-section-title">Settings</div>
+
       <div class="tg-row">
         <label>Enable Bot</label>
         <label class="sd-toggle">
@@ -178,28 +157,9 @@
         failCount = 0;
 
         if (!isPolling) {
-          document.getElementById('tokenMasked').textContent = d.hasToken ? d.tokenMasked : '(not set)';
-          document.getElementById('currentChatId').textContent = (d.chatId && d.chatId.length > 0) ? d.chatId : '(not set)';
           document.getElementById('tgEnabled').checked = d.enabled;
           document.getElementById('tgEnabledLabel').textContent = d.enabled ? 'Enabled' : 'Disabled';
           document.getElementById('rejectThreshold').value = d.rejectThreshold;
-        }
-
-        const banner = document.getElementById('tgBanner');
-        const dot = document.getElementById('tgDot');
-        const text = document.getElementById('tgBannerText');
-        if (!d.hasToken) {
-          banner.className = 'tg-status-banner warn'; dot.style.color = '#d97706';
-          text.textContent = 'No bot token configured. Enter your token below to get started.';
-        } else if (!d.enabled) {
-          banner.className = 'tg-status-banner warn'; dot.style.color = '#d97706';
-          text.textContent = 'Bot is configured but currently disabled.';
-        } else if (d.botReady) {
-          banner.className = 'tg-status-banner ok'; dot.style.color = '#16a34a';
-          text.textContent = 'Bot is active and polling for commands every 2.5 seconds.';
-        } else {
-          banner.className = 'tg-status-banner err'; dot.style.color = '#dc2626';
-          text.textContent = 'Bot is enabled but failed to initialise — check the token.';
         }
       } catch (e) {
         failCount++;
@@ -214,8 +174,6 @@
       const msg = document.getElementById('tgActionMsg');
       msg.style.color = '#555'; msg.textContent = 'Saving...';
       const body = new URLSearchParams({
-        botToken: document.getElementById('botToken').value,
-        chatId: document.getElementById('chatId').value,
         enabled: document.getElementById('tgEnabled').checked ? '1' : '0',
         rejectThreshold: document.getElementById('rejectThreshold').value
       });
@@ -223,8 +181,6 @@
         const r = await fetch('/saveTelegramConfig', { method: 'POST', body });
         if (r.ok) {
           msg.style.color = '#16a34a'; msg.textContent = 'Saved and applied.';
-          document.getElementById('botToken').value = '';
-          document.getElementById('chatId').value = '';
           setTimeout(loadTgConfig, 1000);
         } else {
           msg.style.color = '#dc2626'; msg.textContent = 'Save failed.';

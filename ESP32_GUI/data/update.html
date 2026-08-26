@@ -49,10 +49,12 @@
           </p>
         </div>
         <div style="display:flex; align-items:center; gap: 8px;">
-          <input type="checkbox" id="autoUpdateToggle" style="width:18px;height:18px;cursor:pointer;"
-            onchange="toggleAutoUpdate(this.checked)">
-          <label id="autoUpdateLabel" for="autoUpdateToggle"
-            style="font-weight:bold;cursor:pointer;font-size:14px;color:var(--text-main);">Enabled</label>
+          <label style="font-weight:bold;font-size:14px;color:var(--text-main);">Daily Auto Update</label>
+          <label class="sd-toggle">
+            <input type="checkbox" id="autoUpdateToggle" onchange="toggleAutoUpdate(this.checked)">
+            <span class="sd-slider"></span>
+          </label>
+          <span id="autoUpdateLabel" style="font-size:13px;color:var(--text-main);margin-left:6px;">Enabled</span>
         </div>
       </div>
     </div>

@@ -12,7 +12,6 @@
 #include <HardwareSerial.h>
 #include <LittleFS.h>
 #include <PubSubClient.h>
-#include <UniversalTelegramBot.h>
 #include <Update.h>
 #include <WebServer.h>
 #include <WebSocketsClient.h>
@@ -303,20 +302,9 @@ char activeToken[33] = "";
 
 // ================= TELEGRAM =================
 struct TelegramConfig {
-  char botToken[128];
-  char chatId[24];
   bool enabled;
   int rejectThreshold;
 } tgConfig;
-
-WiFiClientSecure tgSecureClient;
-UniversalTelegramBot tgBot("", tgSecureClient);
-bool tgInitialized = false;
-
-QueueHandle_t tgOutQueue = NULL;
-TaskHandle_t tgTaskHandle = NULL;
-volatile bool tgResetMetricsFlag = false;
-const unsigned long TG_POLL_MS = 2500;
 
 // ================= USER ACCOUNTS =================
 struct UserAccount {
@@ -594,51 +582,39 @@ void checkDailyOTA() {
 //  TELEGRAM
 // ===========================================================
 void loadTelegramConfig() {
-  memset(&tgConfig, 0, sizeof(tgConfig));
+  tgConfig.enabled = false;
   tgConfig.rejectThreshold = 10;
   if (!LittleFS.exists(F("/telegram.json")))
     return;
   File f = LittleFS.open(F("/telegram.json"), "r");
-  if (!f)
-    return;
-  StaticJsonDocument<384> doc;
+  if (!f) return;
+  StaticJsonDocument<256> doc;
   if (!deserializeJson(doc, f)) {
-    strlcpy(tgConfig.botToken, doc["botToken"] | "", sizeof(tgConfig.botToken));
-    strlcpy(tgConfig.chatId, doc["chatId"] | "", sizeof(tgConfig.chatId));
     tgConfig.enabled = doc["enabled"] | false;
     tgConfig.rejectThreshold = doc["rejectThreshold"] | 10;
   }
   f.close();
 }
 void saveTelegramConfig() {
-  StaticJsonDocument<384> doc;
-  doc["botToken"] = tgConfig.botToken;
-  doc["chatId"] = tgConfig.chatId;
+  StaticJsonDocument<256> doc;
   doc["enabled"] = tgConfig.enabled;
   doc["rejectThreshold"] = tgConfig.rejectThreshold;
   File f = LittleFS.open(F("/telegram.json"), "w");
-  if (!f)
-    return;
+  if (!f) return;
   serializeJson(doc, f);
   f.close();
 }
-void initTelegramBot() {
-  tgInitialized = false;
-  if (strlen(tgConfig.botToken) < 10)
-    return;
-  tgSecureClient.setInsecure();
-  tgSecureClient.setTimeout(8);
-  tgBot = UniversalTelegramBot(tgConfig.botToken, tgSecureClient);
-  tgInitialized = true;
-}
-void tgSend(const String &msg) {
-  if (!tgInitialized || !tgConfig.enabled)
-    return;
-  if (!strlen(tgConfig.chatId) || tgOutQueue == NULL)
-    return;
-  char buf[256] = {0};
-  msg.substring(0, 254).toCharArray(buf, sizeof(buf));
-  xQueueSend(tgOutQueue, buf, pdMS_TO_TICKS(0));
+void tgSend(const String &msg, const String &chatId = "") {
+  if (!tgConfig.enabled) return;
+  StaticJsonDocument<512> doc;
+  doc["device"] = String(deviceName);
+  doc["message"] = msg;
+  if (chatId.length() > 0) {
+    doc["chatId"] = chatId;
+  }
+  char payload[512];
+  serializeJson(doc, payload);
+  mqtt.publish("esp32/telegram/out", payload);
 }
 
 String buildStatusMsg() {
@@ -694,73 +670,7 @@ String buildHealthMsg() {
   return String(buf);
 }
 
-void handleTelegramMessage(const telegramMessage &m) {
-  if (strlen(tgConfig.chatId) > 0 && m.chat_id != String(tgConfig.chatId)) {
-    tgBot.sendMessage(m.chat_id, "Unauthorized.", "");
-    return;
-  }
-  String text = m.text;
-  text.trim();
-  if (text == "/help") {
-    tgBot.sendMessage(
-        m.chat_id,
-        "*ESP32 Bot Commands*\n\n"
-        "/status — DI/DO states\n/metrics — Runtime, downtime, rejects\n"
-        "/health — Temp, heap, WiFi, uptime\n"
-        "/do on N — Turn DO N ON (1-8)\n/do off N — Turn DO N OFF (1-8)\n"
-        "/resetmetrics — Reset all counters\n/help — Show this menu",
-        "Markdown");
-  } else if (text == "/status")
-    tgBot.sendMessage(m.chat_id, buildStatusMsg(), "Markdown");
-  else if (text == "/metrics")
-    tgBot.sendMessage(m.chat_id, buildMetricsMsg(), "Markdown");
-  else if (text == "/health")
-    tgBot.sendMessage(m.chat_id, buildHealthMsg(), "Markdown");
-  else if (text.startsWith("/do ")) {
-    String sub = text.substring(4);
-    sub.trim();
-    bool on = false;
-    int ch = -1;
-    if (sub.startsWith("on ")) {
-      on = true;
-      ch = sub.substring(3).toInt() - 1;
-    } else if (sub.startsWith("off ")) {
-      on = false;
-      ch = sub.substring(4).toInt() - 1;
-    }
-    if (ch >= 0 && ch <= 7) {
-      setOutput(ch, on);
-      tgBot.sendMessage(
-          m.chat_id, "DO" + String(ch + 1) + " turned " + (on ? "ON" : "OFF"),
-          "");
-    } else
-      tgBot.sendMessage(m.chat_id, "Usage: /do on N  or  /do off N  (N=1-8)",
-                        "");
-  } else if (text == "/resetmetrics") {
-    tgResetMetricsFlag = true;
-    tgBot.sendMessage(m.chat_id, "Reset requested.", "");
-  } else
-    tgBot.sendMessage(m.chat_id, "Unknown command. Send /help for the list.",
-                      "");
-}
 
-void telegramTask(void *pv) {
-  for (;;) {
-    vTaskDelay(pdMS_TO_TICKS(TG_POLL_MS));
-    if (!tgInitialized || !tgConfig.enabled)
-      continue;
-    if (WiFi.status() != WL_CONNECTED && !eth_connected)
-      continue;
-    char outMsg[256];
-    if (xQueueReceive(tgOutQueue, outMsg, 0) == pdTRUE) {
-      tgBot.sendMessage(tgConfig.chatId, outMsg, "Markdown");
-      continue;
-    }
-    int n = tgBot.getUpdates(tgBot.last_message_received + 1);
-    for (int i = 0; i < n; i++)
-      handleTelegramMessage(tgBot.messages[i]);
-  }
-}
 
 // ===========================================================
 //  MACHINE STATE
@@ -1087,6 +997,36 @@ void mqttCallback(char *topic, byte *payload, unsigned int length) {
     return;
   }
 
+  String cmdTopic = "esp32/" + String(deviceName) + "/command";
+  if (strcmp(topic, cmdTopic.c_str()) == 0) {
+    StaticJsonDocument<256> doc;
+    if (!deserializeJson(doc, payload, length)) {
+      String cmd = doc["cmd"] | "";
+      String chatId = doc["chatId"] | "";
+      if (cmd == "status") {
+        tgSend(buildStatusMsg(), chatId);
+      } else if (cmd == "metrics") {
+        tgSend(buildMetricsMsg(), chatId);
+      } else if (cmd == "health") {
+        tgSend(buildHealthMsg(), chatId);
+      } else if (cmd == "resetmetrics") {
+        unsigned long now = millis();
+        for (int i = 0; i < 8; i++) {
+          triggerCount[i] = 0;
+          totalOnTimeMs[i] = 0;
+          if (diCurrentlyOn[i]) lastOnStartMs[i] = now;
+        }
+        rejectCount = 0;
+        runtimeMs = 0;
+        downtimeMs = 0;
+        lastCycleTimeMs = 0;
+        lastMetricTickMs = now;
+        tgSend("Metrics reset successful.", chatId);
+      }
+    }
+    return;
+  }
+
   char msg[4] = {0};
   memcpy(msg, payload, min(length, (unsigned int)3));
   for (int i = 0; i < 8; i++)
@@ -1119,8 +1059,9 @@ void reconnectMQTT() {
     mqtt.subscribe("esp32/triggercount/reset");
     mqtt.subscribe("esp32/ota_trigger");
     mqtt.subscribe("esp32/update/auto");
-    mqtt.publish("esp32/update/auto/status", autoUpdateEnabled ? "1" : "0",
-                 true);
+    String cmdTopic = "esp32/" + String(deviceName) + "/command";
+    mqtt.subscribe(cmdTopic.c_str());
+    mqtt.publish("esp32/update/auto/status", autoUpdateEnabled ? "1" : "0", true);
   }
 }
 
@@ -1421,15 +1362,9 @@ void handleSetAutoUpdate() {
 void handleGetTelegramConfig() {
   if (!requireAuth())
     return;
-  StaticJsonDocument<256> doc;
-  bool ht = strlen(tgConfig.botToken) > 8;
-  doc["tokenMasked"] =
-      ht ? String(tgConfig.botToken).substring(0, 8) + "........" : "";
-  doc["hasToken"] = ht;
-  doc["chatId"] = tgConfig.chatId;
+  StaticJsonDocument<128> doc;
   doc["enabled"] = tgConfig.enabled;
   doc["rejectThreshold"] = tgConfig.rejectThreshold;
-  doc["botReady"] = tgInitialized;
   String out;
   serializeJson(doc, out);
   server.send(200, F("application/json"), out);
@@ -1437,32 +1372,25 @@ void handleGetTelegramConfig() {
 void handleSaveTelegramConfig() {
   if (!requireAuth())
     return;
-  String token = server.arg("botToken"), chatId = server.arg("chatId"),
-         en = server.arg("enabled"), thresh = server.arg("rejectThreshold");
-  if (token.length() > 8 && !token.endsWith("........"))
-    strlcpy(tgConfig.botToken, token.c_str(), sizeof(tgConfig.botToken));
-  if (chatId.length() > 0)
-    strlcpy(tgConfig.chatId, chatId.c_str(), sizeof(tgConfig.chatId));
+  String en = server.arg("enabled"), thresh = server.arg("rejectThreshold");
   tgConfig.enabled = (en == "1" || en == "true");
   if (thresh.length() > 0)
     tgConfig.rejectThreshold = constrain(thresh.toInt(), 0, 9999);
   saveTelegramConfig();
-  initTelegramBot();
   server.send(200, F("text/plain"), F("OK"));
 }
 void handleTelegramTest() {
   if (!requireAuth())
     return;
-  if (!tgInitialized || !tgConfig.enabled || !strlen(tgConfig.chatId)) {
-    server.send(400, F("text/plain"), F("Bot not configured or disabled"));
+  if (!tgConfig.enabled) {
+    server.send(400, F("text/plain"), F("Bot is disabled"));
     return;
   }
-
   saveConfig();
   saveTelegramConfig();
   saveMetrics();
   tgSend(F("*Test OK!* All configs saved. Bot is live."));
-  server.send(200, F("text/plain"), F("Queued — check Telegram in ~3 seconds"));
+  server.send(200, F("text/plain"), F("Queued — check Telegram in ~1 second"));
 }
 
 //  NETWORK EVENT
@@ -1545,10 +1473,6 @@ void setup() {
   // FreeRTOS primitives
   ioMutex = xSemaphoreCreateMutex();
 
-  tgOutQueue = xQueueCreate(6, 256);
-  initTelegramBot();
-  xTaskCreatePinnedToCore(telegramTask, "TGTask", 12288, NULL, 1, &tgTaskHandle,
-                          0);
 
   // HTTP routes
   const char *headerKeys[] = {"Cookie"};
@@ -1750,23 +1674,6 @@ void loop() {
   }
 
   unsigned long now = millis();
-
-  // Telegram reset flag
-  if (tgResetMetricsFlag) {
-    tgResetMetricsFlag = false;
-    for (int i = 0; i < 8; i++) {
-      triggerCount[i] = 0;
-      totalOnTimeMs[i] = 0;
-      if (diCurrentlyOn[i])
-        lastOnStartMs[i] = now;
-    }
-    rejectCount = 0;
-    runtimeMs = 0;
-    downtimeMs = 0;
-    lastCycleTimeMs = 0;
-    lastMetricTickMs = now;
-    saveMetrics();
-  }
 
   // Runtime/Downtime accumulation (100 ms tick)
   if (now - lastMetricAccMs >= 100) {
