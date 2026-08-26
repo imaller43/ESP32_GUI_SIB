@@ -599,7 +599,7 @@ void saveTelegramConfig() {
   serializeJson(doc, f);
   f.close();
 }
-void tgSend(const String &msg, const String &chatId = "") {
+void tgSend(const String &msg, const String &chatId) {
   if (!tgConfig.enabled) return;
   StaticJsonDocument<512> doc;
   doc["device"] = String(deviceName);
