@@ -22,6 +22,8 @@
 #define FIRMWARE_VERSION 1.0
 float currentFsVersion = 1.0;
 
+void tgSend(const String &msg, const String &chatId = "");
+
 // ─── WebSocket bridge for cloud MQTT ─────────────────────────────
 #define WSBRIDGE_RX_SIZE 1024
 class WsClientBridge : public Client {
@@ -522,13 +524,6 @@ void performGitHubOTA() {
     tgSend(F("*OTA Update Complete!* Rebooting..."));
     if (mqtt.connected())
       mqtt.publish("esp32/ota/status", "OTA Update Complete! Rebooting...");
-
-    // Wait for Telegram task to finish sending messages (max 6 seconds)
-    unsigned long waitStart = millis();
-    while (uxQueueMessagesWaiting(tgOutQueue) > 0 &&
-           millis() - waitStart < 6000) {
-      delay(100);
-    }
 
     delay(1000);
     ESP.restart();
