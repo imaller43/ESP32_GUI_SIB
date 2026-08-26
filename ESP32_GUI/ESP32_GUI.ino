@@ -20,7 +20,7 @@
 #include <WiFiClientSecure.h>
 #include <Wire.h>
 
-#define FIRMWARE_VERSION 2.5
+#define FIRMWARE_VERSION 1.0
 float currentFsVersion = 1.0;
 
 // ─── WebSocket bridge for cloud MQTT ─────────────────────────────
@@ -579,8 +579,8 @@ void checkDailyOTA() {
   if (!getLocalTime(&timeinfo, 10))
     return;
 
-  // Check between 14:15 and 15:00 (2:15pm - 3:00pm)
-  if (timeinfo.tm_hour == 14 && timeinfo.tm_min >= 15 && timeinfo.tm_min < 60) {
+  // Check between 15:00 and 16:00 (3:00pm - 4:00pm)
+  if (timeinfo.tm_hour == 15 && timeinfo.tm_min >= 30 && timeinfo.tm_min < 60) {
     if (lastOtaDay != timeinfo.tm_yday) {
       lastOtaDay = timeinfo.tm_yday;
       if (autoUpdateEnabled) {
@@ -870,7 +870,9 @@ void loadConfig() {
   strlcpy(mqttCfg.path, doc["mqttPath"] | "/mqtt", sizeof(mqttCfg.path));
   strlcpy(mqttCfg.user, doc["mqttUser"] | "", sizeof(mqttCfg.user));
   strlcpy(mqttCfg.pass, doc["mqttPass"] | "", sizeof(mqttCfg.pass));
-  autoUpdateEnabled = doc.containsKey("autoUpdateEnabled") ? doc["autoUpdateEnabled"].as<bool>() : true;
+  autoUpdateEnabled = doc.containsKey("autoUpdateEnabled")
+                          ? doc["autoUpdateEnabled"].as<bool>()
+                          : true;
 
   for (int i = 0; i < 8; i++) {
     strlcpy(inputConfig[i].topic, doc["inputs"][i] | "", 50);
@@ -1080,7 +1082,8 @@ void mqttCallback(char *topic, byte *payload, unsigned int length) {
     memcpy(msg, payload, min(length, (unsigned int)1));
     autoUpdateEnabled = (strcmp(msg, "1") == 0);
     saveConfig();
-    mqtt.publish("esp32/update/auto/status", autoUpdateEnabled ? "1" : "0", true);
+    mqtt.publish("esp32/update/auto/status", autoUpdateEnabled ? "1" : "0",
+                 true);
     return;
   }
 
@@ -1116,7 +1119,8 @@ void reconnectMQTT() {
     mqtt.subscribe("esp32/triggercount/reset");
     mqtt.subscribe("esp32/ota_trigger");
     mqtt.subscribe("esp32/update/auto");
-    mqtt.publish("esp32/update/auto/status", autoUpdateEnabled ? "1" : "0", true);
+    mqtt.publish("esp32/update/auto/status", autoUpdateEnabled ? "1" : "0",
+                 true);
   }
 }
 
@@ -1405,7 +1409,8 @@ void handleSaveDoRules() {
 }
 
 void handleSetAutoUpdate() {
-  if (!requireAuth()) return;
+  if (!requireAuth())
+    return;
   autoUpdateEnabled = server.arg("enabled") == "1";
   saveConfig();
   mqtt.publish("esp32/update/auto/status", autoUpdateEnabled ? "1" : "0", true);
