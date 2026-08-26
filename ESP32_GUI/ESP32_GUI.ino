@@ -20,7 +20,7 @@
 #include <WiFiClientSecure.h>
 #include <Wire.h>
 
-#define FIRMWARE_VERSION 2.4
+#define FIRMWARE_VERSION 2.5
 float currentFsVersion = 1.0;
 
 // ─── WebSocket bridge for cloud MQTT ─────────────────────────────
@@ -579,8 +579,8 @@ void checkDailyOTA() {
   if (!getLocalTime(&timeinfo, 10))
     return;
 
-  // Check between 13:15 and 14:00 (1:15pm - 2:00pm)
-  if (timeinfo.tm_hour == 13 && timeinfo.tm_min >= 15 && timeinfo.tm_min < 60) {
+  // Check between 14:15 and 15:00 (2:15pm - 3:00pm)
+  if (timeinfo.tm_hour == 14 && timeinfo.tm_min >= 15 && timeinfo.tm_min < 60) {
     if (lastOtaDay != timeinfo.tm_yday) {
       lastOtaDay = timeinfo.tm_yday;
       if (autoUpdateEnabled) {
