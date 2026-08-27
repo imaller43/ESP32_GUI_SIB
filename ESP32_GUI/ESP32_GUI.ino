@@ -444,9 +444,11 @@ bool downloadAndFlash(WiFiClientSecure *client, String url, int command) {
 }
 
 void performGitHubOTA() {
+  String otaStatusTopic = "esp32/" + String(deviceName) + "/ota/status";
+  
   tgSend(F("OTA Update Check Started"));
   if (mqtt.connected())
-    mqtt.publish("esp32/ota/status", "OTA Update Check Started");
+    mqtt.publish(otaStatusTopic.c_str(), "OTA Update Check Started");
 
   WiFiClientSecure *client = new WiFiClientSecure;
   if (!client)
@@ -460,7 +462,7 @@ void performGitHubOTA() {
   if (httpCode != HTTP_CODE_OK) {
     tgSend(F("OTA failed: Could not fetch version.json"));
     if (mqtt.connected())
-      mqtt.publish("esp32/ota/status",
+      mqtt.publish(otaStatusTopic.c_str(),
                    "OTA failed: Could not fetch version.json");
     http.end();
     delete client;
@@ -487,17 +489,17 @@ void performGitHubOTA() {
     tgSend("Downloading firmware v" + String(newFwVer, 1) + "...");
     if (mqtt.connected())
       mqtt.publish(
-          "esp32/ota/status",
+          otaStatusTopic.c_str(),
           ("Downloading firmware v" + String(newFwVer, 1) + "...").c_str());
     if (downloadAndFlash(client, fwUrl, U_FLASH)) {
       tgSend(F("Firmware updated successfully!"));
       if (mqtt.connected())
-        mqtt.publish("esp32/ota/status", "Firmware updated successfully!");
+        mqtt.publish(otaStatusTopic.c_str(), "Firmware updated successfully!");
       rebootNeeded = true;
     } else {
       tgSend(F("Firmware update failed."));
       if (mqtt.connected())
-        mqtt.publish("esp32/ota/status", "Firmware update failed.");
+        mqtt.publish(otaStatusTopic.c_str(), "Firmware update failed.");
     }
   }
 
@@ -505,26 +507,26 @@ void performGitHubOTA() {
     tgSend("Downloading filesystem v" + String(newFsVer, 1) + "...");
     if (mqtt.connected())
       mqtt.publish(
-          "esp32/ota/status",
+          otaStatusTopic.c_str(),
           ("Downloading filesystem v" + String(newFsVer, 1) + "...").c_str());
     // Note: U_SPIFFS is the command used for both SPIFFS and LittleFS in the
     // Update library
     if (downloadAndFlash(client, fsUrl, U_SPIFFS)) {
       tgSend(F("Filesystem updated successfully!"));
       if (mqtt.connected())
-        mqtt.publish("esp32/ota/status", "Filesystem updated successfully!");
+        mqtt.publish(otaStatusTopic.c_str(), "Filesystem updated successfully!");
       rebootNeeded = true;
     } else {
       tgSend(F("Filesystem update failed."));
       if (mqtt.connected())
-        mqtt.publish("esp32/ota/status", "Filesystem update failed.");
+        mqtt.publish(otaStatusTopic.c_str(), "Filesystem update failed.");
     }
   }
 
   if (rebootNeeded) {
     tgSend(F("OTA Update Complete! Rebooting..."));
     if (mqtt.connected())
-      mqtt.publish("esp32/ota/status", "OTA Update Complete! Rebooting...");
+      mqtt.publish(otaStatusTopic.c_str(), "OTA Update Complete! Rebooting...");
 
     delay(1000);
     ESP.restart();
@@ -538,7 +540,7 @@ void performGitHubOTA() {
       String mMsg = "System is already up to date. Firmware: v" +
                     String(FIRMWARE_VERSION, 1) + " | LittleFS: v" +
                     String(currentFsVersion, 1);
-      mqtt.publish("esp32/ota/status", mMsg.c_str());
+      mqtt.publish(otaStatusTopic.c_str(), mMsg.c_str());
     }
   }
 
