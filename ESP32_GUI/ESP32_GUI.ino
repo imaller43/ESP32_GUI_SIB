@@ -484,7 +484,7 @@ void performGitHubOTA() {
   bool rebootNeeded = false;
 
   if ((newFwVer - (float)FIRMWARE_VERSION) > 0.001 && fwUrl.length() > 0) {
-    tgSend("*Downloading firmware v" + String(newFwVer, 1) + "...*");
+    tgSend("Downloading firmware v" + String(newFwVer, 1) + "...");
     if (mqtt.connected())
       mqtt.publish(
           "esp32/ota/status",
@@ -622,12 +622,12 @@ String buildStatusMsg() {
   String ip =
       eth_connected ? ETH.localIP().toString() : WiFi.localIP().toString();
   p += snprintf(buf + p, sizeof(buf) - p,
-                "Status\nMachine: *%s*\nIP: `%s`\n\nInputs:\n",
+                "Status\nMachine: %s\nIP: %s\n\nInputs:\n",
                 MACHINE_LABELS[machineStateIdx], ip.c_str());
   for (int i = 0; i < 8; i++)
     p += snprintf(buf + p, sizeof(buf) - p, "DI%d: %s\n", i + 1,
                   diCurrentlyOn[i] ? "ON" : "OFF");
-  p += snprintf(buf + p, sizeof(buf) - p, "\n*Outputs:*\n");
+  p += snprintf(buf + p, sizeof(buf) - p, "\nOutputs:\n");
   for (int i = 0; i < 8; i++)
     p += snprintf(buf + p, sizeof(buf) - p, "DO%d: %s\n", i + 1,
                   ((outputState >> i) & 1) ? "ON" : "OFF");
@@ -642,7 +642,7 @@ String buildMetricsMsg() {
   float eff = (rt + dt > 0) ? (float)rt / (float)(rt + dt) * 100.0f : 0;
   char buf[256];
   snprintf(buf, sizeof(buf),
-           "*Metrics*\nRuntime: `%s`\nDowntime: `%s`\nCycle: `%s`\nRejects: "
+           "Metrics\nRuntime: `%s`\nDowntime: `%s`\nCycle: `%s`\nRejects: "
            "`%lu`\nEfficiency: `%.1f%%`",
            fmtMsBot(rt).c_str(), fmtMsBot(dt).c_str(),
            lastCycleTimeMs > 0
@@ -661,7 +661,7 @@ String buildHealthMsg() {
   else
     snprintf(up, sizeof(up), "%02lu:%02lu:%02lu", upH, upM % 60, upS % 60);
   snprintf(buf, sizeof(buf),
-           "*Health*\nTemp: `%.1f C`\nHeap: `%lu KB`\nNet: `%s`\nCPU: `%u "
+           "Health\nTemp: `%.1f C`\nHeap: `%lu KB`\nNet: `%s`\nCPU: `%u "
            "MHz`\nUp: `%s`\nFW: `v%.1f` | FS: `v%.1f`",
            temperatureRead(), (unsigned long)(ESP.getFreeHeap() / 1024),
            eth_connected ? "Ethernet" : (String(WiFi.RSSI()) + " dBm").c_str(),
@@ -677,9 +677,9 @@ void setMachineState(uint8_t idx) {
     return;
   machineStateIdx = idx;
   if (idx == 1)
-    tgSend(F("Machine: *RUNNING*"));
+    tgSend(F("Machine: RUNNING"));
   else if (idx == 2)
-    tgSend(F("Machine: *STOPPED*"));
+    tgSend(F("Machine: STOPPED"));
 }
 void autoUpdateMachineState(int ch, int state) {
   if (ch == 0 && state == 0) {
@@ -1020,6 +1020,18 @@ void mqttCallback(char *topic, byte *payload, unsigned int length) {
         lastCycleTimeMs = 0;
         lastMetricTickMs = now;
         tgSend("Metrics reset successful.", chatId);
+      } else if (cmd == "do") {
+        int ch = doc["target"] | 0;
+        String state = doc["state"] | "";
+        if (ch >= 1 && ch <= 8) {
+          if (state == "on") {
+            setOutput(ch - 1, true);
+            tgSend("DO " + String(ch) + " is now ON", chatId);
+          } else if (state == "off") {
+            setOutput(ch - 1, false);
+            tgSend("DO " + String(ch) + " is now OFF", chatId);
+          }
+        }
       }
     }
     return;
@@ -1254,7 +1266,8 @@ void handleSave() {
   }
 
   if (mode.length() > 0) {
-    mqttChanged = mqttChanged ||
+    mqttChanged =
+        mqttChanged ||
         (strcmp(mode.c_str(), mqttCfg.mode) != 0 ||
          strcmp(proto.c_str(), mqttCfg.proto) != 0 ||
          (host.length() > 0 && strcmp(host.c_str(), mqttCfg.host) != 0) ||
