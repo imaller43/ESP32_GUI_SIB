@@ -1001,7 +1001,7 @@ void mqttCallback(char *topic, byte *payload, unsigned int length) {
     mqtt.publish("esp32/debug", debugMsg.c_str());
 
     StaticJsonDocument<256> doc;
-    DeserializationError error = deserializeJson(doc, payload, length);
+    DeserializationError error = deserializeJson(doc, (const char*)payload, length);
     if (!error) {
       String cmd = doc["cmd"].as<String>();
       String chatId = doc["chatId"].as<String>();
