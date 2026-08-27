@@ -985,7 +985,9 @@ void mqttCallback(char *topic, byte *payload, unsigned int length) {
     }
     return;
   }
-  if (strcmp(topic, "esp32/ota_trigger") == 0) {
+  String otaTriggerTopic = "esp32/" + String(deviceName) + "/ota_trigger";
+  if (strcmp(topic, "esp32/ota_trigger") == 0 || strcmp(topic, otaTriggerTopic.c_str()) == 0) {
+    tgSend("Manual OTA check triggered via MQTT for " + String(deviceName) + "...");
     triggerOTA();
     return;
   }
@@ -1107,6 +1109,8 @@ void reconnectMQTT() {
     mqtt.subscribe("esp32/triggercount/set");
     mqtt.subscribe("esp32/triggercount/reset");
     mqtt.subscribe("esp32/ota_trigger");
+    String otaTriggerTopic = "esp32/" + String(deviceName) + "/ota_trigger";
+    mqtt.subscribe(otaTriggerTopic.c_str());
     
     String autoUpdateSetTopic = "esp32/" + String(deviceName) + "/update/auto/set";
     mqtt.subscribe(autoUpdateSetTopic.c_str());
