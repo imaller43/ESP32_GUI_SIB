@@ -167,9 +167,10 @@
         const d = await res.json();
         failCount = 0;
 
+        document.getElementById('tgEnabled').checked = d.enabled;
+        document.getElementById('tgEnabledLabel').textContent = d.enabled ? 'Enabled' : 'Disabled';
+
         if (!isPolling) {
-          document.getElementById('tgEnabled').checked = d.enabled;
-          document.getElementById('tgEnabledLabel').textContent = d.enabled ? 'Enabled' : 'Disabled';
           document.getElementById('rejectThreshold').value = d.rejectThreshold;
         }
       } catch (e) {
@@ -218,7 +219,7 @@
     });
 
     loadTgConfig();
-    setInterval(() => loadTgConfig(true), 10000);
+    setInterval(() => { if (document.visibilityState !== 'hidden') loadTgConfig(true); }, 2000);
   </script>
 
   <script>
