@@ -903,6 +903,10 @@ void serveStatic(const char *path, const char *mime, bool noCache = false) {
 //  MQTT TRANSPORT
 // ===========================================================
 void applyMqttTransport() {
+  if (mqtt.connected()) {
+    String lwtTopic = "esp32/" + String(deviceName) + "/status";
+    mqtt.publish(lwtTopic.c_str(), "offline", true);
+  }
   mqtt.disconnect();
   wsBridge.setConnected(false);
   wsClient.disconnect();
@@ -1306,6 +1310,10 @@ void handleSave() {
   bool mqttChanged = false;
 
   if (devName.length() > 0 && strcmp(devName.c_str(), deviceName) != 0) {
+    if (mqtt.connected()) {
+      String oldLwt = "esp32/" + String(deviceName) + "/status";
+      mqtt.publish(oldLwt.c_str(), "offline", true);
+    }
     strlcpy(deviceName, devName.c_str(), sizeof(deviceName));
     mqttChanged = true;
   }
