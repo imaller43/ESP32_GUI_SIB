@@ -994,6 +994,20 @@ void mqttCallback(char *topic, byte *payload, unsigned int length) {
                  true);
     return;
   }
+  
+  String tgSetTopic = "esp32/" + String(deviceName) + "/telegram/enabled/set";
+  if (strcmp(topic, tgSetTopic.c_str()) == 0) {
+    char msg[2] = {0};
+    memcpy(msg, payload, min(length, (unsigned int)1));
+    tgConfig.enabled = (strcmp(msg, "1") == 0);
+    saveTelegramConfig();
+    String t = "esp32/" + String(deviceName) + "/telegram/enabled";
+    mqtt.publish(t.c_str(), tgConfig.enabled ? "1" : "0", true);
+    if (tgConfig.enabled) {
+      tgSend("Bot enabled via Node-RED dashboard");
+    }
+    return;
+  }
 
   String cmdTopic = "esp32/" + String(deviceName) + "/command";
   if (strcmp(topic, cmdTopic.c_str()) == 0) {
@@ -1088,6 +1102,8 @@ void reconnectMQTT() {
     mqtt.subscribe("esp32/update/auto");
     String cmdTopic = "esp32/" + String(deviceName) + "/command";
     mqtt.subscribe(cmdTopic.c_str());
+    String tgSetTopic = "esp32/" + String(deviceName) + "/telegram/enabled/set";
+    mqtt.subscribe(tgSetTopic.c_str());
     mqtt.publish("esp32/update/auto/status", autoUpdateEnabled ? "1" : "0",
                  true);
     
