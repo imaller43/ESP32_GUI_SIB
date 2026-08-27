@@ -997,12 +997,14 @@ void mqttCallback(char *topic, byte *payload, unsigned int length) {
 
   String cmdTopic = "esp32/" + String(deviceName) + "/command";
   if (strcmp(topic, cmdTopic.c_str()) == 0) {
-    String debugMsg = "Received command: ";
-    for(int j=0; j<length; j++) debugMsg += (char)payload[j];
-    mqtt.publish("esp32/debug", debugMsg.c_str());
+    String jsonStr = "";
+    jsonStr.reserve(length + 1);
+    for(int j=0; j<length; j++) jsonStr += (char)payload[j];
+
+    mqtt.publish("esp32/debug", ("Received command: " + jsonStr).c_str());
 
     StaticJsonDocument<256> doc;
-    DeserializationError error = deserializeJson(doc, (const char*)payload, length);
+    DeserializationError error = deserializeJson(doc, jsonStr);
     if (!error) {
       String cmd = doc["cmd"].as<String>();
       String chatId = doc["chatId"].as<String>();
