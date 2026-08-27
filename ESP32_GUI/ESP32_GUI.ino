@@ -622,7 +622,7 @@ String buildStatusMsg() {
   String ip =
       eth_connected ? ETH.localIP().toString() : WiFi.localIP().toString();
   p += snprintf(buf + p, sizeof(buf) - p,
-                "*Status*\nMachine: *%s*\nIP: `%s`\n\n*Inputs:*\n",
+                "Status\nMachine: *%s*\nIP: `%s`\n\nInputs:\n",
                 MACHINE_LABELS[machineStateIdx], ip.c_str());
   for (int i = 0; i < 8; i++)
     p += snprintf(buf + p, sizeof(buf) - p, "DI%d: %s\n", i + 1,
@@ -1245,10 +1245,16 @@ void handleSave() {
   String mode = server.arg("mqttMode"), proto = server.arg("mqttProto"),
          host = server.arg("mqttHost"), port = server.arg("mqttPort"),
          path = server.arg("mqttPath"), user = server.arg("mqttUser"),
-         pass = server.arg("mqttPass");
+         pass = server.arg("mqttPass"), devName = server.arg("deviceName");
   bool mqttChanged = false;
+
+  if (devName.length() > 0 && strcmp(devName.c_str(), deviceName) != 0) {
+    strlcpy(deviceName, devName.c_str(), sizeof(deviceName));
+    mqttChanged = true;
+  }
+
   if (mode.length() > 0) {
-    mqttChanged =
+    mqttChanged = mqttChanged ||
         (strcmp(mode.c_str(), mqttCfg.mode) != 0 ||
          strcmp(proto.c_str(), mqttCfg.proto) != 0 ||
          (host.length() > 0 && strcmp(host.c_str(), mqttCfg.host) != 0) ||
@@ -1669,10 +1675,10 @@ void loop() {
 
   if (bootAlertPending && mqtt.connected()) {
     bootAlertPending = false;
-    String ip = eth_connected ? ETH.localIP().toString() : WiFi.localIP().toString();
-    tgSend("ESP32 Online\nIP: `" + ip + "`\nFW: `v" +
-           String(FIRMWARE_VERSION, 1) + "` | FS: `v" +
-           String(currentFsVersion, 1) + "`");
+    String ip =
+        eth_connected ? ETH.localIP().toString() : WiFi.localIP().toString();
+    tgSend("ESP32 Online\nIP: " + ip + "\nFW: v" + String(FIRMWARE_VERSION, 1) +
+           " | FS: v" + String(currentFsVersion, 1));
   }
 
   unsigned long now = millis();

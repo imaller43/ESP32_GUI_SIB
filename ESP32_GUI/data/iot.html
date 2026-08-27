@@ -150,6 +150,11 @@
           <div class="mqtt-broker-section">
             <h3>Broker Settings</h3>
 
+            <div class="mqtt-field-row" style="margin-bottom:15px; border-bottom:1px solid var(--border-color); padding-bottom:15px;">
+              <label style="font-weight:600;">Device Name</label>
+              <input type="text" id="deviceName" placeholder="e.g. Machine1" spellcheck="false" autocomplete="off" style="font-weight:bold; color:var(--primary-color);">
+            </div>
+
             <div style="margin-bottom:10px;">
               <div style="font-size:12px;color:var(--text-main);font-weight:600;margin-bottom:7px;">Connection Mode
               </div>
@@ -333,6 +338,7 @@
         const d = await (await fetch('/getConfig')).json();
         if (!mqttFormLoaded) {
           mqttFormLoaded = true;
+          document.getElementById('deviceName').value = d.deviceName || 'esp32';
           const mode = d.mqttMode || 'cloud';
           setMode(mode);
           let localP = d.mqttProto || '';
@@ -467,6 +473,7 @@
     document.getElementById('mqttForm').onsubmit = async function (e) {
       e.preventDefault();
       const params = new URLSearchParams();
+      params.set('deviceName', document.getElementById('deviceName').value);
       params.set('mqttMode', currentMode);
       if (currentMode === 'local') {
         params.set('mqttProto', document.getElementById('localProto').value);
