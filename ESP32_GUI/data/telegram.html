@@ -48,7 +48,7 @@
       <div class="tg-row">
         <label>Enable Bot</label>
         <label class="sd-toggle">
-          <input type="checkbox" id="tgEnabled">
+          <input type="checkbox" id="tgEnabled" onchange="toggleTelegramBot()">
           <span class="sd-slider"></span>
         </label>
         <span id="tgEnabledLabel" style="font-size:13px;color:var(--text-main);margin-left:6px;">—</span>
@@ -133,6 +133,17 @@
       const timeout = setTimeout(() => controller.abort(), ms);
       return promise.finally(() => clearTimeout(timeout));
     };
+
+    async function toggleTelegramBot() {
+      const isEnabled = document.getElementById('tgEnabled').checked;
+      document.getElementById('tgEnabledLabel').textContent = isEnabled ? 'Enabled' : 'Disabled';
+      const body = new URLSearchParams({ enabled: isEnabled ? '1' : '0' });
+      try {
+        await fetch('/toggleTelegramBot', { method: 'POST', body });
+      } catch (e) {
+        console.error("Toggle failed", e);
+      }
+    }
 
     let isOffline = false;
     let failCount = 0;

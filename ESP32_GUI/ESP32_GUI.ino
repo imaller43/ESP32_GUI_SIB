@@ -622,7 +622,7 @@ String buildStatusMsg() {
   String ip =
       eth_connected ? ETH.localIP().toString() : WiFi.localIP().toString();
   p += snprintf(buf + p, sizeof(buf) - p,
-                "Status\nMachine: %s\nIP: %s\n\nInputs:\n",
+                "Status:\nMachine: %s\nIP: %s\n\nInputs:\n",
                 MACHINE_LABELS[machineStateIdx], ip.c_str());
   for (int i = 0; i < 8; i++)
     p += snprintf(buf + p, sizeof(buf) - p, "DI%d: %s\n", i + 1,
@@ -642,7 +642,7 @@ String buildMetricsMsg() {
   float eff = (rt + dt > 0) ? (float)rt / (float)(rt + dt) * 100.0f : 0;
   char buf[256];
   snprintf(buf, sizeof(buf),
-           "Metrics\nRuntime: %s\nDowntime: %s\nCycle: %s\nRejects: "
+           "Metrics:\nRuntime: %s\nDowntime: %s\nCycle: %s\nRejects: "
            "%lu\nEfficiency: %.1f%%",
            fmtMsBot(rt).c_str(), fmtMsBot(dt).c_str(),
            lastCycleTimeMs > 0
@@ -661,7 +661,7 @@ String buildHealthMsg() {
   else
     snprintf(up, sizeof(up), "%02lu:%02lu:%02lu", upH, upM % 60, upS % 60);
   snprintf(buf, sizeof(buf),
-           "Health\nTemp: %.1f C\nHeap: %lu KB\nNet: %s\nCPU: %u "
+           "Health:\nTemp: %.1f C\nHeap: %lu KB\nNet: %s\nCPU: %u "
            "MHz\nUp: %s\nFW: v%.1f | FS: v%.1f",
            temperatureRead(), (unsigned long)(ESP.getFreeHeap() / 1024),
            eth_connected ? "Ethernet" : (String(WiFi.RSSI()) + " dBm").c_str(),
@@ -999,7 +999,8 @@ void mqttCallback(char *topic, byte *payload, unsigned int length) {
   if (strcmp(topic, cmdTopic.c_str()) == 0) {
     String jsonStr = "";
     jsonStr.reserve(length + 1);
-    for(int j=0; j<length; j++) jsonStr += (char)payload[j];
+    for (int j = 0; j < length; j++)
+      jsonStr += (char)payload[j];
 
     StaticJsonDocument<256> doc;
     DeserializationError error = deserializeJson(doc, jsonStr);
@@ -1038,6 +1039,15 @@ void mqttCallback(char *topic, byte *payload, unsigned int length) {
             setOutput(ch - 1, false);
             tgSend("DO " + String(ch) + " is now OFF", chatId);
           }
+        }
+      } else if (cmd == "bot_enable") {
+        bool enable = doc["enabled"].as<bool>();
+        tgConfig.enabled = enable;
+        saveTelegramConfig();
+        String t = "esp32/" + String(deviceName) + "/telegram/enabled";
+        mqtt.publish(t.c_str(), tgConfig.enabled ? "1" : "0", true);
+        if (enable) {
+          tgSend("Bot enabled via Node-RED dashboard", chatId);
         }
       }
     }
@@ -1080,6 +1090,9 @@ void reconnectMQTT() {
     mqtt.subscribe(cmdTopic.c_str());
     mqtt.publish("esp32/update/auto/status", autoUpdateEnabled ? "1" : "0",
                  true);
+    
+    String tgEnTopic = "esp32/" + String(deviceName) + "/telegram/enabled";
+    mqtt.publish(tgEnTopic.c_str(), tgConfig.enabled ? "1" : "0", true);
   }
 }
 
@@ -1402,8 +1415,25 @@ void handleSaveTelegramConfig() {
   if (thresh.length() > 0)
     tgConfig.rejectThreshold = constrain(thresh.toInt(), 0, 9999);
   saveTelegramConfig();
+  if (mqtt.connected()) {
+    String t = "esp32/" + String(deviceName) + "/telegram/enabled";
+    mqtt.publish(t.c_str(), tgConfig.enabled ? "1" : "0", true);
+  }
   server.send(200, F("text/plain"), F("OK"));
 }
+
+void handleToggleTelegramBot() {
+  if (!requireAuth()) return;
+  String en = server.arg("enabled");
+  tgConfig.enabled = (en == "1" || en == "true");
+  saveTelegramConfig();
+  if (mqtt.connected()) {
+    String t = "esp32/" + String(deviceName) + "/telegram/enabled";
+    mqtt.publish(t.c_str(), tgConfig.enabled ? "1" : "0", true);
+  }
+  server.send(200, F("text/plain"), F("OK"));
+}
+
 void handleTelegramTest() {
   if (!requireAuth())
     return;
@@ -1653,6 +1683,7 @@ void setup() {
   server.on("/setAutoUpdate", HTTP_POST, handleSetAutoUpdate);
   server.on("/getTelegramConfig", HTTP_GET, handleGetTelegramConfig);
   server.on("/saveTelegramConfig", HTTP_POST, handleSaveTelegramConfig);
+  server.on("/toggleTelegramBot", HTTP_POST, handleToggleTelegramBot);
   server.on("/telegramTest", HTTP_POST, handleTelegramTest);
 
   ArduinoOTA.setHostname("ESP32_GUI");
