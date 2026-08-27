@@ -287,6 +287,7 @@ unsigned long debounceTimer[8];
 
 // ================= OTA FLAGS =================
 bool shouldReboot = false;
+bool bootAlertPending = true;
 
 // ================= TIMING =================
 unsigned long lastDiScanMs = 0;
@@ -443,7 +444,7 @@ bool downloadAndFlash(WiFiClientSecure *client, String url, int command) {
 }
 
 void performGitHubOTA() {
-  tgSend(F("*OTA Update Check Started*"));
+  tgSend(F("OTA Update Check Started"));
   if (mqtt.connected())
     mqtt.publish("esp32/ota/status", "OTA Update Check Started");
 
@@ -501,7 +502,7 @@ void performGitHubOTA() {
   }
 
   if ((newFsVer - currentFsVersion) > 0.001 && fsUrl.length() > 0) {
-    tgSend("*Downloading filesystem v" + String(newFsVer, 1) + "...*");
+    tgSend("Downloading filesystem v" + String(newFsVer, 1) + "...");
     if (mqtt.connected())
       mqtt.publish(
           "esp32/ota/status",
@@ -521,7 +522,7 @@ void performGitHubOTA() {
   }
 
   if (rebootNeeded) {
-    tgSend(F("*OTA Update Complete!* Rebooting..."));
+    tgSend(F("OTA Update Complete! Rebooting..."));
     if (mqtt.connected())
       mqtt.publish("esp32/ota/status", "OTA Update Complete! Rebooting...");
 
@@ -529,7 +530,7 @@ void performGitHubOTA() {
     ESP.restart();
   } else if ((newFwVer - (float)FIRMWARE_VERSION) <= 0.001 &&
              (newFsVer - currentFsVersion) <= 0.001) {
-    String msg = "*System is already up to date.*\n";
+    String msg = "System is already up to date.\n";
     msg += "Firmware: v" + String(FIRMWARE_VERSION, 1) + "\n";
     msg += "LittleFS: v" + String(currentFsVersion, 1);
     tgSend(msg);
@@ -582,7 +583,8 @@ void loadTelegramConfig() {
   if (!LittleFS.exists(F("/telegram.json")))
     return;
   File f = LittleFS.open(F("/telegram.json"), "r");
-  if (!f) return;
+  if (!f)
+    return;
   StaticJsonDocument<256> doc;
   if (!deserializeJson(doc, f)) {
     tgConfig.enabled = doc["enabled"] | false;
@@ -595,12 +597,14 @@ void saveTelegramConfig() {
   doc["enabled"] = tgConfig.enabled;
   doc["rejectThreshold"] = tgConfig.rejectThreshold;
   File f = LittleFS.open(F("/telegram.json"), "w");
-  if (!f) return;
+  if (!f)
+    return;
   serializeJson(doc, f);
   f.close();
 }
 void tgSend(const String &msg, const String &chatId) {
-  if (!tgConfig.enabled) return;
+  if (!tgConfig.enabled)
+    return;
   StaticJsonDocument<512> doc;
   doc["device"] = String(deviceName);
   doc["message"] = msg;
@@ -664,8 +668,6 @@ String buildHealthMsg() {
            getCpuFrequencyMhz(), up, (float)FIRMWARE_VERSION, currentFsVersion);
   return String(buf);
 }
-
-
 
 // ===========================================================
 //  MACHINE STATE
@@ -1009,7 +1011,8 @@ void mqttCallback(char *topic, byte *payload, unsigned int length) {
         for (int i = 0; i < 8; i++) {
           triggerCount[i] = 0;
           totalOnTimeMs[i] = 0;
-          if (diCurrentlyOn[i]) lastOnStartMs[i] = now;
+          if (diCurrentlyOn[i])
+            lastOnStartMs[i] = now;
         }
         rejectCount = 0;
         runtimeMs = 0;
@@ -1056,7 +1059,8 @@ void reconnectMQTT() {
     mqtt.subscribe("esp32/update/auto");
     String cmdTopic = "esp32/" + String(deviceName) + "/command";
     mqtt.subscribe(cmdTopic.c_str());
-    mqtt.publish("esp32/update/auto/status", autoUpdateEnabled ? "1" : "0", true);
+    mqtt.publish("esp32/update/auto/status", autoUpdateEnabled ? "1" : "0",
+                 true);
   }
 }
 
@@ -1384,7 +1388,7 @@ void handleTelegramTest() {
   saveConfig();
   saveTelegramConfig();
   saveMetrics();
-  tgSend(F("*Test OK!* All configs saved. Bot is live."));
+  tgSend(F("Test OK! All configs saved. Bot is live."));
   server.send(200, F("text/plain"), F("Queued — check Telegram in ~1 second"));
 }
 
@@ -1467,7 +1471,6 @@ void setup() {
 
   // FreeRTOS primitives
   ioMutex = xSemaphoreCreateMutex();
-
 
   // HTTP routes
   const char *headerKeys[] = {"Cookie"};
@@ -1631,11 +1634,7 @@ void setup() {
 
   server.begin();
 
-  String ip =
-      eth_connected ? ETH.localIP().toString() : WiFi.localIP().toString();
-  tgSend("*ESP32 Online*\nIP: `" + ip + "`\nFW: `v" +
-         String(FIRMWARE_VERSION, 1) + "` | FS: `v" +
-         String(currentFsVersion, 1) + "`");
+  // Boot alert handled in loop when MQTT connects
 }
 
 // ===========================================================
@@ -1666,6 +1665,14 @@ void loop() {
       lastMqttRetry = now;
       reconnectMQTT();
     }
+  }
+
+  if (bootAlertPending && mqtt.connected()) {
+    bootAlertPending = false;
+    String ip = eth_connected ? ETH.localIP().toString() : WiFi.localIP().toString();
+    tgSend("ESP32 Online\nIP: `" + ip + "`\nFW: `v" +
+           String(FIRMWARE_VERSION, 1) + "` | FS: `v" +
+           String(currentFsVersion, 1) + "`");
   }
 
   unsigned long now = millis();
@@ -1743,7 +1750,7 @@ void loop() {
             rejectCount += 1;
             if (tgConfig.rejectThreshold > 0 &&
                 (rejectCount % (unsigned long)tgConfig.rejectThreshold == 0))
-              tgSend("*Reject Alert!* Total: *" + String(rejectCount) + "*");
+              tgSend("Reject Alert! Total: " + String(rejectCount));
           }
         } else {
           totalOnTimeMs[i] += now - lastOnStartMs[i];
