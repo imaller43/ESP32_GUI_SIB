@@ -642,8 +642,8 @@ String buildMetricsMsg() {
   float eff = (rt + dt > 0) ? (float)rt / (float)(rt + dt) * 100.0f : 0;
   char buf[256];
   snprintf(buf, sizeof(buf),
-           "Metrics\nRuntime: `%s`\nDowntime: `%s`\nCycle: `%s`\nRejects: "
-           "`%lu`\nEfficiency: `%.1f%%`",
+           "Metrics\nRuntime: %s\nDowntime: %s\nCycle: %s\nRejects: "
+           "%lu\nEfficiency: %.1f%%",
            fmtMsBot(rt).c_str(), fmtMsBot(dt).c_str(),
            lastCycleTimeMs > 0
                ? (String(lastCycleTimeMs / 1000.0, 2) + " s").c_str()
@@ -661,8 +661,8 @@ String buildHealthMsg() {
   else
     snprintf(up, sizeof(up), "%02lu:%02lu:%02lu", upH, upM % 60, upS % 60);
   snprintf(buf, sizeof(buf),
-           "Health\nTemp: `%.1f C`\nHeap: `%lu KB`\nNet: `%s`\nCPU: `%u "
-           "MHz`\nUp: `%s`\nFW: `v%.1f` | FS: `v%.1f`",
+           "Health\nTemp: %.1f C\nHeap: %lu KB\nNet: %s\nCPU: %u "
+           "MHz\nUp: %s\nFW: v%.1f | FS: v%.1f",
            temperatureRead(), (unsigned long)(ESP.getFreeHeap() / 1024),
            eth_connected ? "Ethernet" : (String(WiFi.RSSI()) + " dBm").c_str(),
            getCpuFrequencyMhz(), up, (float)FIRMWARE_VERSION, currentFsVersion);
@@ -996,10 +996,17 @@ void mqttCallback(char *topic, byte *payload, unsigned int length) {
 
   String cmdTopic = "esp32/" + String(deviceName) + "/command";
   if (strcmp(topic, cmdTopic.c_str()) == 0) {
+    String debugMsg = "Received command: ";
+    for(int j=0; j<length; j++) debugMsg += (char)payload[j];
+    mqtt.publish("esp32/debug", debugMsg.c_str());
+
     StaticJsonDocument<256> doc;
-    if (!deserializeJson(doc, payload, length)) {
-      String cmd = doc["cmd"] | "";
-      String chatId = doc["chatId"] | "";
+    DeserializationError error = deserializeJson(doc, payload, length);
+    if (!error) {
+      String cmd = doc["cmd"].as<String>();
+      String chatId = doc["chatId"].as<String>();
+      mqtt.publish("esp32/debug", ("Parsed cmd: " + cmd + " chatId: " + chatId).c_str());
+
       if (cmd == "status") {
         tgSend(buildStatusMsg(), chatId);
       } else if (cmd == "metrics") {
@@ -1021,8 +1028,8 @@ void mqttCallback(char *topic, byte *payload, unsigned int length) {
         lastMetricTickMs = now;
         tgSend("Metrics reset successful.", chatId);
       } else if (cmd == "do") {
-        int ch = doc["target"] | 0;
-        String state = doc["state"] | "";
+        int ch = doc["target"].as<int>();
+        String state = doc["state"].as<String>();
         if (ch >= 1 && ch <= 8) {
           if (state == "on") {
             setOutput(ch - 1, true);
@@ -1033,6 +1040,8 @@ void mqttCallback(char *topic, byte *payload, unsigned int length) {
           }
         }
       }
+    } else {
+      mqtt.publish("esp32/debug", ("JSON Parse Error: " + String(error.c_str())).c_str());
     }
     return;
   }
