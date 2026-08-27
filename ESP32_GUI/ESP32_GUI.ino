@@ -924,6 +924,7 @@ void applyMqttTransport() {
       mqtt.setClient(tcpClient);
   }
   mqtt.setServer(mqttCfg.host, mqttCfg.port);
+  mqtt.setBufferSize(1024);
   mqtt.setCallback(mqttCallback);
   mqtt.setKeepAlive(15);
   lastMqttRetry = 0;
