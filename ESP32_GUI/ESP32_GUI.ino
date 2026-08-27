@@ -1001,14 +1001,11 @@ void mqttCallback(char *topic, byte *payload, unsigned int length) {
     jsonStr.reserve(length + 1);
     for(int j=0; j<length; j++) jsonStr += (char)payload[j];
 
-    mqtt.publish("esp32/debug", ("Received command: " + jsonStr).c_str());
-
     StaticJsonDocument<256> doc;
     DeserializationError error = deserializeJson(doc, jsonStr);
     if (!error) {
       String cmd = doc["cmd"].as<String>();
       String chatId = doc["chatId"].as<String>();
-      mqtt.publish("esp32/debug", ("Parsed cmd: " + cmd + " chatId: " + chatId).c_str());
 
       if (cmd == "status") {
         tgSend(buildStatusMsg(), chatId);
@@ -1043,8 +1040,6 @@ void mqttCallback(char *topic, byte *payload, unsigned int length) {
           }
         }
       }
-    } else {
-      mqtt.publish("esp32/debug", ("JSON Parse Error: " + String(error.c_str())).c_str());
     }
     return;
   }
