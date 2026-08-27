@@ -985,13 +985,14 @@ void mqttCallback(char *topic, byte *payload, unsigned int length) {
     triggerOTA();
     return;
   }
-  if (strcmp(topic, "esp32/update/auto") == 0) {
+  String autoUpdateSetTopic = "esp32/" + String(deviceName) + "/update/auto/set";
+  if (strcmp(topic, autoUpdateSetTopic.c_str()) == 0) {
     char msg[2] = {0};
     memcpy(msg, payload, min(length, (unsigned int)1));
     autoUpdateEnabled = (strcmp(msg, "1") == 0);
     saveConfig();
-    mqtt.publish("esp32/update/auto/status", autoUpdateEnabled ? "1" : "0",
-                 true);
+    String t = "esp32/" + String(deviceName) + "/update/auto/status";
+    mqtt.publish(t.c_str(), autoUpdateEnabled ? "1" : "0", true);
     return;
   }
   
@@ -1084,13 +1085,16 @@ void reconnectMQTT() {
     return;
 
   bool connected = false;
+  String lwtTopic = "esp32/" + String(deviceName) + "/status";
   if (strlen(mqttCfg.user) > 0) {
-    connected = mqtt.connect(deviceName, mqttCfg.user, mqttCfg.pass);
+    connected = mqtt.connect(deviceName, mqttCfg.user, mqttCfg.pass, lwtTopic.c_str(), 0, true, "offline");
   } else {
-    connected = mqtt.connect(deviceName);
+    connected = mqtt.connect(deviceName, NULL, NULL, lwtTopic.c_str(), 0, true, "offline");
   }
 
   if (connected) {
+    mqtt.publish(lwtTopic.c_str(), "online", true);
+
     for (int i = 0; i < 8; i++)
       if (strlen(outputConfig[i].topic) > 0)
         mqtt.subscribe(outputConfig[i].topic);
@@ -1099,13 +1103,18 @@ void reconnectMQTT() {
     mqtt.subscribe("esp32/triggercount/set");
     mqtt.subscribe("esp32/triggercount/reset");
     mqtt.subscribe("esp32/ota_trigger");
-    mqtt.subscribe("esp32/update/auto");
+    
+    String autoUpdateSetTopic = "esp32/" + String(deviceName) + "/update/auto/set";
+    mqtt.subscribe(autoUpdateSetTopic.c_str());
+    
     String cmdTopic = "esp32/" + String(deviceName) + "/command";
     mqtt.subscribe(cmdTopic.c_str());
+    
     String tgSetTopic = "esp32/" + String(deviceName) + "/telegram/enabled/set";
     mqtt.subscribe(tgSetTopic.c_str());
-    mqtt.publish("esp32/update/auto/status", autoUpdateEnabled ? "1" : "0",
-                 true);
+    
+    String autoUpdateStatusTopic = "esp32/" + String(deviceName) + "/update/auto/status";
+    mqtt.publish(autoUpdateStatusTopic.c_str(), autoUpdateEnabled ? "1" : "0", true);
     
     String tgEnTopic = "esp32/" + String(deviceName) + "/telegram/enabled";
     mqtt.publish(tgEnTopic.c_str(), tgConfig.enabled ? "1" : "0", true);
@@ -1406,9 +1415,13 @@ void handleSaveDoRules() {
 void handleSetAutoUpdate() {
   if (!requireAuth())
     return;
-  autoUpdateEnabled = server.arg("enabled") == "1";
+  String en = server.arg("enabled");
+  autoUpdateEnabled = (en == "1" || en == "true");
   saveConfig();
-  mqtt.publish("esp32/update/auto/status", autoUpdateEnabled ? "1" : "0", true);
+  if (mqtt.connected()) {
+    String t = "esp32/" + String(deviceName) + "/update/auto/status";
+    mqtt.publish(t.c_str(), autoUpdateEnabled ? "1" : "0", true);
+  }
   server.send(200, F("text/plain"), F("OK"));
 }
 
