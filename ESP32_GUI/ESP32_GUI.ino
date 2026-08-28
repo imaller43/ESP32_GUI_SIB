@@ -19,7 +19,7 @@
 #include <WiFiClientSecure.h>
 #include <Wire.h>
 
-#define FIRMWARE_VERSION 1.0
+#define FIRMWARE_VERSION 1.1
 float currentFsVersion = 1.0;
 
 void tgSend(const String &msg, const String &chatId = "");
@@ -445,7 +445,7 @@ bool downloadAndFlash(WiFiClientSecure *client, String url, int command) {
 
 void performGitHubOTA() {
   String otaStatusTopic = "esp32/" + String(deviceName) + "/ota/status";
-  
+
   tgSend(F("OTA Update Check Started"));
   if (mqtt.connected())
     mqtt.publish(otaStatusTopic.c_str(), "OTA Update Check Started");
@@ -514,7 +514,8 @@ void performGitHubOTA() {
     if (downloadAndFlash(client, fsUrl, U_SPIFFS)) {
       tgSend(F("Filesystem updated successfully!"));
       if (mqtt.connected())
-        mqtt.publish(otaStatusTopic.c_str(), "Filesystem updated successfully!");
+        mqtt.publish(otaStatusTopic.c_str(),
+                     "Filesystem updated successfully!");
       rebootNeeded = true;
     } else {
       tgSend(F("Filesystem update failed."));
@@ -969,7 +970,7 @@ void mqttCallback(char *topic, byte *payload, unsigned int length) {
   }
   String trigSetTopic = "esp32/" + String(deviceName) + "/triggercount/set";
   String trigResetTopic = "esp32/" + String(deviceName) + "/triggercount/reset";
-  
+
   if (strcmp(topic, "esp32/triggercount/set") == 0 ||
       strcmp(topic, "esp32/triggercount/reset") == 0 ||
       strcmp(topic, trigSetTopic.c_str()) == 0 ||
@@ -979,7 +980,8 @@ void mqttCallback(char *topic, byte *payload, unsigned int length) {
       if (doc.containsKey("sensor")) {
         int sensor = doc["sensor"];
         if (sensor >= 0 && sensor < 8) {
-          if (strcmp(topic, "esp32/triggercount/set") == 0 || strcmp(topic, trigSetTopic.c_str()) == 0) {
+          if (strcmp(topic, "esp32/triggercount/set") == 0 ||
+              strcmp(topic, trigSetTopic.c_str()) == 0) {
             triggerCount[sensor] = doc["count"] | 0UL;
           } else {
             triggerCount[sensor] = 0;
@@ -992,14 +994,17 @@ void mqttCallback(char *topic, byte *payload, unsigned int length) {
     }
     return;
   }
-  
+
   String otaTriggerTopic = "esp32/" + String(deviceName) + "/ota_trigger";
-  if (strcmp(topic, "esp32/ota_trigger") == 0 || strcmp(topic, otaTriggerTopic.c_str()) == 0) {
-    tgSend("Manual OTA check triggered via MQTT for " + String(deviceName) + "...");
+  if (strcmp(topic, "esp32/ota_trigger") == 0 ||
+      strcmp(topic, otaTriggerTopic.c_str()) == 0) {
+    tgSend("Manual OTA check triggered via MQTT for " + String(deviceName) +
+           "...");
     triggerOTA();
     return;
   }
-  String autoUpdateSetTopic = "esp32/" + String(deviceName) + "/update/auto/set";
+  String autoUpdateSetTopic =
+      "esp32/" + String(deviceName) + "/update/auto/set";
   if (strcmp(topic, autoUpdateSetTopic.c_str()) == 0) {
     char msg[2] = {0};
     memcpy(msg, payload, min(length, (unsigned int)1));
@@ -1009,7 +1014,7 @@ void mqttCallback(char *topic, byte *payload, unsigned int length) {
     mqtt.publish(t.c_str(), autoUpdateEnabled ? "1" : "0", true);
     return;
   }
-  
+
   String tgSetTopic = "esp32/" + String(deviceName) + "/telegram/enabled/set";
   if (strcmp(topic, tgSetTopic.c_str()) == 0) {
     char msg[2] = {0};
@@ -1101,9 +1106,11 @@ void reconnectMQTT() {
   bool connected = false;
   String lwtTopic = "esp32/" + String(deviceName) + "/status";
   if (strlen(mqttCfg.user) > 0) {
-    connected = mqtt.connect(deviceName, mqttCfg.user, mqttCfg.pass, lwtTopic.c_str(), 0, true, "offline");
+    connected = mqtt.connect(deviceName, mqttCfg.user, mqttCfg.pass,
+                             lwtTopic.c_str(), 0, true, "offline");
   } else {
-    connected = mqtt.connect(deviceName, NULL, NULL, lwtTopic.c_str(), 0, true, "offline");
+    connected = mqtt.connect(deviceName, NULL, NULL, lwtTopic.c_str(), 0, true,
+                             "offline");
   }
 
   if (connected) {
@@ -1117,25 +1124,29 @@ void reconnectMQTT() {
     mqtt.subscribe("esp32/triggercount/set");
     mqtt.subscribe("esp32/triggercount/reset");
     String trigSetTopic = "esp32/" + String(deviceName) + "/triggercount/set";
-    String trigResetTopic = "esp32/" + String(deviceName) + "/triggercount/reset";
+    String trigResetTopic =
+        "esp32/" + String(deviceName) + "/triggercount/reset";
     mqtt.subscribe(trigSetTopic.c_str());
     mqtt.subscribe(trigResetTopic.c_str());
     mqtt.subscribe("esp32/ota_trigger");
     String otaTriggerTopic = "esp32/" + String(deviceName) + "/ota_trigger";
     mqtt.subscribe(otaTriggerTopic.c_str());
-    
-    String autoUpdateSetTopic = "esp32/" + String(deviceName) + "/update/auto/set";
+
+    String autoUpdateSetTopic =
+        "esp32/" + String(deviceName) + "/update/auto/set";
     mqtt.subscribe(autoUpdateSetTopic.c_str());
-    
+
     String cmdTopic = "esp32/" + String(deviceName) + "/command";
     mqtt.subscribe(cmdTopic.c_str());
-    
+
     String tgSetTopic = "esp32/" + String(deviceName) + "/telegram/enabled/set";
     mqtt.subscribe(tgSetTopic.c_str());
-    
-    String autoUpdateStatusTopic = "esp32/" + String(deviceName) + "/update/auto/status";
-    mqtt.publish(autoUpdateStatusTopic.c_str(), autoUpdateEnabled ? "1" : "0", true);
-    
+
+    String autoUpdateStatusTopic =
+        "esp32/" + String(deviceName) + "/update/auto/status";
+    mqtt.publish(autoUpdateStatusTopic.c_str(), autoUpdateEnabled ? "1" : "0",
+                 true);
+
     String tgEnTopic = "esp32/" + String(deviceName) + "/telegram/enabled";
     mqtt.publish(tgEnTopic.c_str(), tgConfig.enabled ? "1" : "0", true);
   }
@@ -1476,7 +1487,8 @@ void handleSaveTelegramConfig() {
 }
 
 void handleToggleTelegramBot() {
-  if (!requireAuth()) return;
+  if (!requireAuth())
+    return;
   String en = server.arg("enabled");
   tgConfig.enabled = (en == "1" || en == "true");
   saveTelegramConfig();
