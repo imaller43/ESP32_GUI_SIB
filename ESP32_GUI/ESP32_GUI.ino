@@ -967,14 +967,19 @@ void mqttCallback(char *topic, byte *payload, unsigned int length) {
     }
     return;
   }
+  String trigSetTopic = "esp32/" + String(deviceName) + "/triggercount/set";
+  String trigResetTopic = "esp32/" + String(deviceName) + "/triggercount/reset";
+  
   if (strcmp(topic, "esp32/triggercount/set") == 0 ||
-      strcmp(topic, "esp32/triggercount/reset") == 0) {
+      strcmp(topic, "esp32/triggercount/reset") == 0 ||
+      strcmp(topic, trigSetTopic.c_str()) == 0 ||
+      strcmp(topic, trigResetTopic.c_str()) == 0) {
     StaticJsonDocument<128> doc;
     if (!deserializeJson(doc, payload, length)) {
       if (doc.containsKey("sensor")) {
         int sensor = doc["sensor"];
         if (sensor >= 0 && sensor < 8) {
-          if (strcmp(topic, "esp32/triggercount/set") == 0) {
+          if (strcmp(topic, "esp32/triggercount/set") == 0 || strcmp(topic, trigSetTopic.c_str()) == 0) {
             triggerCount[sensor] = doc["count"] | 0UL;
           } else {
             triggerCount[sensor] = 0;
@@ -987,6 +992,7 @@ void mqttCallback(char *topic, byte *payload, unsigned int length) {
     }
     return;
   }
+  
   String otaTriggerTopic = "esp32/" + String(deviceName) + "/ota_trigger";
   if (strcmp(topic, "esp32/ota_trigger") == 0 || strcmp(topic, otaTriggerTopic.c_str()) == 0) {
     tgSend("Manual OTA check triggered via MQTT for " + String(deviceName) + "...");
@@ -1110,6 +1116,10 @@ void reconnectMQTT() {
     mqtt.subscribe("esp32/sd/cmd");
     mqtt.subscribe("esp32/triggercount/set");
     mqtt.subscribe("esp32/triggercount/reset");
+    String trigSetTopic = "esp32/" + String(deviceName) + "/triggercount/set";
+    String trigResetTopic = "esp32/" + String(deviceName) + "/triggercount/reset";
+    mqtt.subscribe(trigSetTopic.c_str());
+    mqtt.subscribe(trigResetTopic.c_str());
     mqtt.subscribe("esp32/ota_trigger");
     String otaTriggerTopic = "esp32/" + String(deviceName) + "/ota_trigger";
     mqtt.subscribe(otaTriggerTopic.c_str());
