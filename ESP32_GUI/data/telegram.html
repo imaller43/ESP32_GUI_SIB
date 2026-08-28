@@ -42,16 +42,15 @@
 
 
     <!-- Credentials -->
-    <div class="tg-section">
-      <div class="tg-section-title">Settings</div>
-
-      <div class="tg-row">
-        <label>Enable Bot</label>
+    <div class="tg-section" style="max-width:300px; margin: 0 auto 20px auto; padding: 15px;">
+      <div class="tg-section-title" style="margin-bottom:15px;">Settings</div>
+      <div class="tg-row" style="justify-content: space-between; margin-bottom: 0;">
+        <label style="font-weight:600; font-size:15px;">Enable Bot</label>
         <label class="sd-toggle">
           <input type="checkbox" id="tgEnabled" onchange="toggleTelegramBot()">
           <span class="sd-slider"></span>
         </label>
-        <span id="tgEnabledLabel" style="font-size:13px;color:var(--text-main);margin-left:6px;">—</span>
+        <span id="tgEnabledLabel" style="display:none;"></span>
       </div>
     </div>
 
@@ -72,6 +71,13 @@
         <div class="tg-alert-item">OTA Update</div>
       </div>
     </div>
+
+    <!-- Actions -->
+    <div class="tg-btn-row" style="margin-bottom: 20px;">
+      <button class="btn-save-formula" onclick="saveTgConfig()" style="background:#d97706;">Save &amp; Apply</button>
+      <button class="btn-calc" onclick="sendTestMessage()" id="btnTest">Send Test Message</button>
+    </div>
+    <div id="tgActionMsg" style="min-height:20px; margin-top:-10px; margin-bottom:20px; font-size:13px; font-weight:600;"></div>
 
     <!-- Bot Commands -->
     <div class="tg-section">
@@ -115,13 +121,6 @@
         </tbody>
       </table>
     </div>
-
-    <!-- Actions -->
-    <div class="tg-btn-row">
-      <button class="btn-save-formula" onclick="saveTgConfig()">Save &amp; Apply</button>
-      <button class="btn-calc" onclick="sendTestMessage()" id="btnTest">Send Test Message</button>
-    </div>
-    <div id="tgActionMsg" style="min-height:20px;margin-top:10px;font-size:13px;font-weight:600;"></div>
 
     <div class="site-footer">&copy; SIB. All rights reserved.</div>
   </div>

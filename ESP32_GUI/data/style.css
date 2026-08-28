@@ -1874,3 +1874,54 @@ input[type="number"] {
   object-fit: contain;
   margin-left: 10px;
 }
+
+/* ===========================================
+   SD TOGGLE SLIDER (ORANGE)
+   =========================================== */
+.sd-toggle {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+}
+.sd-toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.sd-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #d1d5db; /* Light gray when disabled */
+  transition: .3s;
+  border-radius: 24px;
+  border: 1px solid #9ca3af; 
+}
+.sd-slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 2px;
+  bottom: 1.5px;
+  background-color: white;
+  transition: .3s;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+input:checked + .sd-slider {
+  background-color: #d97706; /* Orange when enabled */
+  border-color: #b45309;
+}
+input:checked + .sd-slider:before {
+  transform: translateX(20px);
+}
+[data-theme="dark"] .sd-slider {
+  background-color: #374151;
+  border-color: #4b5563;
+}
+[data-theme="dark"] input:checked + .sd-slider {
+  background-color: #d97706;
+  border-color: #b45309;
+}
