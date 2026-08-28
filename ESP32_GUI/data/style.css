@@ -1882,7 +1882,10 @@ input[type="number"] {
   position: relative;
   display: inline-block;
   width: 44px;
+  min-width: 44px;
+  max-width: 44px;
   height: 24px;
+  flex-shrink: 0;
 }
 .sd-toggle input {
   opacity: 0;
