@@ -534,7 +534,7 @@ void performGitHubOTA() {
   } else if ((newFwVer - (float)FIRMWARE_VERSION) <= 0.001 &&
              (newFsVer - currentFsVersion) <= 0.001) {
     String msg = "System is already up to date.\n";
-    msg += "Firmware: v" + String(FIRMWARE_VERSION, 1) + "\n";
+    msg += "Firmware: v" + String(FIRMWARE_VERSION, 1) + "|";
     msg += "LittleFS: v" + String(currentFsVersion, 1);
     tgSend(msg);
     if (mqtt.connected()) {
@@ -961,13 +961,6 @@ void mqttCallback(char *topic, byte *payload, unsigned int length) {
       setMachineState(2);
     return;
   }
-  if (strcmp(topic, "esp32/sd/cmd") == 0) {
-    StaticJsonDocument<128> cmd;
-    if (!deserializeJson(cmd, payload, length)) {
-      const char *c = cmd["cmd"] | "";
-    }
-    return;
-  }
   String trigSetTopic = "esp32/" + String(deviceName) + "/triggercount/set";
   String trigResetTopic = "esp32/" + String(deviceName) + "/triggercount/reset";
 
@@ -1120,7 +1113,6 @@ void reconnectMQTT() {
       if (strlen(outputConfig[i].topic) > 0)
         mqtt.subscribe(outputConfig[i].topic);
     mqtt.subscribe(MACHINE_STATE_TOPIC);
-    mqtt.subscribe("esp32/sd/cmd");
     mqtt.subscribe("esp32/triggercount/set");
     mqtt.subscribe("esp32/triggercount/reset");
     String trigSetTopic = "esp32/" + String(deviceName) + "/triggercount/set";
@@ -1872,7 +1864,7 @@ void loop() {
             rejectCount += 1;
             if (tgConfig.rejectThreshold > 0 &&
                 (rejectCount % (unsigned long)tgConfig.rejectThreshold == 0))
-              tgSend("Reject Alert! Total: " + String(rejectCount));
+              tgSend("Reject Alert!\nTotal: " + String(rejectCount));
           }
         } else {
           totalOnTimeMs[i] += now - lastOnStartMs[i];
