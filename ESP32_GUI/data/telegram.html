@@ -46,11 +46,13 @@
       <div class="tg-section-title" style="margin-bottom:15px;">Settings</div>
       <div class="tg-row" style="justify-content: space-between; margin-bottom: 0;">
         <label style="font-weight:600; font-size:15px;">Enable Bot</label>
-        <label class="sd-toggle">
-          <input type="checkbox" id="tgEnabled" onchange="toggleTelegramBot()">
-          <span class="sd-slider"></span>
-        </label>
-        <span id="tgEnabledLabel" style="display:none;"></span>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <label class="sd-toggle">
+            <input type="checkbox" id="tgEnabled" onchange="toggleTelegramBot()">
+            <span class="sd-slider"></span>
+          </label>
+          <span id="tgEnabledLabel" style="font-size:13px; color:var(--text-main); min-width:50px; text-align:left;">—</span>
+        </div>
       </div>
     </div>
 
@@ -73,11 +75,11 @@
     </div>
 
     <!-- Actions -->
-    <div class="tg-btn-row" style="margin-bottom: 20px;">
-      <button class="btn-save-formula" onclick="saveTgConfig()" style="background:#d97706;">Save &amp; Apply</button>
-      <button class="btn-calc" onclick="sendTestMessage()" id="btnTest">Send Test Message</button>
+    <div class="tg-btn-row" style="margin-bottom: 15px; align-items: center;">
+      <button class="btn-save-formula" onclick="saveTgConfig()" style="background:#f92d16; padding:7px 14px; border:none; color:white; font-weight:bold; border-radius:5px;">Save &amp; Apply</button>
+      <button class="btn-calc" onclick="sendTestMessage()" id="btnTest" style="padding:7px 14px; border-radius:5px;">Send Test Message</button>
+      <div id="tgActionMsg" style="font-size:13px; font-weight:600; margin-left:10px;"></div>
     </div>
-    <div id="tgActionMsg" style="min-height:20px; margin-top:-10px; margin-bottom:20px; font-size:13px; font-weight:600;"></div>
 
     <!-- Bot Commands -->
     <div class="tg-section">

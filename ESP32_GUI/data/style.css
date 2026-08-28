@@ -1904,15 +1904,15 @@ input[type="number"] {
   height: 18px;
   width: 18px;
   left: 2px;
-  bottom: 1.5px;
+  top: 2px;
   background-color: white;
   transition: .3s;
   border-radius: 50%;
   box-shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
 input:checked + .sd-slider {
-  background-color: #d97706; /* Orange when enabled */
-  border-color: #b45309;
+  background-color: #f92d16; /* SIB Orange */
+  border-color: #d1200d;
 }
 input:checked + .sd-slider:before {
   transform: translateX(20px);
@@ -1922,6 +1922,6 @@ input:checked + .sd-slider:before {
   border-color: #4b5563;
 }
 [data-theme="dark"] input:checked + .sd-slider {
-  background-color: #d97706;
-  border-color: #b45309;
+  background-color: #f92d16;
+  border-color: #d1200d;
 }
