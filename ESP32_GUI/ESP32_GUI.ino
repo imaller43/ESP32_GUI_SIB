@@ -566,8 +566,8 @@ void checkDailyOTA() {
   if (!getLocalTime(&timeinfo, 10))
     return;
 
-  // Check between 15:00 and 16:00 (3:00pm - 4:00pm)
-  if (timeinfo.tm_hour == 15 && timeinfo.tm_min >= 45 && timeinfo.tm_min < 60) {
+  // Check between 13:15 and 14:15 (1:15pm - 2:15pm)
+  if (timeinfo.tm_hour == 13 && timeinfo.tm_min >= 15 && timeinfo.tm_min < 60) {
     if (lastOtaDay != timeinfo.tm_yday) {
       lastOtaDay = timeinfo.tm_yday;
       if (autoUpdateEnabled) {

@@ -5,6 +5,7 @@ on:
     branches: [ "main", "2.0-(Node-RED-Integrated)" ]
     paths:
       - 'ESP32_GUI/**'
+      - 'version.json'
   workflow_dispatch:
 
 jobs:
@@ -46,15 +47,26 @@ jobs:
 
       - name: Build LittleFS (.bin)
         run: |
-          # 1.5MB SPIFFS size is exactly 0x170000 = 1507328 bytes
+          # 1.5MB SPIFFS size is exactly 0x170000 = 1507328 bytes (Adjusted to 1441792 for new partition table)
           mklittlefs -c ESP32_GUI/data -p 256 -b 4096 -s 1441792 build/littlefs.bin
 
-      - name: Commit and Push Binaries back to GitHub
+      - name: Commit and Push Binaries to OTA-Update Branch
         run: |
           cp build/ESP32_GUI.ino.bin firmware.bin
           cp build/littlefs.bin littlefs.bin
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add firmware.bin littlefs.bin
-          git commit -m "chore: Auto-build firmware and LittleFS [skip ci]" || echo "No changes to commit"
-          git push origin ${{ github.ref_name }}
+          
+          # Clone the OTA-Update branch into a temp folder
+          git clone --branch OTA-Update https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} ota_repo
+          
+          # Copy binaries and version config to the OTA repo
+          cp firmware.bin ota_repo/
+          cp littlefs.bin ota_repo/
+          cp version.json ota_repo/ || echo "version.json not found in root, skipping"
+          
+          # Commit and push directly to OTA-Update
+          cd ota_repo
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add firmware.bin littlefs.bin version.json
+          git commit -m "🚀 Auto-release: Update OTA binaries from ${{ github.ref_name }} [skip ci]" || echo "No changes to commit"
+          git push origin OTA-Update
