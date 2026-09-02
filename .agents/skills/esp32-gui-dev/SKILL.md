@@ -11,7 +11,7 @@ This skill provides essential context and instructions for developing, debugging
 
 ## 1. Project Overview
 
-The project is an industrial IoT dashboard and control system firmware designed for the **Waveshare ESP32-S3-POE-ETH-8DI-8DO** hardware. 
+The project is an industrial IoT dashboard (Version 2.0) and control system firmware designed for the **Waveshare ESP32-S3-POE-ETH-8DI-8DO** hardware. 
 It features:
 - **Digital I/O**: 8 Digital Inputs (DI) via optocouplers and 8 Digital Outputs (DO) controlled via a PCF8574 I2C expander.
 - **Web Dashboard**: An interactive UI (HTML/CSS/JS) served by the ESP32 from the LittleFS `data/` folder.
@@ -35,6 +35,7 @@ It features:
 
 ### 3.1 Modifying the Firmware (`ESP32_GUI.ino`)
 - **Mutexes**: The project uses FreeRTOS tasks and `SemaphoreHandle_t`. When modifying I/O (`outputState`), ensure you respect `ioMutex` to prevent race conditions.
+- **Device-Specific MQTT Topics**: All critical MQTT topics (LWT, OTA status, trigger counts, generic status) MUST be dynamically prefixed with `deviceName` (e.g., `"esp32/" + String(deviceName) + "/ota/status"`). Avoid hardcoded global topics to prevent conflicts in Node-RED.
 - **Digital Outputs**: Always use the `setOutput(int ch, bool state)` function rather than directly writing to the PCF8574. This ensures MQTT events are published and state is tracked.
 - **Asynchronous Loop**: The `loop()` must not block. Use `millis()` for timing instead of `delay()`, except inside dedicated FreeRTOS tasks (like `telegramTask`).
 - **Memory Management**: When adding JSON serialization/deserialization with `ArduinoJson`, carefully manage `StaticJsonDocument` sizes to avoid heap fragmentation and stack overflows, especially given the memory constraints of the web server routes.
