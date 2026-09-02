@@ -19,7 +19,7 @@
 #include <WiFiClientSecure.h>
 #include <Wire.h>
 
-#define FIRMWARE_VERSION 1.1
+#define FIRMWARE_VERSION 2.0
 float currentFsVersion = 1.0;
 
 void tgSend(const String &msg, const String &chatId = "");
