@@ -1,0 +1,1062 @@
+[
+    {
+        "id": "b429cc46560fc6a7",
+        "type": "tab",
+        "label": "ESP32",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "dbb40f86205541e2",
+        "type": "mqtt in",
+        "z": "b429cc46560fc6a7",
+        "name": "",
+        "topic": "esp32/rumah/do1",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "ea9dd93b3d441040",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 720,
+        "y": 720,
+        "wires": [
+            [
+                "3c4cc7dc01119196"
+            ]
+        ]
+    },
+    {
+        "id": "3c4cc7dc01119196",
+        "type": "debug",
+        "z": "b429cc46560fc6a7",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 900,
+        "y": 720,
+        "wires": []
+    },
+    {
+        "id": "75d69085c92a77bf",
+        "type": "mqtt in",
+        "z": "b429cc46560fc6a7",
+        "name": "",
+        "topic": "esp32/rumah/di1",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "ea9dd93b3d441040",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 720,
+        "y": 760,
+        "wires": [
+            [
+                "22563cbf3d817f4a"
+            ]
+        ]
+    },
+    {
+        "id": "22563cbf3d817f4a",
+        "type": "debug",
+        "z": "b429cc46560fc6a7",
+        "name": "debug 2",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 900,
+        "y": 760,
+        "wires": []
+    },
+    {
+        "id": "mqtt_in_ota",
+        "type": "mqtt in",
+        "z": "b429cc46560fc6a7",
+        "name": "",
+        "topic": "esp32/+/ota/status",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "f7c9eba65970f8fc",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 670,
+        "y": 60,
+        "wires": [
+            [
+                "ui_text_ota"
+            ]
+        ]
+    },
+    {
+        "id": "ui_text_ota",
+        "type": "ui-text",
+        "z": "b429cc46560fc6a7",
+        "group": "b5505c288d2522f4",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "",
+        "format": "{{msg.payload}}",
+        "layout": "row-center",
+        "style": true,
+        "font": "",
+        "fontSize": "",
+        "color": "#000000",
+        "wrapText": false,
+        "className": "",
+        "value": "payload",
+        "valueType": "msg",
+        "x": 910,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "mqtt_in_telegram",
+        "type": "mqtt in",
+        "z": "b429cc46560fc6a7",
+        "name": "ESP32 Alerts In",
+        "topic": "esp32/telegram/out",
+        "qos": "0",
+        "datatype": "json",
+        "broker": "f7c9eba65970f8fc",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 420,
+        "y": 620,
+        "wires": [
+            [
+                "function_telegram_format"
+            ]
+        ]
+    },
+    {
+        "id": "telegram_sender",
+        "type": "telegram sender",
+        "z": "b429cc46560fc6a7",
+        "name": "Send to Telegram",
+        "bot": "telegram_bot_config",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 1150,
+        "y": 500,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2321132598c573a4",
+        "type": "telegram command",
+        "z": "b429cc46560fc6a7",
+        "name": "/status",
+        "command": "/status",
+        "description": "",
+        "registercommand": false,
+        "language": "",
+        "bot": "telegram_bot_config",
+        "strict": false,
+        "hasresponse": false,
+        "useregex": false,
+        "removeregexcommand": false,
+        "outputs": 1,
+        "x": 450,
+        "y": 380,
+        "wires": [
+            [
+                "telegram_parser_v2"
+            ]
+        ]
+    },
+    {
+        "id": "9ae1b9e3e1b37c46",
+        "type": "telegram command",
+        "z": "b429cc46560fc6a7",
+        "name": "/metrics",
+        "command": "/metrics",
+        "description": "",
+        "registercommand": false,
+        "language": "",
+        "bot": "telegram_bot_config",
+        "strict": false,
+        "hasresponse": false,
+        "useregex": false,
+        "removeregexcommand": false,
+        "outputs": 1,
+        "x": 450,
+        "y": 420,
+        "wires": [
+            [
+                "telegram_parser_v2"
+            ]
+        ]
+    },
+    {
+        "id": "55f8a988284dea14",
+        "type": "telegram command",
+        "z": "b429cc46560fc6a7",
+        "name": "/health",
+        "command": "/health",
+        "description": "",
+        "registercommand": false,
+        "language": "",
+        "bot": "telegram_bot_config",
+        "strict": false,
+        "hasresponse": false,
+        "useregex": false,
+        "removeregexcommand": false,
+        "outputs": 1,
+        "x": 450,
+        "y": 460,
+        "wires": [
+            [
+                "telegram_parser_v2"
+            ]
+        ]
+    },
+    {
+        "id": "638ca7f70a527342",
+        "type": "telegram command",
+        "z": "b429cc46560fc6a7",
+        "name": "/do",
+        "command": "/do",
+        "description": "",
+        "registercommand": false,
+        "language": "",
+        "bot": "telegram_bot_config",
+        "strict": false,
+        "hasresponse": false,
+        "useregex": false,
+        "removeregexcommand": false,
+        "outputs": 1,
+        "x": 450,
+        "y": 500,
+        "wires": [
+            [
+                "telegram_parser_v2"
+            ]
+        ]
+    },
+    {
+        "id": "c6f97170a0806d72",
+        "type": "telegram command",
+        "z": "b429cc46560fc6a7",
+        "name": "/resetmetrics",
+        "command": "/resetmetrics",
+        "description": "",
+        "registercommand": false,
+        "language": "",
+        "bot": "telegram_bot_config",
+        "strict": false,
+        "hasresponse": false,
+        "useregex": false,
+        "removeregexcommand": false,
+        "outputs": 1,
+        "x": 430,
+        "y": 540,
+        "wires": [
+            [
+                "telegram_parser_v2"
+            ]
+        ]
+    },
+    {
+        "id": "1cc7cead894baf70",
+        "type": "telegram command",
+        "z": "b429cc46560fc6a7",
+        "name": "/help",
+        "command": "/help",
+        "description": "",
+        "registercommand": false,
+        "language": "",
+        "bot": "telegram_bot_config",
+        "strict": false,
+        "hasresponse": false,
+        "useregex": false,
+        "removeregexcommand": false,
+        "outputs": 1,
+        "x": 450,
+        "y": 580,
+        "wires": [
+            [
+                "974a99e6049f5aa0"
+            ]
+        ]
+    },
+    {
+        "id": "974a99e6049f5aa0",
+        "type": "function",
+        "z": "b429cc46560fc6a7",
+        "name": "Send Help Menu",
+        "func": "msg.payload = {\n    type: 'message',\n    chatId: msg.payload.chatId,\n    content: \"ESP32 Fleet Commands\\n\\nUsage: /[command] [machineName]\\n\\nExample:\\n/status Machine1 — DI/DO states\\n/metrics Machine1 — Runtime, downtime, rejects\\n/health Machine1 — Temp, heap, WiFi, uptime, version no.\\n/do on 1 Machine1 — Turn DO 1 ON\\n/do off 1 Machine1 — Turn DO 1 OFF\\n/resetmetrics Machine1 — Reset all counters\\n/help — Show this menu\"\n};\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 890,
+        "y": 520,
+        "wires": [
+            [
+                "telegram_sender"
+            ]
+        ]
+    },
+    {
+        "id": "telegram_parser_v2",
+        "type": "function",
+        "z": "b429cc46560fc6a7",
+        "name": "Parse Commands to MQTT",
+        "func": "let fullText = msg.originalMessage.text || \"\";\nlet parts = fullText.trim().split(\" \");\nlet commandTyped = parts[0].replace(\"/\", \"\");\nlet targetDevice = \"\";\nlet mqttMsg = null;\nlet errorMsg = null;\n\nif (commandTyped === \"do\") {\n    if (parts.length < 4) {\n        errorMsg = {\n            payload: {\n                type: 'message',\n                chatId: msg.payload.chatId,\n                content: `⚠️ Please specify state, channel, and machine name.\\nExample: /do on 1 Machine1`\n            }\n        };\n        return [null, errorMsg, null];\n    }\n    let state = parts[1].toLowerCase();\n    let target = parts[2];\n    targetDevice = parts[3];\n\n    mqttMsg = {\n        topic: \"esp32/\" + targetDevice + \"/command\",\n        payload: JSON.stringify({\n            cmd: \"do\",\n            state: state,\n            target: parseInt(target),\n            chatId: msg.payload.chatId\n        })\n    };\n} else {\n    if (parts.length < 2 || parts[1] === \"\") {\n        errorMsg = {\n            payload: {\n                type: 'message',\n                chatId: msg.payload.chatId,\n                content: `⚠️ Please specify a machine name.\\nExample: /${commandTyped} Machine1`\n            }\n        };\n        return [null, errorMsg, null];\n    }\n    targetDevice = parts[1];\n\n    mqttMsg = {\n        topic: \"esp32/\" + targetDevice + \"/command\",\n        payload: JSON.stringify({\n            cmd: commandTyped,\n            chatId: msg.payload.chatId\n        })\n    };\n}\n\n// --- SMART TIMEOUT LOGIC ---\nlet chatId = msg.payload.chatId;\nlet timeouts = flow.get(\"timeouts\") || {};\n\nif (timeouts[chatId]) {\n    clearTimeout(timeouts[chatId]);\n}\n\ntimeouts[chatId] = setTimeout(() => {\n    node.send([null, null, {\n        payload: {\n            type: \"message\",\n            chatId: chatId,\n            content: `⚠️ No device named '${targetDevice}' detected, or the device is offline.`\n        }\n    }]);\n    \n    let t = flow.get(\"timeouts\") || {};\n    delete t[chatId];\n    flow.set(\"timeouts\", t);\n}, 3000); // 3 seconds timeout\n\nflow.set(\"timeouts\", timeouts);\n\nreturn [mqttMsg, null, null];",
+        "outputs": 3,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 860,
+        "y": 460,
+        "wires": [
+            [
+                "11a1921f5fa6543e"
+            ],
+            [
+                "telegram_sender"
+            ],
+            [
+                "telegram_sender"
+            ]
+        ]
+    },
+    {
+        "id": "be49bc5cc842ac47",
+        "type": "mqtt in",
+        "z": "b429cc46560fc6a7",
+        "name": "Listen: Device Status",
+        "topic": "esp32/+/status",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "f7c9eba65970f8fc",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 120,
+        "y": 200,
+        "wires": [
+            [
+                "7a910c94c8b8f1fd"
+            ]
+        ]
+    },
+    {
+        "id": "b27e2638c24d83cb",
+        "type": "mqtt in",
+        "z": "b429cc46560fc6a7",
+        "name": "Listen: Telegram Status",
+        "topic": "esp32/+/telegram/enabled",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "f7c9eba65970f8fc",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 130,
+        "y": 260,
+        "wires": [
+            [
+                "7a910c94c8b8f1fd"
+            ]
+        ]
+    },
+    {
+        "id": "ae26b277f77e12e4",
+        "type": "mqtt in",
+        "z": "b429cc46560fc6a7",
+        "name": "Listen: Auto-Update Status",
+        "topic": "esp32/+/update/auto/status",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "f7c9eba65970f8fc",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 120,
+        "y": 320,
+        "wires": [
+            [
+                "7a910c94c8b8f1fd"
+            ]
+        ]
+    },
+    {
+        "id": "7a910c94c8b8f1fd",
+        "type": "function",
+        "z": "b429cc46560fc6a7",
+        "name": "Global State Manager",
+        "func": "let cache = flow.get(\"esp32_cache\") || { devices: {}, tg: {}, auto: {} };\nlet parts = msg.topic.split(\"/\");\nlet device = parts[1];\nlet type = parts.slice(2).join(\"/\");\nlet val = msg.payload.toString();\n\nlet selectedDevice = flow.get(\"selectedDevice\");\n\nlet msgDropdown = null;\nlet msgTg = null;\nlet msgAuto = null;\n\nif (type === \"status\") {\n    if (val === \"online\") cache.devices[device] = true;\n    else delete cache.devices[device];\n    \n    let options = Object.keys(cache.devices);\n    options.unshift(\"ALL MACHINE\"); // Always place ALL MACHINE at the top\n    msgDropdown = { options: options };\n} else if (type === \"telegram/enabled\") {\n    cache.tg[device] = val;\n    if (device === selectedDevice) {\n        msgTg = { payload: val };\n    }\n} else if (type === \"update/auto/status\") {\n    cache.auto[device] = val;\n    if (device === selectedDevice) {\n        msgAuto = { payload: val };\n    }\n}\n\nflow.set(\"esp32_cache\", cache);\nreturn [msgDropdown, msgTg, msgAuto];",
+        "outputs": 3,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 260,
+        "wires": [
+            [
+                "2eca0de5b1a870c8"
+            ],
+            [
+                "9d4dbbf8d0de6211"
+            ],
+            [
+                "7ba9644620d8b236"
+            ]
+        ]
+    },
+    {
+        "id": "2eca0de5b1a870c8",
+        "type": "ui-dropdown",
+        "z": "b429cc46560fc6a7",
+        "group": "b5505c288d2522f4",
+        "name": "Select Device",
+        "label": "Select Machine",
+        "tooltip": "",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "multiple": false,
+        "chips": false,
+        "clearable": false,
+        "options": [],
+        "payload": "",
+        "topic": "topic",
+        "topicType": "msg",
+        "className": "",
+        "typeIsComboBox": true,
+        "msgTrigger": "onClose",
+        "x": 610,
+        "y": 200,
+        "wires": [
+            [
+                "58f120211780d79d"
+            ]
+        ]
+    },
+    {
+        "id": "58f120211780d79d",
+        "type": "function",
+        "z": "b429cc46560fc6a7",
+        "name": "Update UI for Selected Device",
+        "func": "let selectedDevice = msg.payload;\nflow.set(\"selectedDevice\", selectedDevice);\n\nlet cache = flow.get(\"esp32_cache\") || { tg: {}, auto: {} };\nlet msgTg = null;\nlet msgAuto = null;\n\nif (selectedDevice === \"ALL MACHINE\") {\n    // Visual default for switches when ALL is selected\n    msgTg = { payload: \"0\" };\n    msgAuto = { payload: \"0\" };\n} else {\n    msgTg = { payload: cache.tg[selectedDevice] || \"0\" };\n    msgAuto = { payload: cache.auto[selectedDevice] || \"0\" };\n}\n\nreturn [msgTg, msgAuto];",
+        "outputs": 2,
+        "x": 840,
+        "y": 200,
+        "wires": [
+            [
+                "9d4dbbf8d0de6211"
+            ],
+            [
+                "7ba9644620d8b236"
+            ]
+        ]
+    },
+    {
+        "id": "9d4dbbf8d0de6211",
+        "type": "ui-switch",
+        "z": "b429cc46560fc6a7",
+        "name": "Telegram Bot Switch",
+        "label": "Enable Telegram Bot",
+        "group": "b5505c288d2522f4",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "decouple": false,
+        "topic": "topic",
+        "topicType": "msg",
+        "style": "",
+        "className": "",
+        "layout": "",
+        "clickableArea": "switch",
+        "onvalue": "1",
+        "onvalueType": "str",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "0",
+        "offvalueType": "str",
+        "officon": "",
+        "offcolor": "",
+        "x": 620,
+        "y": 260,
+        "wires": [
+            [
+                "37d88aea45c16227"
+            ]
+        ]
+    },
+    {
+        "id": "7ba9644620d8b236",
+        "type": "ui-switch",
+        "z": "b429cc46560fc6a7",
+        "name": "Auto Update Switch",
+        "label": "Enable Auto-Update",
+        "group": "b5505c288d2522f4",
+        "order": 5,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "decouple": false,
+        "topic": "topic",
+        "topicType": "msg",
+        "style": "",
+        "className": "",
+        "layout": "",
+        "clickableArea": "switch",
+        "onvalue": "1",
+        "onvalueType": "str",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "0",
+        "offvalueType": "str",
+        "officon": "",
+        "offcolor": "",
+        "x": 640,
+        "y": 300,
+        "wires": [
+            [
+                "964b0643a9d3e071"
+            ]
+        ]
+    },
+    {
+        "id": "20eefa582c753518",
+        "type": "ui-button",
+        "z": "b429cc46560fc6a7",
+        "group": "b5505c288d2522f4",
+        "name": "Check for Update",
+        "label": "Check for Update",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "emulateClick": false,
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "update",
+        "iconPosition": "left",
+        "payload": "1",
+        "payloadType": "num",
+        "topic": "topic",
+        "topicType": "msg",
+        "buttonColor": "",
+        "textColor": "",
+        "iconColor": "",
+        "enableClick": true,
+        "enablePointerdown": false,
+        "pointerdownPayload": "",
+        "pointerdownPayloadType": "str",
+        "enablePointerup": false,
+        "pointerupPayload": "",
+        "pointerupPayloadType": "str",
+        "x": 630,
+        "y": 340,
+        "wires": [
+            [
+                "78400a094b893d2c"
+            ]
+        ]
+    },
+    {
+        "id": "37d88aea45c16227",
+        "type": "function",
+        "z": "b429cc46560fc6a7",
+        "name": "Target Device (TG)",
+        "func": "let selectedDevice = flow.get(\"selectedDevice\");\nif (!selectedDevice) return null;\n\nif (selectedDevice === \"ALL MACHINE\") {\n    let cache = flow.get(\"esp32_cache\") || { devices: {} };\n    let msgs = [];\n    for (let device in cache.devices) {\n        msgs.push({\n            topic: `esp32/${device}/telegram/enabled/set`,\n            payload: msg.payload\n        });\n    }\n    return [msgs]; // Broadcasts to all online devices sequentially\n} else {\n    msg.topic = `esp32/${selectedDevice}/telegram/enabled/set`;\n    return msg;\n}",
+        "outputs": 1,
+        "x": 880,
+        "y": 260,
+        "wires": [
+            [
+                "11a1921f5fa6543e"
+            ]
+        ]
+    },
+    {
+        "id": "964b0643a9d3e071",
+        "type": "function",
+        "z": "b429cc46560fc6a7",
+        "name": "Target Device (Auto)",
+        "func": "let selectedDevice = flow.get(\"selectedDevice\");\nif (!selectedDevice) return null;\n\nif (selectedDevice === \"ALL MACHINE\") {\n    let cache = flow.get(\"esp32_cache\") || { devices: {} };\n    let msgs = [];\n    for (let device in cache.devices) {\n        msgs.push({\n            topic: `esp32/${device}/update/auto/set`,\n            payload: msg.payload\n        });\n    }\n    return [msgs]; // Broadcasts to all online devices sequentially\n} else {\n    msg.topic = `esp32/${selectedDevice}/update/auto/set`;\n    return msg;\n}",
+        "outputs": 1,
+        "x": 870,
+        "y": 300,
+        "wires": [
+            [
+                "11a1921f5fa6543e"
+            ]
+        ]
+    },
+    {
+        "id": "78400a094b893d2c",
+        "type": "function",
+        "z": "b429cc46560fc6a7",
+        "name": "Target Device (OTA)",
+        "func": "let selectedDevice = flow.get(\"selectedDevice\");\nif (!selectedDevice) return null;\n\nif (selectedDevice === \"ALL MACHINE\") {\n    let cache = flow.get(\"esp32_cache\") || { devices: {} };\n    let msgs = [];\n    for (let device in cache.devices) {\n        msgs.push({\n            topic: `esp32/${device}/ota_trigger`,\n            payload: \"1\"\n        });\n    }\n    return [msgs]; // Broadcasts to all online devices sequentially\n} else {\n    msg.topic = `esp32/${selectedDevice}/ota_trigger`;\n    msg.payload = \"1\";\n    return msg;\n}",
+        "outputs": 1,
+        "x": 870,
+        "y": 340,
+        "wires": [
+            [
+                "11a1921f5fa6543e"
+            ]
+        ]
+    },
+    {
+        "id": "11a1921f5fa6543e",
+        "type": "mqtt out",
+        "z": "b429cc46560fc6a7",
+        "name": "Master Command Out",
+        "topic": "",
+        "qos": "0",
+        "retain": "false",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "f7c9eba65970f8fc",
+        "x": 1170,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "format_set_counter",
+        "type": "function",
+        "z": "b429cc46560fc6a7",
+        "name": "Target Device (Set Count)",
+        "func": "let selectedDevice = flow.get(\"selectedDevice\");\nif (!selectedDevice) return null;\n\n// Convert \"DI3\" to 3\nlet sInt = parseInt(msg.payload.sensor.replace(\"DI\", \"\"));\nlet jsonPayload = JSON.stringify({ sensor: sInt, count: msg.payload.count });\n\nif (selectedDevice === \"ALL MACHINE\") {\n    let cache = flow.get(\"esp32_cache\") || { devices: {} };\n    let msgs = [];\n    for (let device in cache.devices) {\n        msgs.push({\n            topic: `esp32/${device}/triggercount/set`,\n            payload: jsonPayload\n        });\n    }\n    return [msgs];\n} else {\n    msg.topic = `esp32/${selectedDevice}/triggercount/set`;\n    msg.payload = jsonPayload;\n    return msg;\n}",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 860,
+        "y": 120,
+        "wires": [
+            [
+                "11a1921f5fa6543e"
+            ]
+        ]
+    },
+    {
+        "id": "format_reset_counter",
+        "type": "function",
+        "z": "b429cc46560fc6a7",
+        "name": "Target Device (Reset Count)",
+        "func": "let selectedDevice = flow.get(\"selectedDevice\");\nif (!selectedDevice) return null;\n\n// Convert \"DI3\" to 3\nlet sInt = parseInt(msg.payload.sensor.replace(\"DI\", \"\"));\nlet jsonPayload = JSON.stringify({ sensor: sInt });\n\nif (selectedDevice === \"ALL MACHINE\") {\n    let cache = flow.get(\"esp32_cache\") || { devices: {} };\n    let msgs = [];\n    for (let device in cache.devices) {\n        msgs.push({\n            topic: `esp32/${device}/triggercount/reset`,\n            payload: jsonPayload\n        });\n    }\n    return [msgs];\n} else {\n    msg.topic = `esp32/${selectedDevice}/triggercount/reset`;\n    msg.payload = jsonPayload;\n    return msg;\n}",
+        "outputs": 1,
+        "x": 850,
+        "y": 160,
+        "wires": [
+            [
+                "11a1921f5fa6543e"
+            ]
+        ]
+    },
+    {
+        "id": "783b0e16a54d6af6",
+        "type": "ui-form",
+        "z": "b429cc46560fc6a7",
+        "name": "",
+        "group": "b5505c288d2522f4",
+        "label": "Set Value Form",
+        "order": 6,
+        "width": 4,
+        "height": "5",
+        "options": [
+            {
+                "label": "Select DI",
+                "key": "sensor",
+                "type": "dropdown",
+                "required": true,
+                "rows": null
+            },
+            {
+                "label": "New Count Value",
+                "key": "count",
+                "type": "number",
+                "required": true,
+                "rows": null
+            }
+        ],
+        "formValue": {
+            "sensor": "",
+            "count": ""
+        },
+        "submit": "Confirm New Value",
+        "cancel": "Cancel",
+        "resetOnSubmit": false,
+        "topic": "",
+        "topicType": "str",
+        "splitLayout": false,
+        "className": "",
+        "dropdownOptions": [
+            {
+                "dropdown": "sensor",
+                "value": "0",
+                "label": "DI1"
+            },
+            {
+                "dropdown": "sensor",
+                "value": "1",
+                "label": "DI2"
+            },
+            {
+                "dropdown": "sensor",
+                "value": "2",
+                "label": "DI3"
+            },
+            {
+                "dropdown": "sensor",
+                "value": "3",
+                "label": "DI4"
+            },
+            {
+                "dropdown": "sensor",
+                "value": "4",
+                "label": "DI5"
+            },
+            {
+                "dropdown": "sensor",
+                "value": "5",
+                "label": "DI6"
+            },
+            {
+                "dropdown": "sensor",
+                "value": "6",
+                "label": "DI7"
+            },
+            {
+                "dropdown": "sensor",
+                "value": "7",
+                "label": "DI8"
+            }
+        ],
+        "x": 610,
+        "y": 120,
+        "wires": [
+            [
+                "format_set_counter"
+            ]
+        ]
+    },
+    {
+        "id": "0c03d966d08d82bf",
+        "type": "ui-form",
+        "z": "b429cc46560fc6a7",
+        "name": "Reset Counter Form",
+        "group": "b5505c288d2522f4",
+        "label": "Reset Counter Form",
+        "order": 7,
+        "width": 4,
+        "height": "4",
+        "options": [
+            {
+                "label": "Select DI",
+                "key": "sensor",
+                "type": "dropdown",
+                "required": true,
+                "rows": null
+            }
+        ],
+        "formValue": {
+            "sensor": ""
+        },
+        "submit": "Reset Counter",
+        "cancel": "Cancel",
+        "resetOnSubmit": false,
+        "topic": "",
+        "topicType": "str",
+        "splitLayout": false,
+        "className": "",
+        "dropdownOptions": [
+            {
+                "dropdown": "sensor",
+                "value": "0",
+                "label": "DI1"
+            },
+            {
+                "dropdown": "sensor",
+                "value": "1",
+                "label": "DI2"
+            },
+            {
+                "dropdown": "sensor",
+                "value": "2",
+                "label": "DI3"
+            },
+            {
+                "dropdown": "sensor",
+                "value": "3",
+                "label": "DI4"
+            },
+            {
+                "dropdown": "sensor",
+                "value": "4",
+                "label": "DI5"
+            },
+            {
+                "dropdown": "sensor",
+                "value": "5",
+                "label": "DI6"
+            },
+            {
+                "dropdown": "sensor",
+                "value": "6",
+                "label": "DI7"
+            },
+            {
+                "dropdown": "sensor",
+                "value": "7",
+                "label": "DI8"
+            }
+        ],
+        "x": 600,
+        "y": 160,
+        "wires": [
+            [
+                "format_reset_counter"
+            ]
+        ]
+    },
+    {
+        "id": "function_telegram_format",
+        "type": "function",
+        "z": "b429cc46560fc6a7",
+        "name": "Format & Add Chat ID",
+        "func": "// 1. Parse the incoming JSON safely\nlet doc;\nif (typeof msg.payload === \"object\") {\n    doc = msg.payload;\n} else {\n    try {\n        doc = JSON.parse(msg.payload.toString());\n    } catch (e) {\n        return null;\n    }\n}\n\n// 2. Inject default Chat ID for spontaneous alerts (Boot, Reject, OTA)\nif (!doc.chatId) {\n    doc.chatId = \"721886383\"; // Your Admin Chat ID\n}\n\nlet chatId = doc.chatId;\n\n// 3. Clear any pending command timeouts (so your bot doesn't get stuck)\nlet timeouts = flow.get(\"timeouts\") || {};\nif (timeouts[chatId]) {\n    clearTimeout(timeouts[chatId]);\n    delete timeouts[chatId];\n    flow.set(\"timeouts\", timeouts);\n}\n\n// 4. Format the final Telegram message\nlet finalMessage = doc.message;\nif (doc.device) {\n    // I left the \\n here so it matches your original style!\n    finalMessage = `[${doc.device}]\\n${doc.message}`;\n}\n\nmsg.payload = {\n    type: \"message\",\n    chatId: chatId,\n    content: finalMessage\n};\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 880,
+        "y": 560,
+        "wires": [
+            [
+                "telegram_sender"
+            ]
+        ]
+    },
+    {
+        "id": "ea9dd93b3d441040",
+        "type": "mqtt-broker",
+        "name": "EMQX Broker (WS)",
+        "broker": "ws://10.12.27.21:8083/mqtt",
+        "port": "8083",
+        "clientid": "Node-RED_Middleware_Websocket",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": 60,
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "f7c9eba65970f8fc",
+        "type": "mqtt-broker",
+        "name": "EMQX Broker",
+        "broker": "127.0.0.1",
+        "port": 1883,
+        "clientid": "Node-RED-Middleware",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": 4,
+        "keepalive": 60,
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "b5505c288d2522f4",
+        "type": "ui-group",
+        "name": "MAIN CONTROL",
+        "page": "8a8f7e395db9fff7",
+        "width": "4",
+        "height": 1,
+        "order": 2,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "telegram_bot_config",
+        "type": "telegram bot",
+        "botname": "MyESP32FleetBot",
+        "usernames": "",
+        "chatids": "",
+        "baseapiurl": "",
+        "testenvironment": false,
+        "updatemode": "polling",
+        "pollinterval": "300",
+        "usesocks": false,
+        "sockshost": "",
+        "socksport": "6667",
+        "socksusername": "anonymous",
+        "sockspassword": "",
+        "bothost": "",
+        "botpath": "",
+        "localbothost": "",
+        "localbotport": "8443",
+        "publicbotport": "8443",
+        "privatekey": "",
+        "certificate": "",
+        "useselfsignedcertificate": false,
+        "sslterminated": false,
+        "verboselogging": false
+    },
+    {
+        "id": "8a8f7e395db9fff7",
+        "type": "ui-page",
+        "name": "ESP32 Dashboard",
+        "ui": "10737ae8338874c8",
+        "path": "/ESP32",
+        "icon": "home",
+        "layout": "grid",
+        "theme": "5a4f58f57bc5f0ae",
+        "breakpoints": [
+            {
+                "name": "Default",
+                "px": "0",
+                "cols": "3"
+            },
+            {
+                "name": "Tablet",
+                "px": "576",
+                "cols": "6"
+            },
+            {
+                "name": "Small Desktop",
+                "px": "768",
+                "cols": "9"
+            },
+            {
+                "name": "Desktop",
+                "px": "1024",
+                "cols": "12"
+            }
+        ],
+        "order": 1,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "10737ae8338874c8",
+        "type": "ui-base",
+        "name": "UI Name",
+        "path": "/dashboard",
+        "appIcon": "",
+        "includeClientData": true,
+        "acceptsClientConfig": [
+            "ui-notification",
+            "ui-control"
+        ],
+        "showPathInSidebar": false,
+        "headerContent": "page",
+        "navigationStyle": "default",
+        "titleBarStyle": "default",
+        "showReconnectNotification": true,
+        "notificationDisplayTime": 1,
+        "showDisconnectNotification": true,
+        "allowInstall": true
+    },
+    {
+        "id": "5a4f58f57bc5f0ae",
+        "type": "ui-theme",
+        "name": "ui-base.label.theme 2",
+        "colors": {
+            "surface": "#ffffff",
+            "primary": "#0094CE",
+            "bgPage": "#eeeeee",
+            "groupBg": "#ffffff",
+            "groupOutline": "#cccccc"
+        },
+        "sizes": {
+            "density": "default",
+            "pagePadding": "12px",
+            "groupGap": "12px",
+            "groupBorderRadius": "4px",
+            "widgetGap": "12px"
+        }
+    },
+    {
+        "id": "9d02986c670f6069",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "@flowfuse/node-red-dashboard": "1.30.2",
+            "node-red-contrib-telegrambot": "19.0.0"
+        }
+    }
+]
