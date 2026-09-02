@@ -457,7 +457,7 @@ void performGitHubOTA() {
 
   HTTPClient http;
   http.begin(*client, "https://raw.githubusercontent.com/imaller43/"
-                      "ESP32_GUI_SIB/main/version.json");
+                      "ESP32_GUI_SIB/OTA-Update/version.json");
   int httpCode = http.GET();
   if (httpCode != HTTP_CODE_OK) {
     tgSend(F("OTA failed: Could not fetch version.json"));

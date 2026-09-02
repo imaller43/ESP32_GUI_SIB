@@ -1,6 +1,6 @@
 {
   "firmware_version": 1.1,
   "fs_version": 1.1,
-  "firmware_url": "https://raw.githubusercontent.com/imaller43/ESP32_GUI_SIB/main/firmware.bin",
-  "fs_url": "https://raw.githubusercontent.com/imaller43/ESP32_GUI_SIB/main/littlefs.bin"
+  "firmware_url": "https://raw.githubusercontent.com/imaller43/ESP32_GUI_SIB/OTA-Update/firmware.bin",
+  "fs_url": "https://raw.githubusercontent.com/imaller43/ESP32_GUI_SIB/OTA-Update/littlefs.bin"
 }
