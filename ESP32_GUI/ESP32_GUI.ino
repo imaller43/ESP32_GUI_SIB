@@ -19,7 +19,7 @@
 #include <WiFiClientSecure.h>
 #include <Wire.h>
 
-#define FIRMWARE_VERSION 2.0
+#define FIRMWARE_VERSION 2.1
 float currentFsVersion = 1.0;
 
 void tgSend(const String &msg, const String &chatId = "");
@@ -581,7 +581,7 @@ void checkDailyOTA() {
 //  TELEGRAM
 // ===========================================================
 void loadTelegramConfig() {
-  tgConfig.enabled = false;
+  tgConfig.enabled = true;
   tgConfig.rejectThreshold = 10;
   if (!LittleFS.exists(F("/telegram.json")))
     return;
@@ -590,7 +590,7 @@ void loadTelegramConfig() {
     return;
   StaticJsonDocument<256> doc;
   if (!deserializeJson(doc, f)) {
-    tgConfig.enabled = doc["enabled"] | false;
+    tgConfig.enabled = doc["enabled"] | true;
     tgConfig.rejectThreshold = doc["rejectThreshold"] | 10;
   }
   f.close();
