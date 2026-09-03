@@ -19,7 +19,7 @@
 #include <WiFiClientSecure.h>
 #include <Wire.h>
 
-#define FIRMWARE_VERSION 2.1
+#define FIRMWARE_VERSION 2.2
 float currentFsVersion = 1.0;
 
 void tgSend(const String &msg, const String &chatId = "");
@@ -999,6 +999,8 @@ void mqttCallback(char *topic, byte *payload, unsigned int length) {
   String autoUpdateSetTopic =
       "esp32/" + String(deviceName) + "/update/auto/set";
   if (strcmp(topic, autoUpdateSetTopic.c_str()) == 0) {
+    if (length == 0)
+      return;
     char msg[2] = {0};
     memcpy(msg, payload, min(length, (unsigned int)1));
     autoUpdateEnabled = (strcmp(msg, "1") == 0);
@@ -1010,6 +1012,8 @@ void mqttCallback(char *topic, byte *payload, unsigned int length) {
 
   String tgSetTopic = "esp32/" + String(deviceName) + "/telegram/enabled/set";
   if (strcmp(topic, tgSetTopic.c_str()) == 0) {
+    if (length == 0)
+      return;
     char msg[2] = {0};
     memcpy(msg, payload, min(length, (unsigned int)1));
     tgConfig.enabled = (strcmp(msg, "1") == 0);
@@ -1118,7 +1122,9 @@ void reconnectMQTT() {
     String trigSetTopic = "esp32/" + String(deviceName) + "/triggercount/set";
     String trigResetTopic =
         "esp32/" + String(deviceName) + "/triggercount/reset";
+    mqtt.publish(trigSetTopic.c_str(), "", true);
     mqtt.subscribe(trigSetTopic.c_str());
+    mqtt.publish(trigResetTopic.c_str(), "", true);
     mqtt.subscribe(trigResetTopic.c_str());
     mqtt.subscribe("esp32/ota_trigger");
     String otaTriggerTopic = "esp32/" + String(deviceName) + "/ota_trigger";
@@ -1126,12 +1132,15 @@ void reconnectMQTT() {
 
     String autoUpdateSetTopic =
         "esp32/" + String(deviceName) + "/update/auto/set";
+    mqtt.publish(autoUpdateSetTopic.c_str(), "", true);
     mqtt.subscribe(autoUpdateSetTopic.c_str());
 
     String cmdTopic = "esp32/" + String(deviceName) + "/command";
+    mqtt.publish(cmdTopic.c_str(), "", true);
     mqtt.subscribe(cmdTopic.c_str());
 
     String tgSetTopic = "esp32/" + String(deviceName) + "/telegram/enabled/set";
+    mqtt.publish(tgSetTopic.c_str(), "", true);
     mqtt.subscribe(tgSetTopic.c_str());
 
     String autoUpdateStatusTopic =
