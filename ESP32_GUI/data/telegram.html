@@ -38,8 +38,11 @@
 
   <div class="container">
     <h1>Telegram Bot</h1>
+    <div id="tgIndicator" class="status-indicator red" style="display:none;">
+      <span class="dot"></span>
+      <span id="tgIndicatorMsg">Telegram Bot is disabled. Alerts will not be sent.</span>
+    </div>
     <hr style="border: 0; border-bottom: 2px solid var(--border-color); margin-bottom: 20px;">
-
     <!-- Credentials -->
     <div class="tg-section" style="max-width:300px; margin: 0 auto 20px auto; padding: 15px;">
       <div class="tg-section-title" style="margin-bottom:15px;">Settings</div>
@@ -160,6 +163,19 @@
       document.body.appendChild(div);
     }
 
+    function updateTgIndicator(enabled) {
+      const ind = document.getElementById('tgIndicator');
+      const msg = document.getElementById('tgIndicatorMsg');
+      ind.style.display = 'flex';
+      if (enabled) {
+        ind.className = 'status-indicator green';
+        msg.innerHTML = 'Telegram Bot is <strong>enabled</strong> and active.';
+      } else {
+        ind.className = 'status-indicator red';
+        msg.innerHTML = 'Telegram Bot is <strong>disabled</strong>. Alerts will not be sent.';
+      }
+    }
+
     async function loadTgConfig(isPolling = false) {
       try {
         const res = await fetchTimeout('/getTelegramConfig', 4000);
@@ -169,6 +185,7 @@
 
         document.getElementById('tgEnabled').checked = d.enabled;
         document.getElementById('tgEnabledLabel').textContent = d.enabled ? 'Enabled' : 'Disabled';
+        updateTgIndicator(d.enabled);
 
         if (!isPolling) {
           document.getElementById('rejectThreshold').value = d.rejectThreshold;
@@ -216,6 +233,7 @@
 
     document.getElementById('tgEnabled').addEventListener('change', function () {
       document.getElementById('tgEnabledLabel').textContent = this.checked ? 'Enabled' : 'Disabled';
+      updateTgIndicator(this.checked);
     });
 
     loadTgConfig();

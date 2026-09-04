@@ -35,8 +35,13 @@
   </nav>
 
   <div class="container">
-    <div class="dash-header" style="text-align: center; justify-content: center;">
+    <div class="dash-header" style="text-align: center; justify-content: center; margin-bottom: 20px;">
       <h1 class="dash-title">System Update</h1>
+    </div>
+
+    <div id="updateIndicator" class="status-indicator red" style="display:none; max-width: 600px; margin: 0 auto 20px auto;">
+      <span class="dot"></span>
+      <span id="updateIndicatorMsg">Auto Update is disabled. Updates must be applied manually.</span>
     </div>
 
     <!-- Auto-Update Toggle -->
@@ -204,6 +209,19 @@
       document.body.appendChild(div);
     }
 
+    function updateUpdateIndicator(enabled) {
+      const ind = document.getElementById('updateIndicator');
+      const msg = document.getElementById('updateIndicatorMsg');
+      ind.style.display = 'flex';
+      if (enabled) {
+        ind.className = 'status-indicator green';
+        msg.innerHTML = 'Auto Update is <strong>enabled</strong>. The system will check for updates daily.';
+      } else {
+        ind.className = 'status-indicator red';
+        msg.innerHTML = 'Auto Update is <strong>disabled</strong>. Updates must be applied manually.';
+      }
+    }
+
     async function toggleAutoUpdate(enabled) {
       try {
         const res = await fetch('/setAutoUpdate', {
@@ -213,10 +231,12 @@
         });
         if (!res.ok) throw new Error('Network error');
         document.getElementById('autoUpdateLabel').textContent = enabled ? 'Enabled' : 'Disabled';
+        updateUpdateIndicator(enabled);
       } catch (e) {
         alert('Failed to set auto-update status: ' + e);
         document.getElementById('autoUpdateToggle').checked = !enabled;
         document.getElementById('autoUpdateLabel').textContent = !enabled ? 'Enabled' : 'Disabled';
+        updateUpdateIndicator(!enabled);
       }
     }
 
@@ -230,6 +250,7 @@
         if (h.autoUpdate !== undefined) {
           document.getElementById('autoUpdateToggle').checked = h.autoUpdate;
           document.getElementById('autoUpdateLabel').textContent = h.autoUpdate ? 'Enabled' : 'Disabled';
+          updateUpdateIndicator(h.autoUpdate);
         }
       } catch (e) {
         if (!isOffline) {
