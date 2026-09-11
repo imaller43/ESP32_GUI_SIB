@@ -1860,6 +1860,12 @@ void loop() {
           static const int diMultipliers[8] = {
               1, 1, 1, 1, 1, 1, 1, 1}; // modify the counter multiplier
           triggerCount[i] += diMultipliers[i];
+          
+          if (mqtt.connected()) {
+            String countTopic = "esp32/" + String(deviceName) + "/count/di" + String(i + 1);
+            mqtt.publish(countTopic.c_str(), String(triggerCount[i]).c_str());
+          }
+          
           lastOnStartMs[i] = now;
           if (i == 3) {
             cycleStartMs = now;
