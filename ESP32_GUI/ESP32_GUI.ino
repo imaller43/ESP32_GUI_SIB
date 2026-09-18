@@ -19,7 +19,7 @@
 #include <WiFiClientSecure.h>
 #include <Wire.h>
 
-#define FIRMWARE_VERSION 2.3
+#define FIRMWARE_VERSION 2.4
 float currentFsVersion = 1.0;
 
 void tgSend(const String &msg, const String &chatId = "");
@@ -979,6 +979,12 @@ void mqttCallback(char *topic, byte *payload, unsigned int length) {
           } else {
             triggerCount[sensor] = 0;
           }
+          if (mqtt.connected()) {
+            String countTopic = "esp32/" + String(deviceName) + "/count/di" +
+                                String(sensor + 1);
+            mqtt.publish(countTopic.c_str(),
+                         String(triggerCount[sensor]).c_str());
+          }
           if (sensor == 6) {
             rejectCount = triggerCount[sensor];
           }
@@ -1049,6 +1055,11 @@ void mqttCallback(char *topic, byte *payload, unsigned int length) {
         unsigned long now = millis();
         for (int i = 0; i < 8; i++) {
           triggerCount[i] = 0;
+          if (mqtt.connected()) {
+            String countTopic =
+                "esp32/" + String(deviceName) + "/count/di" + String(i + 1);
+            mqtt.publish(countTopic.c_str(), "0");
+          }
           totalOnTimeMs[i] = 0;
           if (diCurrentlyOn[i])
             lastOnStartMs[i] = now;
@@ -1255,6 +1266,11 @@ void handleResetMetrics() {
   if (target == "all") {
     for (int i = 0; i < 8; i++) {
       triggerCount[i] = 0;
+      if (mqtt.connected()) {
+        String countTopic =
+            "esp32/" + String(deviceName) + "/count/di" + String(i + 1);
+        mqtt.publish(countTopic.c_str(), "0");
+      }
       totalOnTimeMs[i] = 0;
       if (diCurrentlyOn[i])
         lastOnStartMs[i] = now;
@@ -1268,6 +1284,11 @@ void handleResetMetrics() {
     int ch = target.substring(2).toInt();
     if (ch >= 0 && ch < 8) {
       triggerCount[ch] = 0;
+      if (mqtt.connected()) {
+        String countTopic =
+            "esp32/" + String(deviceName) + "/count/di" + String(ch + 1);
+        mqtt.publish(countTopic.c_str(), "0");
+      }
       totalOnTimeMs[ch] = 0;
       if (diCurrentlyOn[ch])
         lastOnStartMs[ch] = now;
