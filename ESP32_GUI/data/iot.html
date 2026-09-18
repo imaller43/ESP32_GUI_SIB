@@ -387,6 +387,9 @@
               baseTopic = lcp.substring(0, lastSlash + 1);
             }
           }
+          if (!baseTopic.startsWith('esp32/')) {
+            baseTopic = 'esp32/' + (d.deviceName || 'esp32') + '/';
+          }
           document.getElementById('baseTopic').value = baseTopic;
 
           for (let i = 0; i < 8; i++) {
@@ -426,6 +429,22 @@
             });
           });
           document.getElementById('baseTopic').dispatchEvent(new Event('input'));
+
+          document.getElementById('deviceName').addEventListener('input', function () {
+            const newName = this.value || 'esp32';
+            let baseInput = document.getElementById('baseTopic');
+            let currentBase = baseInput.value;
+            if (currentBase.startsWith('esp32/')) {
+              let parts = currentBase.split('/');
+              if (parts.length >= 2) {
+                parts[1] = newName;
+                baseInput.value = parts.join('/');
+              }
+            } else {
+              baseInput.value = 'esp32/' + newName + '/';
+            }
+            baseInput.dispatchEvent(new Event('input'));
+          });
         }
         updateMqttStatusBadge(d);
       } catch (e) { console.error(e); }
