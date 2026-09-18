@@ -2,7 +2,7 @@ name: Auto-Build ESP32 Firmware
 
 on:
   push:
-    branches: [ "main", "2.0-(Node-RED-Integrated)" ]
+    branches: [ "main", "2.0-(Node-RED-Integrated)","New-Version" ]
     paths:
       - 'ESP32_GUI/**'
       - 'version.json'
