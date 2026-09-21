@@ -19,7 +19,7 @@
 #include <WiFiClientSecure.h>
 #include <Wire.h>
 
-#define FIRMWARE_VERSION 2.7
+#define FIRMWARE_VERSION 2.8
 float currentFsVersion = 1.0;
 
 void tgSend(const String &msg, const String &chatId = "");
@@ -1310,7 +1310,7 @@ void handleResetMetrics() {
 void handleGetConfig() {
   if (!requireAuth())
     return;
-  StaticJsonDocument<1024> doc;
+  DynamicJsonDocument doc(8192);
   doc["deviceName"] = deviceName;
   doc["mqttMode"] = mqttCfg.mode;
   doc["mqttProto"] = mqttCfg.proto;
