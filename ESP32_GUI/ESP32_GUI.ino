@@ -19,7 +19,7 @@
 #include <WiFiClientSecure.h>
 #include <Wire.h>
 
-#define FIRMWARE_VERSION 2.5
+#define FIRMWARE_VERSION 2.6
 float currentFsVersion = 1.0;
 
 void tgSend(const String &msg, const String &chatId = "");
@@ -1392,16 +1392,24 @@ void handleSave() {
         true; // force reconnect if they changed, though we'll just set it
   }
   for (int i = 0; i < 8; i++) {
-    strlcpy(inputConfig[i].topic, server.arg("in" + String(i)).c_str(), 50);
-    strlcpy(outputConfig[i].topic, server.arg("out" + String(i)).c_str(), 50);
-    String inPubMs = server.arg("inPubMs" + String(i));
-    String outPubMs = server.arg("outPubMs" + String(i));
-    if (inPubMs.length() > 0)
-      inputConfig[i].pubIntervalMs =
-          (uint32_t)constrain(inPubMs.toInt(), 0, 60000);
-    if (outPubMs.length() > 0)
-      outputConfig[i].pubIntervalMs =
-          (uint32_t)constrain(outPubMs.toInt(), 0, 60000);
+    if (server.hasArg("in" + String(i))) {
+      strlcpy(inputConfig[i].topic, server.arg("in" + String(i)).c_str(), 50);
+    }
+    if (server.hasArg("out" + String(i))) {
+      strlcpy(outputConfig[i].topic, server.arg("out" + String(i)).c_str(), 50);
+    }
+    if (server.hasArg("inPubMs" + String(i))) {
+      String inPubMs = server.arg("inPubMs" + String(i));
+      if (inPubMs.length() > 0)
+        inputConfig[i].pubIntervalMs =
+            (uint32_t)constrain(inPubMs.toInt(), 0, 60000);
+    }
+    if (server.hasArg("outPubMs" + String(i))) {
+      String outPubMs = server.arg("outPubMs" + String(i));
+      if (outPubMs.length() > 0)
+        outputConfig[i].pubIntervalMs =
+            (uint32_t)constrain(outPubMs.toInt(), 0, 60000);
+    }
   }
   saveConfig();
   if (mqttChanged)
