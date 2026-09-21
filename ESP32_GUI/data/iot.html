@@ -491,43 +491,69 @@
 
     document.getElementById('mqttForm').onsubmit = async function (e) {
       e.preventDefault();
-      const params = new URLSearchParams();
-      params.set('deviceName', document.getElementById('deviceName').value);
-      params.set('mqttMode', currentMode);
+      const params1 = new URLSearchParams();
+      params1.set('deviceName', document.getElementById('deviceName').value);
+      params1.set('mqttMode', currentMode);
       if (currentMode === 'local') {
-        params.set('mqttProto', document.getElementById('localProto').value);
-        params.set('mqttHost', document.getElementById('localHost').value);
-        params.set('mqttPort', document.getElementById('localPort').value);
-        params.set('mqttPath', '');
-        params.set('mqttUser', document.getElementById('localUser').value);
-        params.set('mqttPass', document.getElementById('localPass').value);
+        params1.set('mqttProto', document.getElementById('localProto').value);
+        params1.set('mqttHost', document.getElementById('localHost').value);
+        params1.set('mqttPort', document.getElementById('localPort').value);
+        params1.set('mqttPath', '');
+        params1.set('mqttUser', document.getElementById('localUser').value);
+        params1.set('mqttPass', document.getElementById('localPass').value);
       } else {
-        params.set('mqttProto', document.getElementById('cloudProto').value);
-        params.set('mqttHost', document.getElementById('cloudHost').value);
-        params.set('mqttPort', document.getElementById('cloudPort').value);
-        params.set('mqttPath', document.getElementById('cloudPath').value);
-        params.set('mqttUser', document.getElementById('cloudUser').value);
-        params.set('mqttPass', document.getElementById('cloudPass').value);
+        params1.set('mqttProto', document.getElementById('cloudProto').value);
+        params1.set('mqttHost', document.getElementById('cloudHost').value);
+        params1.set('mqttPort', document.getElementById('cloudPort').value);
+        params1.set('mqttPath', document.getElementById('cloudPath').value);
+        params1.set('mqttUser', document.getElementById('cloudUser').value);
+        params1.set('mqttPass', document.getElementById('cloudPass').value);
       }
+      
       // Collect DI topic rows
       let base = document.getElementById('baseTopic').value;
       if (base && !base.endsWith('/')) base += '/';
       document.querySelectorAll('#diInputs .topic-row').forEach((row, i) => {
-        params.set('in' + i, base + row.querySelector('.topic-suffix-input').value);
-        params.set('inPubMs' + i, row.querySelector('.pub-input').value);
+        params1.set('in' + i, base + row.querySelector('.topic-suffix-input').value);
+        params1.set('inPubMs' + i, row.querySelector('.pub-input').value);
       });
-      // Collect DO topic rows
+      
+      // Collect DO topic rows (SEND SEPARATELY)
+      const params2 = new URLSearchParams();
       document.querySelectorAll('#doInputs .topic-row').forEach((row, i) => {
-        params.set('out' + i, base + row.querySelector('.topic-suffix-input').value);
-        params.set('outPubMs' + i, row.querySelector('.pub-input').value);
+        params2.set('out' + i, base + row.querySelector('.topic-suffix-input').value);
+        params2.set('outPubMs' + i, row.querySelector('.pub-input').value);
       });
-      const r = await fetch('/save', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: params.toString()
-      });
-      if (r.ok) { alert('MQTT config saved. ESP32 will reconnect if broker changed.'); setTimeout(pollMqttStatusGuarded, 1500); }
-      else alert('Save failed: ' + await r.text());
+      
+      const btn = document.querySelector('#mqttForm button[type="submit"]');
+      const origText = btn.innerText;
+      btn.innerText = 'Saving...';
+      btn.disabled = true;
+
+      try {
+        const r1 = await fetch('/save', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: params1.toString()
+        });
+        const r2 = await fetch('/save', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: params2.toString()
+        });
+        
+        if (r1.ok && r2.ok) { 
+          alert('MQTT config saved. ESP32 will reconnect if broker changed.');
+          btn.innerText = origText;
+          btn.disabled = false;
+          setTimeout(pollMqttStatusGuarded, 1500); 
+        }
+        else throw new Error('Save failed');
+      } catch(err) {
+        alert('Save failed.');
+        btn.innerText = origText;
+        btn.disabled = false;
+      }
     };
 
     // ── Init ──────────────────────────────────────────────────────────
