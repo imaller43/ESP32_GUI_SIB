@@ -491,58 +491,47 @@
 
     document.getElementById('mqttForm').onsubmit = async function (e) {
       e.preventDefault();
-      const params1 = new URLSearchParams();
-      params1.set('deviceName', document.getElementById('deviceName').value);
-      params1.set('mqttMode', currentMode);
-      if (currentMode === 'local') {
-        params1.set('mqttProto', document.getElementById('localProto').value);
-        params1.set('mqttHost', document.getElementById('localHost').value);
-        params1.set('mqttPort', document.getElementById('localPort').value);
-        params1.set('mqttPath', '');
-        params1.set('mqttUser', document.getElementById('localUser').value);
-        params1.set('mqttPass', document.getElementById('localPass').value);
-      } else {
-        params1.set('mqttProto', document.getElementById('cloudProto').value);
-        params1.set('mqttHost', document.getElementById('cloudHost').value);
-        params1.set('mqttPort', document.getElementById('cloudPort').value);
-        params1.set('mqttPath', document.getElementById('cloudPath').value);
-        params1.set('mqttUser', document.getElementById('cloudUser').value);
-        params1.set('mqttPass', document.getElementById('cloudPass').value);
-      }
       
-      // Collect DI topic rows
+      const payload = {
+        deviceName: document.getElementById('deviceName').value,
+        mqttMode: currentMode,
+        mqttProto: currentMode === 'local' ? document.getElementById('localProto').value : document.getElementById('cloudProto').value,
+        mqttHost: currentMode === 'local' ? document.getElementById('localHost').value : document.getElementById('cloudHost').value,
+        mqttPort: currentMode === 'local' ? parseInt(document.getElementById('localPort').value) : parseInt(document.getElementById('cloudPort').value),
+        mqttPath: currentMode === 'local' ? '' : document.getElementById('cloudPath').value,
+        mqttUser: currentMode === 'local' ? document.getElementById('localUser').value : document.getElementById('cloudUser').value,
+        mqttPass: currentMode === 'local' ? document.getElementById('localPass').value : document.getElementById('cloudPass').value,
+        inputs: [],
+        inputPubMs: [],
+        outputs: [],
+        outputPubMs: []
+      };
+
       let base = document.getElementById('baseTopic').value;
       if (base && !base.endsWith('/')) base += '/';
-      document.querySelectorAll('#diInputs .topic-row').forEach((row, i) => {
-        params1.set('in' + i, base + row.querySelector('.topic-suffix-input').value);
-        params1.set('inPubMs' + i, row.querySelector('.pub-input').value);
-      });
       
-      // Collect DO topic rows (SEND SEPARATELY)
-      const params2 = new URLSearchParams();
-      document.querySelectorAll('#doInputs .topic-row').forEach((row, i) => {
-        params2.set('out' + i, base + row.querySelector('.topic-suffix-input').value);
-        params2.set('outPubMs' + i, row.querySelector('.pub-input').value);
+      document.querySelectorAll('#diInputs .topic-row').forEach((row) => {
+        payload.inputs.push(base + row.querySelector('.topic-suffix-input').value);
+        payload.inputPubMs.push(parseInt(row.querySelector('.pub-input').value) || 0);
       });
-      
+      document.querySelectorAll('#doInputs .topic-row').forEach((row) => {
+        payload.outputs.push(base + row.querySelector('.topic-suffix-input').value);
+        payload.outputPubMs.push(parseInt(row.querySelector('.pub-input').value) || 0);
+      });
+
       const btn = document.querySelector('#mqttForm button[type="submit"]');
       const origText = btn.innerText;
       btn.innerText = 'Saving...';
       btn.disabled = true;
 
       try {
-        const r1 = await fetch('/save', {
+        const r = await fetch('/save', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: params1.toString()
-        });
-        const r2 = await fetch('/save', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: params2.toString()
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
         });
         
-        if (r1.ok && r2.ok) { 
+        if (r.ok) { 
           alert('MQTT config saved. ESP32 will reconnect if broker changed.');
           btn.innerText = origText;
           btn.disabled = false;

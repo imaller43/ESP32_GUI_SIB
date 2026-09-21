@@ -19,7 +19,7 @@
 #include <WiFiClientSecure.h>
 #include <Wire.h>
 
-#define FIRMWARE_VERSION 2.6
+#define FIRMWARE_VERSION 2.7
 float currentFsVersion = 1.0;
 
 void tgSend(const String &msg, const String &chatId = "");
@@ -1352,6 +1352,59 @@ void handleGetHealth() {
 void handleSave() {
   if (!requireAuth())
     return;
+
+  // --- NEW: Robust JSON Parser to bypass ESP32 max POST args limit! ---
+  if (server.hasArg("plain")) {
+    String body = server.arg("plain");
+    DynamicJsonDocument doc(4096);
+    if (deserializeJson(doc, body) == DeserializationError::Ok &&
+        doc.containsKey("inputs")) {
+      bool mqttChanged = false;
+      if (doc.containsKey("deviceName")) {
+        const char *dn = doc["deviceName"];
+        if (strlen(dn) > 0 && strcmp(dn, deviceName) != 0) {
+          if (mqtt.connected())
+            mqtt.publish((String("esp32/") + deviceName + "/status").c_str(),
+                         "offline", true);
+          strlcpy(deviceName, dn, sizeof(deviceName));
+          mqttChanged = true;
+        }
+      }
+      if (doc.containsKey("mqttMode")) {
+        strlcpy(mqttCfg.mode, doc["mqttMode"] | mqttCfg.mode,
+                sizeof(mqttCfg.mode));
+        strlcpy(mqttCfg.proto, doc["mqttProto"] | mqttCfg.proto,
+                sizeof(mqttCfg.proto));
+        strlcpy(mqttCfg.host, doc["mqttHost"] | mqttCfg.host,
+                sizeof(mqttCfg.host));
+        mqttCfg.port = doc["mqttPort"] | mqttCfg.port;
+        strlcpy(mqttCfg.path, doc["mqttPath"] | mqttCfg.path,
+                sizeof(mqttCfg.path));
+        strlcpy(mqttCfg.user, doc["mqttUser"] | mqttCfg.user,
+                sizeof(mqttCfg.user));
+        strlcpy(mqttCfg.pass, doc["mqttPass"] | mqttCfg.pass,
+                sizeof(mqttCfg.pass));
+        mqttChanged = true;
+      }
+      for (int i = 0; i < 8; i++) {
+        strlcpy(inputConfig[i].topic, doc["inputs"][i] | inputConfig[i].topic,
+                50);
+        inputConfig[i].pubIntervalMs =
+            doc["inputPubMs"][i] | inputConfig[i].pubIntervalMs;
+        strlcpy(outputConfig[i].topic,
+                doc["outputs"][i] | outputConfig[i].topic, 50);
+        outputConfig[i].pubIntervalMs =
+            doc["outputPubMs"][i] | outputConfig[i].pubIntervalMs;
+      }
+      saveConfig();
+      if (mqttChanged)
+        applyMqttTransport();
+      server.send(200, F("text/plain"), F("OK"));
+      return;
+    }
+  }
+  // --- END NEW JSON PARSER ---
+
   String mode = server.arg("mqttMode"), proto = server.arg("mqttProto"),
          host = server.arg("mqttHost"), port = server.arg("mqttPort"),
          path = server.arg("mqttPath"), user = server.arg("mqttUser"),
