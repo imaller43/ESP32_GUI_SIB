@@ -19,7 +19,7 @@
 #include <WiFiClientSecure.h>
 #include <Wire.h>
 
-#define FIRMWARE_VERSION 2.4
+#define FIRMWARE_VERSION 2.5
 float currentFsVersion = 1.0;
 
 void tgSend(const String &msg, const String &chatId = "");
@@ -766,7 +766,7 @@ void loadConfig() {
   File f = LittleFS.open(F("/config.json"), "r");
   if (!f)
     return;
-  DynamicJsonDocument doc(4096);
+  DynamicJsonDocument doc(8192);
   if (deserializeJson(doc, f)) {
     f.close();
     return;
@@ -805,7 +805,7 @@ void loadConfig() {
 }
 
 void saveConfig() {
-  DynamicJsonDocument doc(3072);
+  DynamicJsonDocument doc(8192);
   doc["deviceName"] = deviceName;
   doc["mqttMode"] = mqttCfg.mode;
   doc["mqttProto"] = mqttCfg.proto;
