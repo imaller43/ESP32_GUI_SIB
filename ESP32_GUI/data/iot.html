@@ -421,6 +421,17 @@
           }
 
           document.getElementById('baseTopic').addEventListener('input', function () {
+            const devName = document.getElementById('deviceName').value || 'esp32';
+            const reqPrefix = 'esp32/' + devName + '/';
+            if (!this.value.startsWith(reqPrefix)) {
+              if (this.value.length < reqPrefix.length) {
+                this.value = reqPrefix;
+              } else {
+                // If they tried to modify the middle, just reset the prefix but keep the end if possible
+                // It's safer to just force it:
+                this.value = reqPrefix;
+              }
+            }
             let val = this.value;
             if (val && !val.endsWith('/')) val += '/';
             document.querySelectorAll('.base-topic-display').forEach(el => {
