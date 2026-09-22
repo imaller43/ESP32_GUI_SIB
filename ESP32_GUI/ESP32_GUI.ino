@@ -19,7 +19,7 @@
 #include <WiFiClientSecure.h>
 #include <Wire.h>
 
-#define FIRMWARE_VERSION 2.9
+#define FIRMWARE_VERSION 3.0
 float currentFsVersion = 1.0;
 
 void tgSend(const String &msg, const String &chatId = "");
@@ -616,7 +616,7 @@ void tgSend(const String &msg, const String &chatId) {
   }
   char payload[512];
   serializeJson(doc, payload);
-  mqtt.publish("esp32/telegram/out", payload);
+  mqtt.publish("telegram/esp32/out", payload);
 }
 
 String buildStatusMsg() {

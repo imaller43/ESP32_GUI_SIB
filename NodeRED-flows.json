@@ -20,7 +20,7 @@
         "rap": true,
         "rh": 0,
         "inputs": 0,
-        "x": 210,
+        "x": 190,
         "y": 980,
         "wires": [
             [
@@ -69,7 +69,8 @@
         "y": 1260,
         "wires": [
             [
-                "459458ccf5b1b727"
+                "459458ccf5b1b727",
+                "1109f90c213a5ad6"
             ]
         ]
     },
@@ -194,7 +195,7 @@
         "useregex": false,
         "removeregexcommand": false,
         "outputs": 1,
-        "x": 650,
+        "x": 670,
         "y": 1180,
         "wires": [
             [
@@ -217,7 +218,7 @@
         "useregex": false,
         "removeregexcommand": false,
         "outputs": 1,
-        "x": 670,
+        "x": 690,
         "y": 1220,
         "wires": [
             [
@@ -241,7 +242,8 @@
         "y": 1140,
         "wires": [
             [
-                "ea1e6fe826d24981"
+                "ea1e6fe826d24981",
+                "b8a2c46081de318b"
             ]
         ]
     },
@@ -261,7 +263,8 @@
         "y": 1100,
         "wires": [
             [
-                "7663f50fddc8423e"
+                "7663f50fddc8423e",
+                "1bab3905d2fec3ae"
             ],
             [
                 "ea1e6fe826d24981"
@@ -547,7 +550,7 @@
         "correl": "",
         "expiry": "",
         "broker": "f7c9eba65970f8fc",
-        "x": 1250,
+        "x": 1260,
         "y": 840,
         "wires": []
     },
@@ -768,7 +771,8 @@
         "y": 1180,
         "wires": [
             [
-                "ea1e6fe826d24981"
+                "ea1e6fe826d24981",
+                "49c7d49b019ea7c6"
             ]
         ]
     },
@@ -784,7 +788,7 @@
         "nl": false,
         "rap": true,
         "inputs": 0,
-        "x": 470,
+        "x": 430,
         "y": 200,
         "wires": [
             [
@@ -1459,12 +1463,119 @@
         ]
     },
     {
+        "id": "49c7d49b019ea7c6",
+        "type": "debug",
+        "z": "bc29ce5df0b271fd",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1180,
+        "y": 1260,
+        "wires": []
+    },
+    {
+        "id": "b8a2c46081de318b",
+        "type": "debug",
+        "z": "bc29ce5df0b271fd",
+        "name": "debug 2",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1220,
+        "y": 1060,
+        "wires": []
+    },
+    {
+        "id": "1bab3905d2fec3ae",
+        "type": "debug",
+        "z": "bc29ce5df0b271fd",
+        "name": "debug 3",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1240,
+        "y": 960,
+        "wires": []
+    },
+    {
+        "id": "1109f90c213a5ad6",
+        "type": "debug",
+        "z": "bc29ce5df0b271fd",
+        "name": "debug 4",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 860,
+        "y": 1280,
+        "wires": []
+    },
+    {
+        "id": "98f664a04273e1a0",
+        "type": "inject",
+        "z": "bc29ce5df0b271fd",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"device\":\"Machine3\", \"message\":\"Test from Node-RED\"}",
+        "payloadType": "json",
+        "x": 650,
+        "y": 1340,
+        "wires": [
+            [
+                "c3edac69348e6782"
+            ]
+        ]
+    },
+    {
+        "id": "c3edac69348e6782",
+        "type": "mqtt out",
+        "z": "bc29ce5df0b271fd",
+        "name": "",
+        "topic": "esp32/telegram/out",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "f2f83304bd65d202",
+        "x": 870,
+        "y": 1340,
+        "wires": []
+    },
+    {
         "id": "f7c9eba65970f8fc",
         "type": "mqtt-broker",
         "name": "EMQX Broker",
         "broker": "127.0.0.1",
         "port": 1883,
-        "clientid": "Node-RED-Middleware",
+        "clientid": "Node-RED_Middleware",
         "autoConnect": true,
         "usetls": false,
         "protocolVersion": 4,
@@ -1544,6 +1655,37 @@
         "groupType": "default"
     },
     {
+        "id": "f2f83304bd65d202",
+        "type": "mqtt-broker",
+        "name": "Node-RED-2 (WS)",
+        "broker": "ws://127.0.0.1:8083/mqtt",
+        "port": 1883,
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": 4,
+        "keepalive": 60,
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
         "id": "df592e1517d5c7f3",
         "type": "ui-page",
         "name": "ESP32 Main Control",
@@ -1576,8 +1718,8 @@
         ],
         "order": 1,
         "className": "",
-        "visible": "true",
-        "disabled": "false"
+        "visible": true,
+        "disabled": false
     },
     {
         "id": "10737ae8338874c8",
@@ -1619,7 +1761,7 @@
         }
     },
     {
-        "id": "bf3dbbc8bf1564f0",
+        "id": "9a8d4a7060b2609a",
         "type": "global-config",
         "env": [],
         "modules": {
