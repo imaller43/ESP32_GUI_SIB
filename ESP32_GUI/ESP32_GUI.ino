@@ -19,7 +19,7 @@
 #include <WiFiClientSecure.h>
 #include <Wire.h>
 
-#define FIRMWARE_VERSION 2.8
+#define FIRMWARE_VERSION 2.9
 float currentFsVersion = 1.0;
 
 void tgSend(const String &msg, const String &chatId = "");
@@ -1878,6 +1878,14 @@ void loop() {
         eth_connected ? ETH.localIP().toString() : WiFi.localIP().toString();
     tgSend("ESP32 Online\nIP: " + ip + "\nFW: v" + String(FIRMWARE_VERSION, 1) +
            " | FS: v" + String(currentFsVersion, 1));
+
+    // Publish loaded counts to MQTT on boot so Node-RED updates immediately!
+    for (int i = 0; i < 8; i++) {
+      String countTopic =
+          "esp32/" + String(deviceName) + "/count/di" + String(i + 1);
+      mqtt.publish(countTopic.c_str(), String(triggerCount[i]).c_str(),
+                   true); // Retained = true
+    }
   }
 
   unsigned long now = millis();
@@ -1893,10 +1901,25 @@ void loop() {
     lastMetricAccMs = now;
   }
 
-  // Periodic metrics save every 5 min
-  if (now - lastMetricsSaveMs >= 300000UL) {
+  // Periodic metrics save every 30 seconds (only if changed!)
+  if (now - lastMetricsSaveMs >= 30000) {
     lastMetricsSaveMs = now;
-    saveMetrics();
+
+    static unsigned long lastSavedTriggerCount[8] = {0};
+    bool changed = false;
+    for (int i = 0; i < 8; i++) {
+      if (triggerCount[i] != lastSavedTriggerCount[i]) {
+        changed = true;
+        break;
+      }
+    }
+
+    if (changed) {
+      saveMetrics();
+      for (int i = 0; i < 8; i++) {
+        lastSavedTriggerCount[i] = triggerCount[i];
+      }
+    }
   }
 
   // Per-topic periodic MQTT heartbeat for DI

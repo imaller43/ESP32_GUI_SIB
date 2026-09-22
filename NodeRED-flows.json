@@ -1,6 +1,6 @@
 [
     {
-        "id": "b429cc46560fc6a7",
+        "id": "bc29ce5df0b271fd",
         "type": "tab",
         "label": "ESP32",
         "disabled": false,
@@ -8,11 +8,11 @@
         "env": []
     },
     {
-        "id": "dbb40f86205541e2",
+        "id": "901bf22d3c0427ab",
         "type": "mqtt in",
-        "z": "b429cc46560fc6a7",
+        "z": "bc29ce5df0b271fd",
         "name": "",
-        "topic": "esp32/rumah/do1",
+        "topic": "esp32/Machine2/top/do1",
         "qos": "0",
         "datatype": "auto-detect",
         "broker": "ea9dd93b3d441040",
@@ -20,36 +20,36 @@
         "rap": true,
         "rh": 0,
         "inputs": 0,
-        "x": 720,
-        "y": 720,
+        "x": 970,
+        "y": 860,
         "wires": [
             [
-                "3c4cc7dc01119196"
+                "9da906e932d85e7a"
             ]
         ]
     },
     {
-        "id": "3c4cc7dc01119196",
+        "id": "9da906e932d85e7a",
         "type": "debug",
-        "z": "b429cc46560fc6a7",
+        "z": "bc29ce5df0b271fd",
         "name": "debug 1",
-        "active": true,
+        "active": false,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
         "complete": "false",
         "statusVal": "",
         "statusType": "auto",
-        "x": 900,
-        "y": 720,
+        "x": 1220,
+        "y": 860,
         "wires": []
     },
     {
-        "id": "75d69085c92a77bf",
+        "id": "55874866793d0501",
         "type": "mqtt in",
-        "z": "b429cc46560fc6a7",
+        "z": "bc29ce5df0b271fd",
         "name": "",
-        "topic": "esp32/rumah/di1",
+        "topic": "esp32/Machine2/count/di1",
         "qos": "0",
         "datatype": "auto-detect",
         "broker": "ea9dd93b3d441040",
@@ -57,18 +57,18 @@
         "rap": true,
         "rh": 0,
         "inputs": 0,
-        "x": 720,
-        "y": 760,
+        "x": 970,
+        "y": 920,
         "wires": [
             [
-                "22563cbf3d817f4a"
+                "2e86541f295f0bb3"
             ]
         ]
     },
     {
-        "id": "22563cbf3d817f4a",
+        "id": "2e86541f295f0bb3",
         "type": "debug",
-        "z": "b429cc46560fc6a7",
+        "z": "bc29ce5df0b271fd",
         "name": "debug 2",
         "active": true,
         "tosidebar": true,
@@ -77,14 +77,14 @@
         "complete": "false",
         "statusVal": "",
         "statusType": "auto",
-        "x": 900,
-        "y": 760,
+        "x": 1200,
+        "y": 920,
         "wires": []
     },
     {
-        "id": "mqtt_in_ota",
+        "id": "d82c861eee1e715c",
         "type": "mqtt in",
-        "z": "b429cc46560fc6a7",
+        "z": "bc29ce5df0b271fd",
         "name": "",
         "topic": "esp32/+/ota/status",
         "qos": "0",
@@ -94,22 +94,22 @@
         "rap": true,
         "rh": 0,
         "inputs": 0,
-        "x": 670,
+        "x": 770,
         "y": 60,
         "wires": [
             [
-                "ui_text_ota"
+                "e7d3e02240fb1c3b"
             ]
         ]
     },
     {
-        "id": "ui_text_ota",
+        "id": "e7d3e02240fb1c3b",
         "type": "ui-text",
-        "z": "b429cc46560fc6a7",
-        "group": "b5505c288d2522f4",
+        "z": "bc29ce5df0b271fd",
+        "group": "65aba5ad8c2ba417",
         "order": 3,
         "width": 0,
-        "height": 0,
+        "height": 1,
         "name": "",
         "label": "",
         "format": "{{msg.payload}}",
@@ -122,14 +122,14 @@
         "className": "",
         "value": "payload",
         "valueType": "msg",
-        "x": 910,
+        "x": 1010,
         "y": 60,
         "wires": []
     },
     {
-        "id": "mqtt_in_telegram",
+        "id": "4b42c207e467f8a3",
         "type": "mqtt in",
-        "z": "b429cc46560fc6a7",
+        "z": "bc29ce5df0b271fd",
         "name": "ESP32 Alerts In",
         "topic": "esp32/telegram/out",
         "qos": "0",
@@ -139,32 +139,32 @@
         "rap": true,
         "rh": 0,
         "inputs": 0,
-        "x": 420,
-        "y": 620,
+        "x": 740,
+        "y": 560,
         "wires": [
             [
-                "function_telegram_format"
+                "459458ccf5b1b727"
             ]
         ]
     },
     {
-        "id": "telegram_sender",
+        "id": "ea1e6fe826d24981",
         "type": "telegram sender",
-        "z": "b429cc46560fc6a7",
+        "z": "bc29ce5df0b271fd",
         "name": "Send to Telegram",
         "bot": "telegram_bot_config",
         "haserroroutput": false,
         "outputs": 1,
-        "x": 1150,
+        "x": 1270,
         "y": 500,
         "wires": [
             []
         ]
     },
     {
-        "id": "2321132598c573a4",
+        "id": "d307b56d08a23bcc",
         "type": "telegram command",
-        "z": "b429cc46560fc6a7",
+        "z": "bc29ce5df0b271fd",
         "name": "/status",
         "command": "/status",
         "description": "",
@@ -176,18 +176,18 @@
         "useregex": false,
         "removeregexcommand": false,
         "outputs": 1,
-        "x": 450,
+        "x": 550,
         "y": 380,
         "wires": [
             [
-                "telegram_parser_v2"
+                "63ec1b73f1e88d63"
             ]
         ]
     },
     {
-        "id": "9ae1b9e3e1b37c46",
+        "id": "9b0b4ea322c10a83",
         "type": "telegram command",
-        "z": "b429cc46560fc6a7",
+        "z": "bc29ce5df0b271fd",
         "name": "/metrics",
         "command": "/metrics",
         "description": "",
@@ -199,18 +199,18 @@
         "useregex": false,
         "removeregexcommand": false,
         "outputs": 1,
-        "x": 450,
+        "x": 550,
         "y": 420,
         "wires": [
             [
-                "telegram_parser_v2"
+                "63ec1b73f1e88d63"
             ]
         ]
     },
     {
-        "id": "55f8a988284dea14",
+        "id": "1a0e62d4de6920e6",
         "type": "telegram command",
-        "z": "b429cc46560fc6a7",
+        "z": "bc29ce5df0b271fd",
         "name": "/health",
         "command": "/health",
         "description": "",
@@ -222,18 +222,18 @@
         "useregex": false,
         "removeregexcommand": false,
         "outputs": 1,
-        "x": 450,
+        "x": 550,
         "y": 460,
         "wires": [
             [
-                "telegram_parser_v2"
+                "63ec1b73f1e88d63"
             ]
         ]
     },
     {
-        "id": "638ca7f70a527342",
+        "id": "5aedea4e11e2cf18",
         "type": "telegram command",
-        "z": "b429cc46560fc6a7",
+        "z": "bc29ce5df0b271fd",
         "name": "/do",
         "command": "/do",
         "description": "",
@@ -245,18 +245,18 @@
         "useregex": false,
         "removeregexcommand": false,
         "outputs": 1,
-        "x": 450,
+        "x": 550,
         "y": 500,
         "wires": [
             [
-                "telegram_parser_v2"
+                "63ec1b73f1e88d63"
             ]
         ]
     },
     {
-        "id": "c6f97170a0806d72",
+        "id": "473c79eb60bbc2cf",
         "type": "telegram command",
-        "z": "b429cc46560fc6a7",
+        "z": "bc29ce5df0b271fd",
         "name": "/resetmetrics",
         "command": "/resetmetrics",
         "description": "",
@@ -268,18 +268,18 @@
         "useregex": false,
         "removeregexcommand": false,
         "outputs": 1,
-        "x": 430,
+        "x": 530,
         "y": 540,
         "wires": [
             [
-                "telegram_parser_v2"
+                "63ec1b73f1e88d63"
             ]
         ]
     },
     {
-        "id": "1cc7cead894baf70",
+        "id": "a0631f2804695841",
         "type": "telegram command",
-        "z": "b429cc46560fc6a7",
+        "z": "bc29ce5df0b271fd",
         "name": "/help",
         "command": "/help",
         "description": "",
@@ -291,64 +291,64 @@
         "useregex": false,
         "removeregexcommand": false,
         "outputs": 1,
-        "x": 450,
+        "x": 550,
         "y": 580,
         "wires": [
             [
-                "974a99e6049f5aa0"
+                "53b8fe90cb6012d0"
             ]
         ]
     },
     {
-        "id": "974a99e6049f5aa0",
+        "id": "53b8fe90cb6012d0",
         "type": "function",
-        "z": "b429cc46560fc6a7",
+        "z": "bc29ce5df0b271fd",
         "name": "Send Help Menu",
-        "func": "msg.payload = {\n    type: 'message',\n    chatId: msg.payload.chatId,\n    content: \"ESP32 Fleet Commands\\n\\nUsage: /[command] [machineName]\\n\\nExample:\\n/status Machine1 \u2014 DI/DO states\\n/metrics Machine1 \u2014 Runtime, downtime, rejects\\n/health Machine1 \u2014 Temp, heap, WiFi, uptime, version no.\\n/do on 1 Machine1 \u2014 Turn DO 1 ON\\n/do off 1 Machine1 \u2014 Turn DO 1 OFF\\n/resetmetrics Machine1 \u2014 Reset all counters\\n/help \u2014 Show this menu\"\n};\nreturn msg;",
+        "func": "msg.payload = {\n    type: 'message',\n    chatId: msg.payload.chatId,\n    content: \"ESP32 Fleet Commands\\n\\nUsage: /[command] [machineName]\\n\\nExample:\\n/status Machine1 — DI/DO states\\n/metrics Machine1 — Runtime, downtime, rejects\\n/health Machine1 — Temp, heap, WiFi, uptime, version no.\\n/do on 1 Machine1 — Turn DO 1 ON\\n/do off 1 Machine1 — Turn DO 1 OFF\\n/resetmetrics Machine1 — Reset all counters\\n/help — Show this menu\"\n};\nreturn msg;",
         "outputs": 1,
         "timeout": "",
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 890,
+        "x": 990,
         "y": 520,
         "wires": [
             [
-                "telegram_sender"
+                "ea1e6fe826d24981"
             ]
         ]
     },
     {
-        "id": "telegram_parser_v2",
+        "id": "63ec1b73f1e88d63",
         "type": "function",
-        "z": "b429cc46560fc6a7",
+        "z": "bc29ce5df0b271fd",
         "name": "Parse Commands to MQTT",
-        "func": "let fullText = msg.originalMessage.text || \"\";\nlet parts = fullText.trim().split(\" \");\nlet commandTyped = parts[0].replace(\"/\", \"\");\nlet targetDevice = \"\";\nlet mqttMsg = null;\nlet errorMsg = null;\n\nif (commandTyped === \"do\") {\n    if (parts.length < 4) {\n        errorMsg = {\n            payload: {\n                type: 'message',\n                chatId: msg.payload.chatId,\n                content: `\u26a0\ufe0f Please specify state, channel, and machine name.\\nExample: /do on 1 Machine1`\n            }\n        };\n        return [null, errorMsg, null];\n    }\n    let state = parts[1].toLowerCase();\n    let target = parts[2];\n    targetDevice = parts[3];\n\n    mqttMsg = {\n        topic: \"esp32/\" + targetDevice + \"/command\",\n        payload: JSON.stringify({\n            cmd: \"do\",\n            state: state,\n            target: parseInt(target),\n            chatId: msg.payload.chatId\n        })\n    };\n} else {\n    if (parts.length < 2 || parts[1] === \"\") {\n        errorMsg = {\n            payload: {\n                type: 'message',\n                chatId: msg.payload.chatId,\n                content: `\u26a0\ufe0f Please specify a machine name.\\nExample: /${commandTyped} Machine1`\n            }\n        };\n        return [null, errorMsg, null];\n    }\n    targetDevice = parts[1];\n\n    mqttMsg = {\n        topic: \"esp32/\" + targetDevice + \"/command\",\n        payload: JSON.stringify({\n            cmd: commandTyped,\n            chatId: msg.payload.chatId\n        })\n    };\n}\n\n// --- SMART TIMEOUT LOGIC ---\nlet chatId = msg.payload.chatId;\nlet timeouts = flow.get(\"timeouts\") || {};\n\nif (timeouts[chatId]) {\n    clearTimeout(timeouts[chatId]);\n}\n\ntimeouts[chatId] = setTimeout(() => {\n    node.send([null, null, {\n        payload: {\n            type: \"message\",\n            chatId: chatId,\n            content: `\u26a0\ufe0f No device named '${targetDevice}' detected, or the device is offline.`\n        }\n    }]);\n    \n    let t = flow.get(\"timeouts\") || {};\n    delete t[chatId];\n    flow.set(\"timeouts\", t);\n}, 3000); // 3 seconds timeout\n\nflow.set(\"timeouts\", timeouts);\n\nreturn [mqttMsg, null, null];",
+        "func": "let fullText = msg.originalMessage.text || \"\";\nlet parts = fullText.trim().split(\" \");\nlet commandTyped = parts[0].replace(\"/\", \"\");\nlet targetDevice = \"\";\nlet mqttMsg = null;\nlet errorMsg = null;\n\nif (commandTyped === \"do\") {\n    if (parts.length < 4) {\n        errorMsg = {\n            payload: {\n                type: 'message',\n                chatId: msg.payload.chatId,\n                content: `⚠️ Please specify state, channel, and machine name.\\nExample: /do on 1 Machine1`\n            }\n        };\n        return [null, errorMsg, null];\n    }\n    let state = parts[1].toLowerCase();\n    let target = parts[2];\n    targetDevice = parts[3];\n\n    mqttMsg = {\n        topic: \"esp32/\" + targetDevice + \"/command\",\n        payload: JSON.stringify({\n            cmd: \"do\",\n            state: state,\n            target: parseInt(target),\n            chatId: msg.payload.chatId\n        })\n    };\n} else {\n    if (parts.length < 2 || parts[1] === \"\") {\n        errorMsg = {\n            payload: {\n                type: 'message',\n                chatId: msg.payload.chatId,\n                content: `⚠️ Please specify a machine name.\\nExample: /${commandTyped} Machine1`\n            }\n        };\n        return [null, errorMsg, null];\n    }\n    targetDevice = parts[1];\n\n    mqttMsg = {\n        topic: \"esp32/\" + targetDevice + \"/command\",\n        payload: JSON.stringify({\n            cmd: commandTyped,\n            chatId: msg.payload.chatId\n        })\n    };\n}\n\n// --- SMART TIMEOUT LOGIC ---\nlet chatId = msg.payload.chatId;\nlet timeouts = flow.get(\"timeouts\") || {};\n\nif (timeouts[chatId]) {\n    clearTimeout(timeouts[chatId]);\n}\n\ntimeouts[chatId] = setTimeout(() => {\n    node.send([null, null, {\n        payload: {\n            type: \"message\",\n            chatId: chatId,\n            content: `⚠️ No device named '${targetDevice}' detected, or the device is offline.`\n        }\n    }]);\n    \n    let t = flow.get(\"timeouts\") || {};\n    delete t[chatId];\n    flow.set(\"timeouts\", t);\n}, 3000); // 3 seconds timeout\n\nflow.set(\"timeouts\", timeouts);\n\nreturn [mqttMsg, null, null];",
         "outputs": 3,
         "timeout": "",
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 860,
+        "x": 960,
         "y": 460,
         "wires": [
             [
-                "11a1921f5fa6543e"
+                "7663f50fddc8423e"
             ],
             [
-                "telegram_sender"
+                "ea1e6fe826d24981"
             ],
             [
-                "telegram_sender"
+                "ea1e6fe826d24981"
             ]
         ]
     },
     {
-        "id": "be49bc5cc842ac47",
+        "id": "d0d23cea8a9d9e22",
         "type": "mqtt in",
-        "z": "b429cc46560fc6a7",
+        "z": "bc29ce5df0b271fd",
         "name": "Listen: Device Status",
         "topic": "esp32/+/status",
         "qos": "0",
@@ -358,18 +358,18 @@
         "rap": true,
         "rh": 0,
         "inputs": 0,
-        "x": 120,
+        "x": 220,
         "y": 200,
         "wires": [
             [
-                "7a910c94c8b8f1fd"
+                "5582d9bb4f7a64c7"
             ]
         ]
     },
     {
-        "id": "b27e2638c24d83cb",
+        "id": "dbc127adca7b3147",
         "type": "mqtt in",
-        "z": "b429cc46560fc6a7",
+        "z": "bc29ce5df0b271fd",
         "name": "Listen: Telegram Status",
         "topic": "esp32/+/telegram/enabled",
         "qos": "0",
@@ -379,18 +379,18 @@
         "rap": true,
         "rh": 0,
         "inputs": 0,
-        "x": 130,
+        "x": 230,
         "y": 260,
         "wires": [
             [
-                "7a910c94c8b8f1fd"
+                "5582d9bb4f7a64c7"
             ]
         ]
     },
     {
-        "id": "ae26b277f77e12e4",
+        "id": "32c9d6b62d57187e",
         "type": "mqtt in",
-        "z": "b429cc46560fc6a7",
+        "z": "bc29ce5df0b271fd",
         "name": "Listen: Auto-Update Status",
         "topic": "esp32/+/update/auto/status",
         "qos": "0",
@@ -400,18 +400,18 @@
         "rap": true,
         "rh": 0,
         "inputs": 0,
-        "x": 120,
+        "x": 220,
         "y": 320,
         "wires": [
             [
-                "7a910c94c8b8f1fd"
+                "5582d9bb4f7a64c7"
             ]
         ]
     },
     {
-        "id": "7a910c94c8b8f1fd",
+        "id": "5582d9bb4f7a64c7",
         "type": "function",
-        "z": "b429cc46560fc6a7",
+        "z": "bc29ce5df0b271fd",
         "name": "Global State Manager",
         "func": "let cache = flow.get(\"esp32_cache\") || { devices: {}, tg: {}, auto: {} };\nlet parts = msg.topic.split(\"/\");\nlet device = parts[1];\nlet type = parts.slice(2).join(\"/\");\nlet val = msg.payload.toString();\n\nlet selectedDevice = flow.get(\"selectedDevice\");\n\nlet msgDropdown = null;\nlet msgTg = null;\nlet msgAuto = null;\n\nif (type === \"status\") {\n    if (val === \"online\") cache.devices[device] = true;\n    else delete cache.devices[device];\n    \n    let options = Object.keys(cache.devices);\n    options.unshift(\"ALL MACHINE\"); // Always place ALL MACHINE at the top\n    msgDropdown = { options: options };\n} else if (type === \"telegram/enabled\") {\n    cache.tg[device] = val;\n    if (device === selectedDevice) {\n        msgTg = { payload: val };\n    }\n} else if (type === \"update/auto/status\") {\n    cache.auto[device] = val;\n    if (device === selectedDevice) {\n        msgAuto = { payload: val };\n    }\n}\n\nflow.set(\"esp32_cache\", cache);\nreturn [msgDropdown, msgTg, msgAuto];",
         "outputs": 3,
@@ -420,76 +420,45 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 380,
+        "x": 480,
         "y": 260,
         "wires": [
             [
-                "2eca0de5b1a870c8"
+                "606b320a815befd9"
             ],
             [
-                "9d4dbbf8d0de6211"
+                "ec8bff661d1047a9"
             ],
             [
-                "7ba9644620d8b236"
+                "1c146c51f07dcadc"
             ]
         ]
     },
     {
-        "id": "2eca0de5b1a870c8",
-        "type": "ui-dropdown",
-        "z": "b429cc46560fc6a7",
-        "group": "b5505c288d2522f4",
-        "name": "Select Device",
-        "label": "Select Machine",
-        "tooltip": "",
-        "order": 1,
-        "width": 0,
-        "height": 0,
-        "passthru": true,
-        "multiple": false,
-        "chips": false,
-        "clearable": false,
-        "options": [],
-        "payload": "",
-        "topic": "topic",
-        "topicType": "msg",
-        "className": "",
-        "typeIsComboBox": true,
-        "msgTrigger": "onClose",
-        "x": 610,
-        "y": 200,
-        "wires": [
-            [
-                "58f120211780d79d",
-                "53be4bd44ed04247"
-            ]
-        ]
-    },
-    {
-        "id": "58f120211780d79d",
+        "id": "61a09a4946dc636d",
         "type": "function",
-        "z": "b429cc46560fc6a7",
+        "z": "bc29ce5df0b271fd",
         "name": "Update UI for Selected Device",
         "func": "let selectedDevice = msg.payload;\nflow.set(\"selectedDevice\", selectedDevice);\n\nlet cache = flow.get(\"esp32_cache\") || { tg: {}, auto: {} };\nlet msgTg = null;\nlet msgAuto = null;\n\nif (selectedDevice === \"ALL MACHINE\") {\n    // Visual default for switches when ALL is selected\n    msgTg = { payload: \"0\" };\n    msgAuto = { payload: \"0\" };\n} else {\n    msgTg = { payload: cache.tg[selectedDevice] || \"0\" };\n    msgAuto = { payload: cache.auto[selectedDevice] || \"0\" };\n}\n\nreturn [msgTg, msgAuto];",
         "outputs": 2,
-        "x": 840,
+        "x": 950,
         "y": 200,
         "wires": [
             [
-                "9d4dbbf8d0de6211"
+                "ec8bff661d1047a9"
             ],
             [
-                "7ba9644620d8b236"
+                "1c146c51f07dcadc"
             ]
         ]
     },
     {
-        "id": "9d4dbbf8d0de6211",
+        "id": "ec8bff661d1047a9",
         "type": "ui-switch",
-        "z": "b429cc46560fc6a7",
+        "z": "bc29ce5df0b271fd",
         "name": "Telegram Bot Switch",
         "label": "Enable Telegram Bot",
-        "group": "b5505c288d2522f4",
+        "group": "65aba5ad8c2ba417",
         "order": 4,
         "width": 0,
         "height": 0,
@@ -509,21 +478,21 @@
         "offvalueType": "str",
         "officon": "",
         "offcolor": "",
-        "x": 620,
+        "x": 720,
         "y": 260,
         "wires": [
             [
-                "37d88aea45c16227"
+                "272381f8e8cd0748"
             ]
         ]
     },
     {
-        "id": "7ba9644620d8b236",
+        "id": "1c146c51f07dcadc",
         "type": "ui-switch",
-        "z": "b429cc46560fc6a7",
+        "z": "bc29ce5df0b271fd",
         "name": "Auto Update Switch",
         "label": "Enable Auto-Update",
-        "group": "b5505c288d2522f4",
+        "group": "65aba5ad8c2ba417",
         "order": 5,
         "width": 0,
         "height": 0,
@@ -543,19 +512,19 @@
         "offvalueType": "str",
         "officon": "",
         "offcolor": "",
-        "x": 640,
+        "x": 750,
         "y": 300,
         "wires": [
             [
-                "964b0643a9d3e071"
+                "a43668d14e19d140"
             ]
         ]
     },
     {
-        "id": "20eefa582c753518",
+        "id": "8b2e0f97111b533b",
         "type": "ui-button",
-        "z": "b429cc46560fc6a7",
-        "group": "b5505c288d2522f4",
+        "z": "bc29ce5df0b271fd",
+        "group": "65aba5ad8c2ba417",
         "name": "Check for Update",
         "label": "Check for Update",
         "order": 2,
@@ -582,63 +551,63 @@
         "enablePointerup": false,
         "pointerupPayload": "",
         "pointerupPayloadType": "str",
-        "x": 630,
+        "x": 730,
         "y": 340,
         "wires": [
             [
-                "78400a094b893d2c"
+                "b4f8805a7e4dc1ea"
             ]
         ]
     },
     {
-        "id": "37d88aea45c16227",
+        "id": "272381f8e8cd0748",
         "type": "function",
-        "z": "b429cc46560fc6a7",
+        "z": "bc29ce5df0b271fd",
         "name": "Target Device (TG)",
         "func": "let selectedDevice = flow.get(\"selectedDevice\");\nif (!selectedDevice) return null;\n\nif (selectedDevice === \"ALL MACHINE\") {\n    let cache = flow.get(\"esp32_cache\") || { devices: {} };\n    let msgs = [];\n    for (let device in cache.devices) {\n        msgs.push({\n            topic: `esp32/${device}/telegram/enabled/set`,\n            payload: msg.payload\n        });\n    }\n    return [msgs]; // Broadcasts to all online devices sequentially\n} else {\n    msg.topic = `esp32/${selectedDevice}/telegram/enabled/set`;\n    return msg;\n}",
         "outputs": 1,
-        "x": 880,
+        "x": 980,
         "y": 260,
         "wires": [
             [
-                "11a1921f5fa6543e"
+                "7663f50fddc8423e"
             ]
         ]
     },
     {
-        "id": "964b0643a9d3e071",
+        "id": "a43668d14e19d140",
         "type": "function",
-        "z": "b429cc46560fc6a7",
+        "z": "bc29ce5df0b271fd",
         "name": "Target Device (Auto)",
         "func": "let selectedDevice = flow.get(\"selectedDevice\");\nif (!selectedDevice) return null;\n\nif (selectedDevice === \"ALL MACHINE\") {\n    let cache = flow.get(\"esp32_cache\") || { devices: {} };\n    let msgs = [];\n    for (let device in cache.devices) {\n        msgs.push({\n            topic: `esp32/${device}/update/auto/set`,\n            payload: msg.payload\n        });\n    }\n    return [msgs]; // Broadcasts to all online devices sequentially\n} else {\n    msg.topic = `esp32/${selectedDevice}/update/auto/set`;\n    return msg;\n}",
         "outputs": 1,
-        "x": 870,
+        "x": 970,
         "y": 300,
         "wires": [
             [
-                "11a1921f5fa6543e"
+                "7663f50fddc8423e"
             ]
         ]
     },
     {
-        "id": "78400a094b893d2c",
+        "id": "b4f8805a7e4dc1ea",
         "type": "function",
-        "z": "b429cc46560fc6a7",
+        "z": "bc29ce5df0b271fd",
         "name": "Target Device (OTA)",
         "func": "let selectedDevice = flow.get(\"selectedDevice\");\nif (!selectedDevice) return null;\n\nif (selectedDevice === \"ALL MACHINE\") {\n    let cache = flow.get(\"esp32_cache\") || { devices: {} };\n    let msgs = [];\n    for (let device in cache.devices) {\n        msgs.push({\n            topic: `esp32/${device}/ota_trigger`,\n            payload: \"1\"\n        });\n    }\n    return [msgs]; // Broadcasts to all online devices sequentially\n} else {\n    msg.topic = `esp32/${selectedDevice}/ota_trigger`;\n    msg.payload = \"1\";\n    return msg;\n}",
         "outputs": 1,
-        "x": 870,
+        "x": 970,
         "y": 340,
         "wires": [
             [
-                "11a1921f5fa6543e"
+                "7663f50fddc8423e"
             ]
         ]
     },
     {
-        "id": "11a1921f5fa6543e",
+        "id": "7663f50fddc8423e",
         "type": "mqtt out",
-        "z": "b429cc46560fc6a7",
+        "z": "bc29ce5df0b271fd",
         "name": "Master Command Out",
         "topic": "",
         "qos": "0",
@@ -649,14 +618,14 @@
         "correl": "",
         "expiry": "",
         "broker": "f7c9eba65970f8fc",
-        "x": 1170,
+        "x": 1270,
         "y": 240,
         "wires": []
     },
     {
-        "id": "format_set_counter",
+        "id": "781fb9f1576b435b",
         "type": "function",
-        "z": "b429cc46560fc6a7",
+        "z": "bc29ce5df0b271fd",
         "name": "Target Device (Set Count)",
         "func": "let selectedDevice = flow.get(\"selectedDevice\");\nif (!selectedDevice) return null;\n\n// Convert \"DI3\" to 3\nlet sInt = parseInt(msg.payload.sensor.replace(\"DI\", \"\"));\nlet jsonPayload = JSON.stringify({ sensor: sInt, count: msg.payload.count });\n\nif (selectedDevice === \"ALL MACHINE\") {\n    let cache = flow.get(\"esp32_cache\") || { devices: {} };\n    let msgs = [];\n    for (let device in cache.devices) {\n        msgs.push({\n            topic: `esp32/${device}/triggercount/set`,\n            payload: jsonPayload\n        });\n    }\n    return [msgs];\n} else {\n    msg.topic = `esp32/${selectedDevice}/triggercount/set`;\n    msg.payload = jsonPayload;\n    return msg;\n}",
         "outputs": 1,
@@ -665,39 +634,39 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 860,
+        "x": 960,
         "y": 120,
         "wires": [
             [
-                "11a1921f5fa6543e"
+                "7663f50fddc8423e"
             ]
         ]
     },
     {
-        "id": "format_reset_counter",
+        "id": "6717ed45225f0bd4",
         "type": "function",
-        "z": "b429cc46560fc6a7",
+        "z": "bc29ce5df0b271fd",
         "name": "Target Device (Reset Count)",
         "func": "let selectedDevice = flow.get(\"selectedDevice\");\nif (!selectedDevice) return null;\n\n// Convert \"DI3\" to 3\nlet sInt = parseInt(msg.payload.sensor.replace(\"DI\", \"\"));\nlet jsonPayload = JSON.stringify({ sensor: sInt });\n\nif (selectedDevice === \"ALL MACHINE\") {\n    let cache = flow.get(\"esp32_cache\") || { devices: {} };\n    let msgs = [];\n    for (let device in cache.devices) {\n        msgs.push({\n            topic: `esp32/${device}/triggercount/reset`,\n            payload: jsonPayload\n        });\n    }\n    return [msgs];\n} else {\n    msg.topic = `esp32/${selectedDevice}/triggercount/reset`;\n    msg.payload = jsonPayload;\n    return msg;\n}",
         "outputs": 1,
-        "x": 850,
+        "x": 950,
         "y": 160,
         "wires": [
             [
-                "11a1921f5fa6543e"
+                "7663f50fddc8423e"
             ]
         ]
     },
     {
-        "id": "783b0e16a54d6af6",
+        "id": "6d61092a407f8cdf",
         "type": "ui-form",
-        "z": "b429cc46560fc6a7",
+        "z": "bc29ce5df0b271fd",
         "name": "",
-        "group": "b5505c288d2522f4",
+        "group": "65aba5ad8c2ba417",
         "label": "Set Value Form",
         "order": 6,
         "width": 4,
-        "height": "5",
+        "height": 1,
         "options": [
             {
                 "label": "Select DI",
@@ -767,24 +736,24 @@
                 "label": "DI8"
             }
         ],
-        "x": 610,
+        "x": 720,
         "y": 120,
         "wires": [
             [
-                "format_set_counter"
+                "781fb9f1576b435b"
             ]
         ]
     },
     {
-        "id": "0c03d966d08d82bf",
+        "id": "be002c19065542b8",
         "type": "ui-form",
-        "z": "b429cc46560fc6a7",
+        "z": "bc29ce5df0b271fd",
         "name": "Reset Counter Form",
-        "group": "b5505c288d2522f4",
+        "group": "65aba5ad8c2ba417",
         "label": "Reset Counter Form",
         "order": 7,
         "width": 4,
-        "height": "4",
+        "height": 3,
         "options": [
             {
                 "label": "Select DI",
@@ -846,18 +815,18 @@
                 "label": "DI8"
             }
         ],
-        "x": 600,
+        "x": 700,
         "y": 160,
         "wires": [
             [
-                "format_reset_counter"
+                "6717ed45225f0bd4"
             ]
         ]
     },
     {
-        "id": "function_telegram_format",
+        "id": "459458ccf5b1b727",
         "type": "function",
-        "z": "b429cc46560fc6a7",
+        "z": "bc29ce5df0b271fd",
         "name": "Format & Add Chat ID",
         "func": "// 1. Parse the incoming JSON safely\nlet doc;\nif (typeof msg.payload === \"object\") {\n    doc = msg.payload;\n} else {\n    try {\n        doc = JSON.parse(msg.payload.toString());\n    } catch (e) {\n        return null;\n    }\n}\n\n// 2. Inject default Chat ID for spontaneous alerts (Boot, Reject, OTA)\nif (!doc.chatId) {\n    doc.chatId = \"721886383\"; // Your Admin Chat ID\n}\n\nlet chatId = doc.chatId;\n\n// 3. Clear any pending command timeouts (so your bot doesn't get stuck)\nlet timeouts = flow.get(\"timeouts\") || {};\nif (timeouts[chatId]) {\n    clearTimeout(timeouts[chatId]);\n    delete timeouts[chatId];\n    flow.set(\"timeouts\", timeouts);\n}\n\n// 4. Format the final Telegram message\nlet finalMessage = doc.message;\nif (doc.device) {\n    // I left the \\n here so it matches your original style!\n    finalMessage = `[${doc.device}]\\n${doc.message}`;\n}\n\nmsg.payload = {\n    type: \"message\",\n    chatId: chatId,\n    content: finalMessage\n};\n\nreturn msg;",
         "outputs": 1,
@@ -866,11 +835,668 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 880,
+        "x": 980,
         "y": 560,
         "wires": [
             [
-                "telegram_sender"
+                "ea1e6fe826d24981"
+            ]
+        ]
+    },
+    {
+        "id": "0988a9ab9b391ec4",
+        "type": "mqtt in",
+        "z": "bc29ce5df0b271fd",
+        "name": "Listen DO (Wildcard)",
+        "topic": "esp32/#",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "f7c9eba65970f8fc",
+        "nl": false,
+        "rap": true,
+        "inputs": 0,
+        "x": 130,
+        "y": 640,
+        "wires": [
+            [
+                "b8d2c59eca5e4c3c"
+            ]
+        ]
+    },
+    {
+        "id": "b8d2c59eca5e4c3c",
+        "type": "function",
+        "z": "bc29ce5df0b271fd",
+        "name": "DI/DO State Manager",
+        "func": "let cache = flow.get(\"esp32_cache\") || { devices: {}, tg: {}, auto: {}, do: {}, di: {}, doTopics: {} };\nlet lockouts = flow.get(\"do_lockouts\") || {};\n\nlet parts = msg.topic.split(\"/\");\nlet device = parts[1];\nlet lastPart = parts[parts.length - 1];\nlet prevPart = parts.length > 2 ? parts[parts.length - 2] : \"\";\nlet selectedDevice = flow.get(\"selectedDevice\");\nlet msgs = new Array(16).fill(null);\n\nif (lastPart.startsWith(\"do\")) {\n    let doNum = parseInt(lastPart.replace(\"do\", \"\")) - 1;\n    if (doNum >= 0 && doNum < 8) {\n        if (!cache.do[device]) cache.do[device] = {};\n\n        // Always update the true background cache\n        cache.do[device][doNum] = msg.payload.toString();\n\n        // Cache the custom topic path safely\n        if (!cache.doTopics) cache.doTopics = {};\n        if (!cache.doTopics[device]) cache.doTopics[device] = [];\n        cache.doTopics[device][doNum] = msg.topic;\n\n        // 🚨 UI ANTI-BOUNCE CHECK 🚨\n        // Ignore MQTT echoes for 1.5 seconds (1500ms) after the user clicks the dashboard\n        let isLockedOut = false;\n        if (lockouts[device] && lockouts[device][doNum]) {\n            if (Date.now() - lockouts[device][doNum] < 1500) {\n                isLockedOut = true;\n            }\n        }\n\n        // Only push visual updates to the Dashboard UI if we are not locked out\n        if (!isLockedOut && device === selectedDevice) {\n            msgs[doNum] = { payload: msg.payload.toString() };\n        }\n    }\n} else if (lastPart.startsWith(\"di\") && prevPart === \"count\") {\n    let diNum = parseInt(lastPart.replace(\"di\", \"\")) - 1;\n    if (diNum >= 0 && diNum < 8) {\n        if (!cache.di[device]) cache.di[device] = {};\n        cache.di[device][diNum] = msg.payload.toString();\n        if (device === selectedDevice) {\n            msgs[8 + diNum] = { payload: msg.payload.toString() };\n        }\n    }\n}\n\nflow.set(\"esp32_cache\", cache);\nreturn msgs;",
+        "outputs": 16,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 360,
+        "y": 640,
+        "wires": [
+            [
+                "b3b652ba8f09f4ed"
+            ],
+            [
+                "bda29132a059e8aa"
+            ],
+            [
+                "d7045d78dc5dca5c"
+            ],
+            [
+                "26221a77c1f49ac8"
+            ],
+            [
+                "306d59a01c275885"
+            ],
+            [
+                "5038397512fbb1b0"
+            ],
+            [
+                "609fa246a713536e"
+            ],
+            [
+                "769db7dc36ede741"
+            ],
+            [
+                "2082fb2b59de51fb"
+            ],
+            [
+                "ba5c8310af4688e3"
+            ],
+            [
+                "869b61dc94f235aa"
+            ],
+            [
+                "418bbeec5d1cd70d"
+            ],
+            [
+                "c1a5b2d2cafcf33a"
+            ],
+            [
+                "81c72658d442c93e"
+            ],
+            [
+                "b267e970866559cb"
+            ],
+            [
+                "56742db508feec9d"
+            ]
+        ]
+    },
+    {
+        "id": "f5466232eab410ba",
+        "type": "function",
+        "z": "bc29ce5df0b271fd",
+        "name": "Update DI/DO UI",
+        "func": "let selectedDevice = msg.payload;\nlet cache = flow.get(\"esp32_cache\") || { tg: {}, auto: {}, do: {}, di: {} };\nif (!cache.do) cache.do = {};\nif (!cache.di) cache.di = {};\nlet msgs = new Array(16).fill(null);\nif (selectedDevice === \"ALL MACHINE\") {\n    for (let i=0; i<8; i++) msgs[i] = { payload: \"0\" };\n    for (let i=0; i<8; i++) msgs[8+i] = { payload: \"0\" };\n} else {\n    for (let i=0; i<8; i++) msgs[i] = { payload: (cache.do[selectedDevice] && cache.do[selectedDevice][i]) ? cache.do[selectedDevice][i] : \"0\" };\n    for (let i=0; i<8; i++) msgs[8+i] = { payload: (cache.di[selectedDevice] && cache.di[selectedDevice][i]) ? cache.di[selectedDevice][i] : \"0\" };\n}\nreturn msgs;",
+        "outputs": 16,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 390,
+        "y": 940,
+        "wires": [
+            [
+                "b3b652ba8f09f4ed"
+            ],
+            [
+                "bda29132a059e8aa"
+            ],
+            [
+                "d7045d78dc5dca5c"
+            ],
+            [
+                "26221a77c1f49ac8"
+            ],
+            [
+                "306d59a01c275885"
+            ],
+            [
+                "5038397512fbb1b0"
+            ],
+            [
+                "609fa246a713536e"
+            ],
+            [
+                "769db7dc36ede741"
+            ],
+            [
+                "2082fb2b59de51fb"
+            ],
+            [
+                "ba5c8310af4688e3"
+            ],
+            [
+                "869b61dc94f235aa"
+            ],
+            [
+                "418bbeec5d1cd70d"
+            ],
+            [
+                "c1a5b2d2cafcf33a"
+            ],
+            [
+                "81c72658d442c93e"
+            ],
+            [
+                "b267e970866559cb"
+            ],
+            [
+                "56742db508feec9d"
+            ]
+        ]
+    },
+    {
+        "id": "79bbb893d0231627",
+        "type": "function",
+        "z": "bc29ce5df0b271fd",
+        "name": "Target Device (DO)",
+        "func": "let selectedDevice = flow.get(\"selectedDevice\");\nif (!selectedDevice) return null;\n\nlet doTopic = msg.topic;\nlet doNum = parseInt(doTopic.replace(\"do\", \"\")) - 1;\nlet cache = flow.get(\"esp32_cache\") || { devices: {}, do: {}, doTopics: {} };\n\n// 1) INFINITE LOOP BREAKER\nif (selectedDevice !== \"ALL MACHINE\") {\n    if (cache.do && cache.do[selectedDevice]) {\n        let currentESP32State = cache.do[selectedDevice][doNum];\n        if (currentESP32State === msg.payload.toString()) {\n            return null; // The ESP32 is already in this state, stop the loop!\n        }\n    }\n}\n\n// ANTI-BOUNCE TIMESTAMP\nlet lockouts = flow.get(\"do_lockouts\") || {};\nif (!lockouts[selectedDevice]) lockouts[selectedDevice] = {};\nlockouts[selectedDevice][doNum] = Date.now();\nflow.set(\"do_lockouts\", lockouts);\n\n// 2) SEND TO CUSTOM TOPICS\nif (selectedDevice === \"ALL MACHINE\") {\n    let msgs = [];\n    for (let device in cache.devices) {\n        // Look up the custom topic for EACH machine!\n        let targetTopic = `esp32/${device}/do${doNum + 1}`; // fallback\n        if (cache.doTopics && cache.doTopics[device] && cache.doTopics[device][doNum]) {\n            targetTopic = cache.doTopics[device][doNum];\n        }\n        msgs.push({\n            topic: targetTopic,\n            payload: msg.payload\n        });\n    }\n    return [msgs];\n} else {\n    let targetTopic = `esp32/${selectedDevice}/${doTopic}`;\n    if (cache.doTopics && cache.doTopics[selectedDevice] && cache.doTopics[selectedDevice][doNum]) {\n        targetTopic = cache.doTopics[selectedDevice][doNum];\n    }\n    msg.topic = targetTopic;\n    return msg;\n}",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1010,
+        "y": 660,
+        "wires": [
+            [
+                "7663f50fddc8423e"
+            ]
+        ]
+    },
+    {
+        "id": "b3b652ba8f09f4ed",
+        "type": "ui-switch",
+        "z": "bc29ce5df0b271fd",
+        "name": "DO1 Control",
+        "label": "DO1 (Relay 1)",
+        "group": "f8d563ecb7a67481",
+        "order": 1,
+        "width": 2,
+        "height": 0,
+        "passthru": false,
+        "decouple": false,
+        "topic": "do1",
+        "topicType": "str",
+        "className": "",
+        "layout": "",
+        "clickableArea": "switch",
+        "onvalue": "1",
+        "onvalueType": "str",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "0",
+        "offvalueType": "str",
+        "officon": "",
+        "offcolor": "",
+        "x": 700,
+        "y": 600,
+        "wires": [
+            [
+                "79bbb893d0231627"
+            ]
+        ]
+    },
+    {
+        "id": "bda29132a059e8aa",
+        "type": "ui-switch",
+        "z": "bc29ce5df0b271fd",
+        "name": "DO2 Control",
+        "label": "DO2 (Relay 2)",
+        "group": "f8d563ecb7a67481",
+        "order": 3,
+        "width": 2,
+        "height": 0,
+        "passthru": false,
+        "decouple": false,
+        "topic": "do2",
+        "topicType": "str",
+        "className": "",
+        "layout": "",
+        "clickableArea": "switch",
+        "onvalue": "1",
+        "onvalueType": "str",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "0",
+        "offvalueType": "str",
+        "officon": "",
+        "offcolor": "",
+        "x": 700,
+        "y": 640,
+        "wires": [
+            [
+                "79bbb893d0231627"
+            ]
+        ]
+    },
+    {
+        "id": "d7045d78dc5dca5c",
+        "type": "ui-switch",
+        "z": "bc29ce5df0b271fd",
+        "name": "DO3 Control",
+        "label": "DO3 (Relay 3)",
+        "group": "f8d563ecb7a67481",
+        "order": 5,
+        "width": 2,
+        "height": 0,
+        "passthru": false,
+        "decouple": false,
+        "topic": "do3",
+        "topicType": "str",
+        "className": "",
+        "layout": "",
+        "clickableArea": "switch",
+        "onvalue": "1",
+        "onvalueType": "str",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "0",
+        "offvalueType": "str",
+        "officon": "",
+        "offcolor": "",
+        "x": 700,
+        "y": 680,
+        "wires": [
+            [
+                "79bbb893d0231627"
+            ]
+        ]
+    },
+    {
+        "id": "26221a77c1f49ac8",
+        "type": "ui-switch",
+        "z": "bc29ce5df0b271fd",
+        "name": "DO4 Control",
+        "label": "DO4 (Relay 4)",
+        "group": "f8d563ecb7a67481",
+        "order": 7,
+        "width": 2,
+        "height": 0,
+        "passthru": false,
+        "decouple": false,
+        "topic": "do4",
+        "topicType": "str",
+        "className": "",
+        "layout": "",
+        "clickableArea": "switch",
+        "onvalue": "1",
+        "onvalueType": "str",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "0",
+        "offvalueType": "str",
+        "officon": "",
+        "offcolor": "",
+        "x": 700,
+        "y": 720,
+        "wires": [
+            [
+                "79bbb893d0231627"
+            ]
+        ]
+    },
+    {
+        "id": "306d59a01c275885",
+        "type": "ui-switch",
+        "z": "bc29ce5df0b271fd",
+        "name": "DO5 Control",
+        "label": "DO5 (Relay 5)",
+        "group": "f8d563ecb7a67481",
+        "order": 9,
+        "width": 2,
+        "height": 0,
+        "passthru": false,
+        "decouple": false,
+        "topic": "do5",
+        "topicType": "str",
+        "className": "",
+        "layout": "",
+        "clickableArea": "switch",
+        "onvalue": "1",
+        "onvalueType": "str",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "0",
+        "offvalueType": "str",
+        "officon": "",
+        "offcolor": "",
+        "x": 700,
+        "y": 760,
+        "wires": [
+            [
+                "79bbb893d0231627"
+            ]
+        ]
+    },
+    {
+        "id": "5038397512fbb1b0",
+        "type": "ui-switch",
+        "z": "bc29ce5df0b271fd",
+        "name": "DO6 Control",
+        "label": "DO6 (Relay 6)",
+        "group": "f8d563ecb7a67481",
+        "order": 11,
+        "width": 2,
+        "height": 0,
+        "passthru": false,
+        "decouple": false,
+        "topic": "do6",
+        "topicType": "str",
+        "className": "",
+        "layout": "",
+        "clickableArea": "switch",
+        "onvalue": "1",
+        "onvalueType": "str",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "0",
+        "offvalueType": "str",
+        "officon": "",
+        "offcolor": "",
+        "x": 700,
+        "y": 800,
+        "wires": [
+            [
+                "79bbb893d0231627"
+            ]
+        ]
+    },
+    {
+        "id": "609fa246a713536e",
+        "type": "ui-switch",
+        "z": "bc29ce5df0b271fd",
+        "name": "DO7 Control",
+        "label": "DO7 (Relay 7)",
+        "group": "f8d563ecb7a67481",
+        "order": 13,
+        "width": 2,
+        "height": 0,
+        "passthru": false,
+        "decouple": false,
+        "topic": "do7",
+        "topicType": "str",
+        "className": "",
+        "layout": "",
+        "clickableArea": "switch",
+        "onvalue": "1",
+        "onvalueType": "str",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "0",
+        "offvalueType": "str",
+        "officon": "",
+        "offcolor": "",
+        "x": 700,
+        "y": 840,
+        "wires": [
+            [
+                "79bbb893d0231627"
+            ]
+        ]
+    },
+    {
+        "id": "769db7dc36ede741",
+        "type": "ui-switch",
+        "z": "bc29ce5df0b271fd",
+        "name": "DO8 Control",
+        "label": "DO8 (Relay 8)",
+        "group": "f8d563ecb7a67481",
+        "order": 15,
+        "width": 2,
+        "height": 0,
+        "passthru": false,
+        "decouple": false,
+        "topic": "do8",
+        "topicType": "str",
+        "className": "",
+        "layout": "",
+        "clickableArea": "switch",
+        "onvalue": "1",
+        "onvalueType": "str",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "0",
+        "offvalueType": "str",
+        "officon": "",
+        "offcolor": "",
+        "x": 700,
+        "y": 880,
+        "wires": [
+            [
+                "79bbb893d0231627"
+            ]
+        ]
+    },
+    {
+        "id": "2082fb2b59de51fb",
+        "type": "ui-text",
+        "z": "bc29ce5df0b271fd",
+        "group": "f8d563ecb7a67481",
+        "order": 2,
+        "width": 2,
+        "height": 0,
+        "name": "DI1 Display",
+        "label": "DI1 Live Count:",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "style": false,
+        "font": "",
+        "fontSize": "",
+        "color": "#000000",
+        "wrapText": false,
+        "className": "",
+        "value": "payload",
+        "valueType": "msg",
+        "x": 700,
+        "y": 940,
+        "wires": []
+    },
+    {
+        "id": "ba5c8310af4688e3",
+        "type": "ui-text",
+        "z": "bc29ce5df0b271fd",
+        "group": "f8d563ecb7a67481",
+        "order": 4,
+        "width": 2,
+        "height": 0,
+        "name": "DI2 Display",
+        "label": "DI2 Live Count:",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "style": false,
+        "font": "",
+        "fontSize": "",
+        "color": "#000000",
+        "wrapText": false,
+        "className": "",
+        "value": "payload",
+        "valueType": "msg",
+        "x": 700,
+        "y": 980,
+        "wires": []
+    },
+    {
+        "id": "869b61dc94f235aa",
+        "type": "ui-text",
+        "z": "bc29ce5df0b271fd",
+        "group": "f8d563ecb7a67481",
+        "order": 6,
+        "width": 2,
+        "height": 0,
+        "name": "DI3 Display",
+        "label": "DI3 Live Count:",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "style": false,
+        "font": "",
+        "fontSize": "",
+        "color": "#000000",
+        "wrapText": false,
+        "className": "",
+        "value": "payload",
+        "valueType": "msg",
+        "x": 700,
+        "y": 1020,
+        "wires": []
+    },
+    {
+        "id": "418bbeec5d1cd70d",
+        "type": "ui-text",
+        "z": "bc29ce5df0b271fd",
+        "group": "f8d563ecb7a67481",
+        "order": 8,
+        "width": 2,
+        "height": 0,
+        "name": "DI4 Display",
+        "label": "DI4 Live Count:",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "style": false,
+        "font": "",
+        "fontSize": "",
+        "color": "#000000",
+        "wrapText": false,
+        "className": "",
+        "value": "payload",
+        "valueType": "msg",
+        "x": 700,
+        "y": 1060,
+        "wires": []
+    },
+    {
+        "id": "c1a5b2d2cafcf33a",
+        "type": "ui-text",
+        "z": "bc29ce5df0b271fd",
+        "group": "f8d563ecb7a67481",
+        "order": 10,
+        "width": 2,
+        "height": 0,
+        "name": "DI5 Display",
+        "label": "DI5 Live Count:",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "style": false,
+        "font": "",
+        "fontSize": "",
+        "color": "#000000",
+        "wrapText": false,
+        "className": "",
+        "value": "payload",
+        "valueType": "msg",
+        "x": 700,
+        "y": 1100,
+        "wires": []
+    },
+    {
+        "id": "81c72658d442c93e",
+        "type": "ui-text",
+        "z": "bc29ce5df0b271fd",
+        "group": "f8d563ecb7a67481",
+        "order": 12,
+        "width": 2,
+        "height": 0,
+        "name": "DI6 Display",
+        "label": "DI6 Live Count:",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "style": false,
+        "font": "",
+        "fontSize": "",
+        "color": "#000000",
+        "wrapText": false,
+        "className": "",
+        "value": "payload",
+        "valueType": "msg",
+        "x": 700,
+        "y": 1140,
+        "wires": []
+    },
+    {
+        "id": "b267e970866559cb",
+        "type": "ui-text",
+        "z": "bc29ce5df0b271fd",
+        "group": "f8d563ecb7a67481",
+        "order": 14,
+        "width": 2,
+        "height": 0,
+        "name": "DI7 Display",
+        "label": "DI7 Live Count:",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "style": false,
+        "font": "",
+        "fontSize": "",
+        "color": "#000000",
+        "wrapText": false,
+        "className": "",
+        "value": "payload",
+        "valueType": "msg",
+        "x": 700,
+        "y": 1180,
+        "wires": []
+    },
+    {
+        "id": "56742db508feec9d",
+        "type": "ui-text",
+        "z": "bc29ce5df0b271fd",
+        "group": "f8d563ecb7a67481",
+        "order": 16,
+        "width": 2,
+        "height": 0,
+        "name": "DI8 Display",
+        "label": "DI8 Live Count:",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "style": false,
+        "font": "",
+        "fontSize": "",
+        "color": "#000000",
+        "wrapText": false,
+        "className": "",
+        "value": "payload",
+        "valueType": "msg",
+        "x": 700,
+        "y": 1220,
+        "wires": []
+    },
+    {
+        "id": "606b320a815befd9",
+        "type": "ui-dropdown",
+        "z": "bc29ce5df0b271fd",
+        "group": "65aba5ad8c2ba417",
+        "name": "Select Device",
+        "label": "Select Machine",
+        "tooltip": "",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "multiple": false,
+        "chips": false,
+        "clearable": false,
+        "options": [],
+        "payload": "",
+        "topic": "topic",
+        "topicType": "msg",
+        "className": "",
+        "typeIsComboBox": true,
+        "msgTrigger": "onClose",
+        "x": 700,
+        "y": 200,
+        "wires": [
+            [
+                "61a09a4946dc636d",
+                "f5466232eab410ba"
             ]
         ]
     },
@@ -937,10 +1563,10 @@
         "sessionExpiry": ""
     },
     {
-        "id": "b5505c288d2522f4",
+        "id": "65aba5ad8c2ba417",
         "type": "ui-group",
-        "name": "MAIN CONTROL",
-        "page": "8a8f7e395db9fff7",
+        "name": "Configure",
+        "page": "df592e1517d5c7f3",
         "width": "4",
         "height": 1,
         "order": 2,
@@ -977,14 +1603,28 @@
         "verboselogging": false
     },
     {
-        "id": "8a8f7e395db9fff7",
+        "id": "f8d563ecb7a67481",
+        "type": "ui-group",
+        "name": "DO Switch",
+        "page": "df592e1517d5c7f3",
+        "width": "4",
+        "height": 1,
+        "order": 1,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "df592e1517d5c7f3",
         "type": "ui-page",
-        "name": "ESP32 Dashboard",
+        "name": "ESP32 Main Control",
         "ui": "10737ae8338874c8",
-        "path": "/ESP32",
+        "path": "/page2",
         "icon": "home",
         "layout": "grid",
-        "theme": "5a4f58f57bc5f0ae",
+        "theme": "374878a41d027215",
         "breakpoints": [
             {
                 "name": "Default",
@@ -1033,9 +1673,9 @@
         "allowInstall": true
     },
     {
-        "id": "5a4f58f57bc5f0ae",
+        "id": "374878a41d027215",
         "type": "ui-theme",
-        "name": "ui-base.label.theme 2",
+        "name": "Default Theme",
         "colors": {
             "surface": "#ffffff",
             "primary": "#0094CE",
@@ -1052,521 +1692,12 @@
         }
     },
     {
-        "id": "9d02986c670f6069",
+        "id": "3f26d5f06d039c1c",
         "type": "global-config",
         "env": [],
         "modules": {
             "@flowfuse/node-red-dashboard": "1.30.2",
             "node-red-contrib-telegrambot": "19.0.0"
         }
-    },
-    {
-        "id": "9dcf8a570c974b26",
-        "type": "mqtt in",
-        "z": "b429cc46560fc6a7",
-        "name": "Listen DO (Wildcard)",
-        "topic": "esp32/+/do/+",
-        "qos": "0",
-        "datatype": "auto-detect",
-        "broker": "f7c9eba65970f8fc",
-        "nl": false,
-        "rap": true,
-        "x": 150,
-        "y": 600,
-        "wires": [
-            [
-                "220acade1de946e7"
-            ]
-        ]
-    },
-    {
-        "id": "dab45eae02584dd0",
-        "type": "mqtt in",
-        "z": "b429cc46560fc6a7",
-        "name": "Listen DI Count (Wildcard)",
-        "topic": "esp32/+/count/di+",
-        "qos": "0",
-        "datatype": "auto-detect",
-        "broker": "f7c9eba65970f8fc",
-        "nl": false,
-        "rap": true,
-        "x": 160,
-        "y": 640,
-        "wires": [
-            [
-                "220acade1de946e7"
-            ]
-        ]
-    },
-    {
-        "id": "220acade1de946e7",
-        "type": "function",
-        "z": "b429cc46560fc6a7",
-        "name": "DI/DO State Manager",
-        "func": "let cache = flow.get(\"esp32_cache\") || { devices: {}, tg: {}, auto: {}, do: {}, di: {} };\nif (!cache.do) cache.do = {};\nif (!cache.di) cache.di = {};\nlet parts = msg.topic.split(\"/\");\nlet device = parts[1];\nlet type = parts[2];\nlet id = parts[3];\nlet selectedDevice = flow.get(\"selectedDevice\");\nlet msgs = new Array(16).fill(null);\nif (parts[2] && parts[2].startsWith(\"do\")) {\n    let doNum = parseInt(parts[2].replace(\"do\", \"\")) - 1;\n    if (doNum >= 0 && doNum < 8) {\n        if (!cache.do[device]) cache.do[device] = {};\n        cache.do[device][doNum] = msg.payload.toString();\n        if (device === selectedDevice) msgs[doNum] = { payload: msg.payload.toString() };\n    }\n} else if (type === \"count\" && id && id.startsWith(\"di\")) {\n    let diNum = parseInt(id.replace(\"di\", \"\")) - 1;\n    if (diNum >= 0 && diNum < 8) {\n        if (!cache.di[device]) cache.di[device] = {};\n        cache.di[device][diNum] = msg.payload.toString();\n        if (device === selectedDevice) msgs[8 + diNum] = { payload: msg.payload.toString() };\n    }\n}\nflow.set(\"esp32_cache\", cache);\nreturn msgs;",
-        "outputs": 16,
-        "x": 380,
-        "y": 620,
-        "wires": [
-            [
-                "8e9cf4707ab1432f"
-            ],
-            [
-                "807073c9a698406f"
-            ],
-            [
-                "23df8c427c914fb2"
-            ],
-            [
-                "d870d361146b4b0e"
-            ],
-            [
-                "b8c00809b70242cb"
-            ],
-            [
-                "65ed3eee70e74eda"
-            ],
-            [
-                "f3b1682c8bf24553"
-            ],
-            [
-                "01d328d9c1b1495b"
-            ],
-            [
-                "b094002a828a4642"
-            ],
-            [
-                "a803e6d9788d46f3"
-            ],
-            [
-                "03f5a90294874f27"
-            ],
-            [
-                "1855d0899ee54514"
-            ],
-            [
-                "dba264e3799343d4"
-            ],
-            [
-                "8e28614ee8dd49de"
-            ],
-            [
-                "61a513aef40b492c"
-            ],
-            [
-                "ee5ea5e4c01f4881"
-            ]
-        ]
-    },
-    {
-        "id": "53be4bd44ed04247",
-        "type": "function",
-        "z": "b429cc46560fc6a7",
-        "name": "Update DI/DO UI",
-        "func": "let selectedDevice = msg.payload;\nlet cache = flow.get(\"esp32_cache\") || { tg: {}, auto: {}, do: {}, di: {} };\nif (!cache.do) cache.do = {};\nif (!cache.di) cache.di = {};\nlet msgs = new Array(16).fill(null);\nif (selectedDevice === \"ALL MACHINE\") {\n    for (let i=0; i<8; i++) msgs[i] = { payload: \"0\" };\n    for (let i=0; i<8; i++) msgs[8+i] = { payload: \"0\" };\n} else {\n    for (let i=0; i<8; i++) msgs[i] = { payload: (cache.do[selectedDevice] && cache.do[selectedDevice][i]) ? cache.do[selectedDevice][i] : \"0\" };\n    for (let i=0; i<8; i++) msgs[8+i] = { payload: (cache.di[selectedDevice] && cache.di[selectedDevice][i]) ? cache.di[selectedDevice][i] : \"0\" };\n}\nreturn msgs;",
-        "outputs": 16,
-        "x": 380,
-        "y": 700,
-        "wires": [
-            [
-                "8e9cf4707ab1432f"
-            ],
-            [
-                "807073c9a698406f"
-            ],
-            [
-                "23df8c427c914fb2"
-            ],
-            [
-                "d870d361146b4b0e"
-            ],
-            [
-                "b8c00809b70242cb"
-            ],
-            [
-                "65ed3eee70e74eda"
-            ],
-            [
-                "f3b1682c8bf24553"
-            ],
-            [
-                "01d328d9c1b1495b"
-            ],
-            [
-                "b094002a828a4642"
-            ],
-            [
-                "a803e6d9788d46f3"
-            ],
-            [
-                "03f5a90294874f27"
-            ],
-            [
-                "1855d0899ee54514"
-            ],
-            [
-                "dba264e3799343d4"
-            ],
-            [
-                "8e28614ee8dd49de"
-            ],
-            [
-                "61a513aef40b492c"
-            ],
-            [
-                "ee5ea5e4c01f4881"
-            ]
-        ]
-    },
-    {
-        "id": "0c97d22b680941a0",
-        "type": "function",
-        "z": "b429cc46560fc6a7",
-        "name": "Target Device (DO)",
-        "func": "let selectedDevice = flow.get(\"selectedDevice\");\nif (!selectedDevice) return null;\nlet doTopic = msg.topic;\nif (selectedDevice === \"ALL MACHINE\") {\n    let cache = flow.get(\"esp32_cache\") || { devices: {} };\n    let msgs = [];\n    for (let device in cache.devices) {\n        msgs.push({ topic: esp32//, payload: msg.payload });\n    }\n    return [msgs];\n} else {\n    msg.topic = esp32//;\n    return msg;\n}",
-        "outputs": 1,
-        "x": 800,
-        "y": 620,
-        "wires": [
-            [
-                "11a1921f5fa6543e"
-            ]
-        ]
-    },
-    {
-        "id": "8e9cf4707ab1432f",
-        "type": "ui-switch",
-        "z": "b429cc46560fc6a7",
-        "name": "DO1 Control",
-        "label": "DO1 (Relay 1)",
-        "group": "b5505c288d2522f4",
-        "order": 11,
-        "width": 0,
-        "height": 0,
-        "passthru": false,
-        "decouple": "false",
-        "topic": "do1",
-        "topicType": "str",
-        "onvalue": "1",
-        "onvalueType": "str",
-        "offvalue": "0",
-        "offvalueType": "str",
-        "x": 600,
-        "y": 600,
-        "wires": [
-            [
-                "0c97d22b680941a0"
-            ]
-        ]
-    },
-    {
-        "id": "807073c9a698406f",
-        "type": "ui-switch",
-        "z": "b429cc46560fc6a7",
-        "name": "DO2 Control",
-        "label": "DO2 (Relay 2)",
-        "group": "b5505c288d2522f4",
-        "order": 12,
-        "width": 0,
-        "height": 0,
-        "passthru": false,
-        "decouple": "false",
-        "topic": "do2",
-        "topicType": "str",
-        "onvalue": "1",
-        "onvalueType": "str",
-        "offvalue": "0",
-        "offvalueType": "str",
-        "x": 600,
-        "y": 640,
-        "wires": [
-            [
-                "0c97d22b680941a0"
-            ]
-        ]
-    },
-    {
-        "id": "23df8c427c914fb2",
-        "type": "ui-switch",
-        "z": "b429cc46560fc6a7",
-        "name": "DO3 Control",
-        "label": "DO3 (Relay 3)",
-        "group": "b5505c288d2522f4",
-        "order": 13,
-        "width": 0,
-        "height": 0,
-        "passthru": false,
-        "decouple": "false",
-        "topic": "do3",
-        "topicType": "str",
-        "onvalue": "1",
-        "onvalueType": "str",
-        "offvalue": "0",
-        "offvalueType": "str",
-        "x": 600,
-        "y": 680,
-        "wires": [
-            [
-                "0c97d22b680941a0"
-            ]
-        ]
-    },
-    {
-        "id": "d870d361146b4b0e",
-        "type": "ui-switch",
-        "z": "b429cc46560fc6a7",
-        "name": "DO4 Control",
-        "label": "DO4 (Relay 4)",
-        "group": "b5505c288d2522f4",
-        "order": 14,
-        "width": 0,
-        "height": 0,
-        "passthru": false,
-        "decouple": "false",
-        "topic": "do4",
-        "topicType": "str",
-        "onvalue": "1",
-        "onvalueType": "str",
-        "offvalue": "0",
-        "offvalueType": "str",
-        "x": 600,
-        "y": 720,
-        "wires": [
-            [
-                "0c97d22b680941a0"
-            ]
-        ]
-    },
-    {
-        "id": "b8c00809b70242cb",
-        "type": "ui-switch",
-        "z": "b429cc46560fc6a7",
-        "name": "DO5 Control",
-        "label": "DO5 (Relay 5)",
-        "group": "b5505c288d2522f4",
-        "order": 15,
-        "width": 0,
-        "height": 0,
-        "passthru": false,
-        "decouple": "false",
-        "topic": "do5",
-        "topicType": "str",
-        "onvalue": "1",
-        "onvalueType": "str",
-        "offvalue": "0",
-        "offvalueType": "str",
-        "x": 600,
-        "y": 760,
-        "wires": [
-            [
-                "0c97d22b680941a0"
-            ]
-        ]
-    },
-    {
-        "id": "65ed3eee70e74eda",
-        "type": "ui-switch",
-        "z": "b429cc46560fc6a7",
-        "name": "DO6 Control",
-        "label": "DO6 (Relay 6)",
-        "group": "b5505c288d2522f4",
-        "order": 16,
-        "width": 0,
-        "height": 0,
-        "passthru": false,
-        "decouple": "false",
-        "topic": "do6",
-        "topicType": "str",
-        "onvalue": "1",
-        "onvalueType": "str",
-        "offvalue": "0",
-        "offvalueType": "str",
-        "x": 600,
-        "y": 800,
-        "wires": [
-            [
-                "0c97d22b680941a0"
-            ]
-        ]
-    },
-    {
-        "id": "f3b1682c8bf24553",
-        "type": "ui-switch",
-        "z": "b429cc46560fc6a7",
-        "name": "DO7 Control",
-        "label": "DO7 (Relay 7)",
-        "group": "b5505c288d2522f4",
-        "order": 17,
-        "width": 0,
-        "height": 0,
-        "passthru": false,
-        "decouple": "false",
-        "topic": "do7",
-        "topicType": "str",
-        "onvalue": "1",
-        "onvalueType": "str",
-        "offvalue": "0",
-        "offvalueType": "str",
-        "x": 600,
-        "y": 840,
-        "wires": [
-            [
-                "0c97d22b680941a0"
-            ]
-        ]
-    },
-    {
-        "id": "01d328d9c1b1495b",
-        "type": "ui-switch",
-        "z": "b429cc46560fc6a7",
-        "name": "DO8 Control",
-        "label": "DO8 (Relay 8)",
-        "group": "b5505c288d2522f4",
-        "order": 18,
-        "width": 0,
-        "height": 0,
-        "passthru": false,
-        "decouple": "false",
-        "topic": "do8",
-        "topicType": "str",
-        "onvalue": "1",
-        "onvalueType": "str",
-        "offvalue": "0",
-        "offvalueType": "str",
-        "x": 600,
-        "y": 880,
-        "wires": [
-            [
-                "0c97d22b680941a0"
-            ]
-        ]
-    },
-    {
-        "id": "b094002a828a4642",
-        "type": "ui-text",
-        "z": "b429cc46560fc6a7",
-        "name": "DI1 Display",
-        "label": "DI1 Live Count:",
-        "group": "b5505c288d2522f4",
-        "order": 21,
-        "width": 0,
-        "height": 0,
-        "format": "{{msg.payload}}",
-        "layout": "row-spread",
-        "x": 600,
-        "y": 940,
-        "wires": []
-    },
-    {
-        "id": "a803e6d9788d46f3",
-        "type": "ui-text",
-        "z": "b429cc46560fc6a7",
-        "name": "DI2 Display",
-        "label": "DI2 Live Count:",
-        "group": "b5505c288d2522f4",
-        "order": 22,
-        "width": 0,
-        "height": 0,
-        "format": "{{msg.payload}}",
-        "layout": "row-spread",
-        "x": 600,
-        "y": 980,
-        "wires": []
-    },
-    {
-        "id": "03f5a90294874f27",
-        "type": "ui-text",
-        "z": "b429cc46560fc6a7",
-        "name": "DI3 Display",
-        "label": "DI3 Live Count:",
-        "group": "b5505c288d2522f4",
-        "order": 23,
-        "width": 0,
-        "height": 0,
-        "format": "{{msg.payload}}",
-        "layout": "row-spread",
-        "x": 600,
-        "y": 1020,
-        "wires": []
-    },
-    {
-        "id": "1855d0899ee54514",
-        "type": "ui-text",
-        "z": "b429cc46560fc6a7",
-        "name": "DI4 Display",
-        "label": "DI4 Live Count:",
-        "group": "b5505c288d2522f4",
-        "order": 24,
-        "width": 0,
-        "height": 0,
-        "format": "{{msg.payload}}",
-        "layout": "row-spread",
-        "x": 600,
-        "y": 1060,
-        "wires": []
-    },
-    {
-        "id": "dba264e3799343d4",
-        "type": "ui-text",
-        "z": "b429cc46560fc6a7",
-        "name": "DI5 Display",
-        "label": "DI5 Live Count:",
-        "group": "b5505c288d2522f4",
-        "order": 25,
-        "width": 0,
-        "height": 0,
-        "format": "{{msg.payload}}",
-        "layout": "row-spread",
-        "x": 600,
-        "y": 1100,
-        "wires": []
-    },
-    {
-        "id": "8e28614ee8dd49de",
-        "type": "ui-text",
-        "z": "b429cc46560fc6a7",
-        "name": "DI6 Display",
-        "label": "DI6 Live Count:",
-        "group": "b5505c288d2522f4",
-        "order": 26,
-        "width": 0,
-        "height": 0,
-        "format": "{{msg.payload}}",
-        "layout": "row-spread",
-        "x": 600,
-        "y": 1140,
-        "wires": []
-    },
-    {
-        "id": "61a513aef40b492c",
-        "type": "ui-text",
-        "z": "b429cc46560fc6a7",
-        "name": "DI7 Display",
-        "label": "DI7 Live Count:",
-        "group": "b5505c288d2522f4",
-        "order": 27,
-        "width": 0,
-        "height": 0,
-        "format": "{{msg.payload}}",
-        "layout": "row-spread",
-        "x": 600,
-        "y": 1180,
-        "wires": []
-    },
-    {
-        "id": "ee5ea5e4c01f4881",
-        "type": "ui-text",
-        "z": "b429cc46560fc6a7",
-        "name": "DI8 Display",
-        "label": "DI8 Live Count:",
-        "group": "b5505c288d2522f4",
-        "order": 28,
-        "width": 0,
-        "height": 0,
-        "format": "{{msg.payload}}",
-        "layout": "row-spread",
-        "x": 600,
-        "y": 1220,
-        "wires": []
     }
 ]
