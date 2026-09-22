@@ -8,80 +8,6 @@
         "env": []
     },
     {
-        "id": "901bf22d3c0427ab",
-        "type": "mqtt in",
-        "z": "bc29ce5df0b271fd",
-        "name": "",
-        "topic": "esp32/Machine2/top/do1",
-        "qos": "0",
-        "datatype": "auto-detect",
-        "broker": "ea9dd93b3d441040",
-        "nl": false,
-        "rap": true,
-        "rh": 0,
-        "inputs": 0,
-        "x": 970,
-        "y": 860,
-        "wires": [
-            [
-                "9da906e932d85e7a"
-            ]
-        ]
-    },
-    {
-        "id": "9da906e932d85e7a",
-        "type": "debug",
-        "z": "bc29ce5df0b271fd",
-        "name": "debug 1",
-        "active": false,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 1220,
-        "y": 860,
-        "wires": []
-    },
-    {
-        "id": "55874866793d0501",
-        "type": "mqtt in",
-        "z": "bc29ce5df0b271fd",
-        "name": "",
-        "topic": "esp32/Machine2/count/di1",
-        "qos": "0",
-        "datatype": "auto-detect",
-        "broker": "ea9dd93b3d441040",
-        "nl": false,
-        "rap": true,
-        "rh": 0,
-        "inputs": 0,
-        "x": 970,
-        "y": 920,
-        "wires": [
-            [
-                "2e86541f295f0bb3"
-            ]
-        ]
-    },
-    {
-        "id": "2e86541f295f0bb3",
-        "type": "debug",
-        "z": "bc29ce5df0b271fd",
-        "name": "debug 2",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "false",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 1200,
-        "y": 920,
-        "wires": []
-    },
-    {
         "id": "d82c861eee1e715c",
         "type": "mqtt in",
         "z": "bc29ce5df0b271fd",
@@ -94,8 +20,8 @@
         "rap": true,
         "rh": 0,
         "inputs": 0,
-        "x": 770,
-        "y": 60,
+        "x": 210,
+        "y": 980,
         "wires": [
             [
                 "e7d3e02240fb1c3b"
@@ -122,8 +48,8 @@
         "className": "",
         "value": "payload",
         "valueType": "msg",
-        "x": 1010,
-        "y": 60,
+        "x": 650,
+        "y": 980,
         "wires": []
     },
     {
@@ -139,8 +65,8 @@
         "rap": true,
         "rh": 0,
         "inputs": 0,
-        "x": 740,
-        "y": 560,
+        "x": 640,
+        "y": 1260,
         "wires": [
             [
                 "459458ccf5b1b727"
@@ -155,8 +81,8 @@
         "bot": "telegram_bot_config",
         "haserroroutput": false,
         "outputs": 1,
-        "x": 1270,
-        "y": 500,
+        "x": 1230,
+        "y": 1140,
         "wires": [
             []
         ]
@@ -176,8 +102,8 @@
         "useregex": false,
         "removeregexcommand": false,
         "outputs": 1,
-        "x": 550,
-        "y": 380,
+        "x": 670,
+        "y": 1020,
         "wires": [
             [
                 "63ec1b73f1e88d63"
@@ -199,8 +125,8 @@
         "useregex": false,
         "removeregexcommand": false,
         "outputs": 1,
-        "x": 550,
-        "y": 420,
+        "x": 670,
+        "y": 1060,
         "wires": [
             [
                 "63ec1b73f1e88d63"
@@ -222,8 +148,8 @@
         "useregex": false,
         "removeregexcommand": false,
         "outputs": 1,
-        "x": 550,
-        "y": 460,
+        "x": 670,
+        "y": 1100,
         "wires": [
             [
                 "63ec1b73f1e88d63"
@@ -245,8 +171,8 @@
         "useregex": false,
         "removeregexcommand": false,
         "outputs": 1,
-        "x": 550,
-        "y": 500,
+        "x": 670,
+        "y": 1140,
         "wires": [
             [
                 "63ec1b73f1e88d63"
@@ -268,8 +194,8 @@
         "useregex": false,
         "removeregexcommand": false,
         "outputs": 1,
-        "x": 530,
-        "y": 540,
+        "x": 650,
+        "y": 1180,
         "wires": [
             [
                 "63ec1b73f1e88d63"
@@ -291,8 +217,8 @@
         "useregex": false,
         "removeregexcommand": false,
         "outputs": 1,
-        "x": 550,
-        "y": 580,
+        "x": 670,
+        "y": 1220,
         "wires": [
             [
                 "53b8fe90cb6012d0"
@@ -311,8 +237,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 990,
-        "y": 520,
+        "x": 950,
+        "y": 1140,
         "wires": [
             [
                 "ea1e6fe826d24981"
@@ -331,8 +257,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 960,
-        "y": 460,
+        "x": 920,
+        "y": 1100,
         "wires": [
             [
                 "7663f50fddc8423e"
@@ -358,8 +284,8 @@
         "rap": true,
         "rh": 0,
         "inputs": 0,
-        "x": 220,
-        "y": 200,
+        "x": 180,
+        "y": 800,
         "wires": [
             [
                 "5582d9bb4f7a64c7"
@@ -379,8 +305,8 @@
         "rap": true,
         "rh": 0,
         "inputs": 0,
-        "x": 230,
-        "y": 260,
+        "x": 180,
+        "y": 840,
         "wires": [
             [
                 "5582d9bb4f7a64c7"
@@ -400,8 +326,8 @@
         "rap": true,
         "rh": 0,
         "inputs": 0,
-        "x": 220,
-        "y": 320,
+        "x": 170,
+        "y": 880,
         "wires": [
             [
                 "5582d9bb4f7a64c7"
@@ -413,16 +339,19 @@
         "type": "function",
         "z": "bc29ce5df0b271fd",
         "name": "Global State Manager",
-        "func": "let cache = flow.get(\"esp32_cache\") || { devices: {}, tg: {}, auto: {} };\nlet parts = msg.topic.split(\"/\");\nlet device = parts[1];\nlet type = parts.slice(2).join(\"/\");\nlet val = msg.payload.toString();\n\nlet selectedDevice = flow.get(\"selectedDevice\");\n\nlet msgDropdown = null;\nlet msgTg = null;\nlet msgAuto = null;\n\nif (type === \"status\") {\n    if (val === \"online\") cache.devices[device] = true;\n    else delete cache.devices[device];\n    \n    let options = Object.keys(cache.devices);\n    options.unshift(\"ALL MACHINE\"); // Always place ALL MACHINE at the top\n    msgDropdown = { options: options };\n} else if (type === \"telegram/enabled\") {\n    cache.tg[device] = val;\n    if (device === selectedDevice) {\n        msgTg = { payload: val };\n    }\n} else if (type === \"update/auto/status\") {\n    cache.auto[device] = val;\n    if (device === selectedDevice) {\n        msgAuto = { payload: val };\n    }\n}\n\nflow.set(\"esp32_cache\", cache);\nreturn [msgDropdown, msgTg, msgAuto];",
-        "outputs": 3,
+        "func": "let cache = flow.get(\"esp32_cache\") || { devices: {}, tg: {}, auto: {} };\nlet parts = msg.topic.split(\"/\");\nlet device = parts[1];\nlet type = parts.slice(2).join(\"/\");\nlet val = msg.payload.toString();\n\nlet selectedDevice = flow.get(\"selectedDevice\"); // The Config Dropdown\n\nlet msgDropdownDO = null;\nlet msgDropdownConfig = null;\nlet msgTg = null;\nlet msgAuto = null;\n\nif (type === \"status\") {\n    if (val === \"online\") {\n        cache.devices[device] = true;\n    } else {\n        delete cache.devices[device];\n    }\n    \n    let activeMachines = Object.keys(cache.devices);\n    \n    // Output 1: Dropdown DO & DI (Only active machines)\n    msgDropdownDO = { options: activeMachines };\n    \n    // Output 2: Dropdown Config (Active machines + ALL MACHINE)\n    let configMachines = [...activeMachines];\n    configMachines.unshift(\"ALL MACHINE\");\n    msgDropdownConfig = { options: configMachines };\n    \n} else if (type === \"telegram/enabled\") {\n    cache.tg[device] = val;\n    if (device === selectedDevice) msgTg = { payload: val };\n} else if (type === \"update/auto/status\") {\n    cache.auto[device] = val;\n    if (device === selectedDevice) msgAuto = { payload: val };\n}\n\nflow.set(\"esp32_cache\", cache);\n\n// Note we are returning 4 outputs now!\nreturn [msgDropdownDO, msgDropdownConfig, msgTg, msgAuto];",
+        "outputs": 4,
         "timeout": "",
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 480,
-        "y": 260,
+        "x": 420,
+        "y": 840,
         "wires": [
+            [
+                "f20fded88ad5bf13"
+            ],
             [
                 "606b320a815befd9"
             ],
@@ -441,8 +370,8 @@
         "name": "Update UI for Selected Device",
         "func": "let selectedDevice = msg.payload;\nflow.set(\"selectedDevice\", selectedDevice);\n\nlet cache = flow.get(\"esp32_cache\") || { tg: {}, auto: {} };\nlet msgTg = null;\nlet msgAuto = null;\n\nif (selectedDevice === \"ALL MACHINE\") {\n    // Visual default for switches when ALL is selected\n    msgTg = { payload: \"0\" };\n    msgAuto = { payload: \"0\" };\n} else {\n    msgTg = { payload: cache.tg[selectedDevice] || \"0\" };\n    msgAuto = { payload: cache.auto[selectedDevice] || \"0\" };\n}\n\nreturn [msgTg, msgAuto];",
         "outputs": 2,
-        "x": 950,
-        "y": 200,
+        "x": 930,
+        "y": 800,
         "wires": [
             [
                 "ec8bff661d1047a9"
@@ -478,8 +407,8 @@
         "offvalueType": "str",
         "officon": "",
         "offcolor": "",
-        "x": 720,
-        "y": 260,
+        "x": 700,
+        "y": 860,
         "wires": [
             [
                 "272381f8e8cd0748"
@@ -512,8 +441,8 @@
         "offvalueType": "str",
         "officon": "",
         "offcolor": "",
-        "x": 750,
-        "y": 300,
+        "x": 690,
+        "y": 900,
         "wires": [
             [
                 "a43668d14e19d140"
@@ -551,8 +480,8 @@
         "enablePointerup": false,
         "pointerupPayload": "",
         "pointerupPayloadType": "str",
-        "x": 730,
-        "y": 340,
+        "x": 690,
+        "y": 940,
         "wires": [
             [
                 "b4f8805a7e4dc1ea"
@@ -566,8 +495,8 @@
         "name": "Target Device (TG)",
         "func": "let selectedDevice = flow.get(\"selectedDevice\");\nif (!selectedDevice) return null;\n\nif (selectedDevice === \"ALL MACHINE\") {\n    let cache = flow.get(\"esp32_cache\") || { devices: {} };\n    let msgs = [];\n    for (let device in cache.devices) {\n        msgs.push({\n            topic: `esp32/${device}/telegram/enabled/set`,\n            payload: msg.payload\n        });\n    }\n    return [msgs]; // Broadcasts to all online devices sequentially\n} else {\n    msg.topic = `esp32/${selectedDevice}/telegram/enabled/set`;\n    return msg;\n}",
         "outputs": 1,
-        "x": 980,
-        "y": 260,
+        "x": 930,
+        "y": 860,
         "wires": [
             [
                 "7663f50fddc8423e"
@@ -581,8 +510,8 @@
         "name": "Target Device (Auto)",
         "func": "let selectedDevice = flow.get(\"selectedDevice\");\nif (!selectedDevice) return null;\n\nif (selectedDevice === \"ALL MACHINE\") {\n    let cache = flow.get(\"esp32_cache\") || { devices: {} };\n    let msgs = [];\n    for (let device in cache.devices) {\n        msgs.push({\n            topic: `esp32/${device}/update/auto/set`,\n            payload: msg.payload\n        });\n    }\n    return [msgs]; // Broadcasts to all online devices sequentially\n} else {\n    msg.topic = `esp32/${selectedDevice}/update/auto/set`;\n    return msg;\n}",
         "outputs": 1,
-        "x": 970,
-        "y": 300,
+        "x": 920,
+        "y": 900,
         "wires": [
             [
                 "7663f50fddc8423e"
@@ -596,8 +525,8 @@
         "name": "Target Device (OTA)",
         "func": "let selectedDevice = flow.get(\"selectedDevice\");\nif (!selectedDevice) return null;\n\nif (selectedDevice === \"ALL MACHINE\") {\n    let cache = flow.get(\"esp32_cache\") || { devices: {} };\n    let msgs = [];\n    for (let device in cache.devices) {\n        msgs.push({\n            topic: `esp32/${device}/ota_trigger`,\n            payload: \"1\"\n        });\n    }\n    return [msgs]; // Broadcasts to all online devices sequentially\n} else {\n    msg.topic = `esp32/${selectedDevice}/ota_trigger`;\n    msg.payload = \"1\";\n    return msg;\n}",
         "outputs": 1,
-        "x": 970,
-        "y": 340,
+        "x": 920,
+        "y": 940,
         "wires": [
             [
                 "7663f50fddc8423e"
@@ -618,8 +547,8 @@
         "correl": "",
         "expiry": "",
         "broker": "f7c9eba65970f8fc",
-        "x": 1270,
-        "y": 240,
+        "x": 1250,
+        "y": 840,
         "wires": []
     },
     {
@@ -634,8 +563,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 960,
-        "y": 120,
+        "x": 940,
+        "y": 720,
         "wires": [
             [
                 "7663f50fddc8423e"
@@ -649,8 +578,8 @@
         "name": "Target Device (Reset Count)",
         "func": "let selectedDevice = flow.get(\"selectedDevice\");\nif (!selectedDevice) return null;\n\n// Convert \"DI3\" to 3\nlet sInt = parseInt(msg.payload.sensor.replace(\"DI\", \"\"));\nlet jsonPayload = JSON.stringify({ sensor: sInt });\n\nif (selectedDevice === \"ALL MACHINE\") {\n    let cache = flow.get(\"esp32_cache\") || { devices: {} };\n    let msgs = [];\n    for (let device in cache.devices) {\n        msgs.push({\n            topic: `esp32/${device}/triggercount/reset`,\n            payload: jsonPayload\n        });\n    }\n    return [msgs];\n} else {\n    msg.topic = `esp32/${selectedDevice}/triggercount/reset`;\n    msg.payload = jsonPayload;\n    return msg;\n}",
         "outputs": 1,
-        "x": 950,
-        "y": 160,
+        "x": 930,
+        "y": 760,
         "wires": [
             [
                 "7663f50fddc8423e"
@@ -736,8 +665,8 @@
                 "label": "DI8"
             }
         ],
-        "x": 720,
-        "y": 120,
+        "x": 700,
+        "y": 720,
         "wires": [
             [
                 "781fb9f1576b435b"
@@ -815,8 +744,8 @@
                 "label": "DI8"
             }
         ],
-        "x": 700,
-        "y": 160,
+        "x": 680,
+        "y": 760,
         "wires": [
             [
                 "6717ed45225f0bd4"
@@ -835,8 +764,8 @@
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 980,
-        "y": 560,
+        "x": 940,
+        "y": 1180,
         "wires": [
             [
                 "ea1e6fe826d24981"
@@ -855,8 +784,8 @@
         "nl": false,
         "rap": true,
         "inputs": 0,
-        "x": 130,
-        "y": 640,
+        "x": 470,
+        "y": 200,
         "wires": [
             [
                 "b8d2c59eca5e4c3c"
@@ -868,15 +797,15 @@
         "type": "function",
         "z": "bc29ce5df0b271fd",
         "name": "DI/DO State Manager",
-        "func": "let cache = flow.get(\"esp32_cache\") || { devices: {}, tg: {}, auto: {}, do: {}, di: {}, doTopics: {} };\nlet lockouts = flow.get(\"do_lockouts\") || {};\n\nlet parts = msg.topic.split(\"/\");\nlet device = parts[1];\nlet lastPart = parts[parts.length - 1];\nlet prevPart = parts.length > 2 ? parts[parts.length - 2] : \"\";\nlet selectedDevice = flow.get(\"selectedDevice\");\nlet msgs = new Array(16).fill(null);\n\nif (lastPart.startsWith(\"do\")) {\n    let doNum = parseInt(lastPart.replace(\"do\", \"\")) - 1;\n    if (doNum >= 0 && doNum < 8) {\n        if (!cache.do[device]) cache.do[device] = {};\n\n        // Always update the true background cache\n        cache.do[device][doNum] = msg.payload.toString();\n\n        // Cache the custom topic path safely\n        if (!cache.doTopics) cache.doTopics = {};\n        if (!cache.doTopics[device]) cache.doTopics[device] = [];\n        cache.doTopics[device][doNum] = msg.topic;\n\n        // 🚨 UI ANTI-BOUNCE CHECK 🚨\n        // Ignore MQTT echoes for 1.5 seconds (1500ms) after the user clicks the dashboard\n        let isLockedOut = false;\n        if (lockouts[device] && lockouts[device][doNum]) {\n            if (Date.now() - lockouts[device][doNum] < 1500) {\n                isLockedOut = true;\n            }\n        }\n\n        // Only push visual updates to the Dashboard UI if we are not locked out\n        if (!isLockedOut && device === selectedDevice) {\n            msgs[doNum] = { payload: msg.payload.toString() };\n        }\n    }\n} else if (lastPart.startsWith(\"di\") && prevPart === \"count\") {\n    let diNum = parseInt(lastPart.replace(\"di\", \"\")) - 1;\n    if (diNum >= 0 && diNum < 8) {\n        if (!cache.di[device]) cache.di[device] = {};\n        cache.di[device][diNum] = msg.payload.toString();\n        if (device === selectedDevice) {\n            msgs[8 + diNum] = { payload: msg.payload.toString() };\n        }\n    }\n}\n\nflow.set(\"esp32_cache\", cache);\nreturn msgs;",
+        "func": "let cache = flow.get(\"esp32_cache\") || { devices: {}, tg: {}, auto: {}, do: {}, di: {}, doTopics: {} };\nlet lockouts = flow.get(\"do_lockouts\") || {};\n\nlet parts = msg.topic.split(\"/\");\nlet device = parts[1];\nlet lastPart = parts[parts.length - 1];\nlet prevPart = parts.length > 2 ? parts[parts.length - 2] : \"\";\n\nlet selectedDeviceDO = flow.get(\"selectedDeviceDO\");\nlet msgs = new Array(16).fill(null);\n\nif (lastPart.startsWith(\"do\")) {\n    let doNum = parseInt(lastPart.replace(\"do\", \"\")) - 1;\n    if (doNum >= 0 && doNum < 8) {\n        if (!cache.do[device]) cache.do[device] = {};\n        cache.do[device][doNum] = msg.payload.toString();\n        \n        if (!cache.doTopics) cache.doTopics = {};\n        if (!cache.doTopics[device]) cache.doTopics[device] = [];\n        cache.doTopics[device][doNum] = msg.topic;\n        \n        let isLockedOut = false;\n        if (lockouts[device] && lockouts[device][doNum] && (Date.now() - lockouts[device][doNum] < 1500)) {\n            isLockedOut = true; \n        }\n        \n        if (!isLockedOut && device === selectedDeviceDO) {\n            msgs[doNum] = { payload: msg.payload.toString() };\n        }\n    }\n} else if (lastPart.startsWith(\"di\") && prevPart === \"count\") {\n    let diNum = parseInt(lastPart.replace(\"di\", \"\")) - 1;\n    if (diNum >= 0 && diNum < 8) {\n        if (!cache.di[device]) cache.di[device] = {};\n        cache.di[device][diNum] = msg.payload.toString();\n        \n        if (device === selectedDeviceDO) {\n            msgs[8 + diNum] = { payload: msg.payload.toString() };\n        }\n    }\n}\nflow.set(\"esp32_cache\", cache);\nreturn msgs;",
         "outputs": 16,
         "timeout": "",
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 360,
-        "y": 640,
+        "x": 680,
+        "y": 200,
         "wires": [
             [
                 "b3b652ba8f09f4ed"
@@ -933,15 +862,15 @@
         "type": "function",
         "z": "bc29ce5df0b271fd",
         "name": "Update DI/DO UI",
-        "func": "let selectedDevice = msg.payload;\nlet cache = flow.get(\"esp32_cache\") || { tg: {}, auto: {}, do: {}, di: {} };\nif (!cache.do) cache.do = {};\nif (!cache.di) cache.di = {};\nlet msgs = new Array(16).fill(null);\nif (selectedDevice === \"ALL MACHINE\") {\n    for (let i=0; i<8; i++) msgs[i] = { payload: \"0\" };\n    for (let i=0; i<8; i++) msgs[8+i] = { payload: \"0\" };\n} else {\n    for (let i=0; i<8; i++) msgs[i] = { payload: (cache.do[selectedDevice] && cache.do[selectedDevice][i]) ? cache.do[selectedDevice][i] : \"0\" };\n    for (let i=0; i<8; i++) msgs[8+i] = { payload: (cache.di[selectedDevice] && cache.di[selectedDevice][i]) ? cache.di[selectedDevice][i] : \"0\" };\n}\nreturn msgs;",
+        "func": "let selectedDeviceDO = msg.payload;\nflow.set(\"selectedDeviceDO\", selectedDeviceDO);\n\nlet cache = flow.get(\"esp32_cache\") || { tg: {}, auto: {}, do: {}, di: {} };\nif (!cache.do) cache.do = {};\nif (!cache.di) cache.di = {};\nlet msgs = new Array(16).fill(null);\n\nfor (let i=0; i<8; i++) msgs[i] = { payload: (cache.do[selectedDeviceDO] && cache.do[selectedDeviceDO][i]) ? cache.do[selectedDeviceDO][i] : \"0\" };\nfor (let i=0; i<8; i++) msgs[8+i] = { payload: (cache.di[selectedDeviceDO] && cache.di[selectedDeviceDO][i]) ? cache.di[selectedDeviceDO][i] : \"0\" };\n\nreturn msgs;",
         "outputs": 16,
         "timeout": "",
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 390,
-        "y": 940,
+        "x": 690,
+        "y": 460,
         "wires": [
             [
                 "b3b652ba8f09f4ed"
@@ -998,15 +927,15 @@
         "type": "function",
         "z": "bc29ce5df0b271fd",
         "name": "Target Device (DO)",
-        "func": "let selectedDevice = flow.get(\"selectedDevice\");\nif (!selectedDevice) return null;\n\nlet doTopic = msg.topic;\nlet doNum = parseInt(doTopic.replace(\"do\", \"\")) - 1;\nlet cache = flow.get(\"esp32_cache\") || { devices: {}, do: {}, doTopics: {} };\n\n// 1) INFINITE LOOP BREAKER\nif (selectedDevice !== \"ALL MACHINE\") {\n    if (cache.do && cache.do[selectedDevice]) {\n        let currentESP32State = cache.do[selectedDevice][doNum];\n        if (currentESP32State === msg.payload.toString()) {\n            return null; // The ESP32 is already in this state, stop the loop!\n        }\n    }\n}\n\n// ANTI-BOUNCE TIMESTAMP\nlet lockouts = flow.get(\"do_lockouts\") || {};\nif (!lockouts[selectedDevice]) lockouts[selectedDevice] = {};\nlockouts[selectedDevice][doNum] = Date.now();\nflow.set(\"do_lockouts\", lockouts);\n\n// 2) SEND TO CUSTOM TOPICS\nif (selectedDevice === \"ALL MACHINE\") {\n    let msgs = [];\n    for (let device in cache.devices) {\n        // Look up the custom topic for EACH machine!\n        let targetTopic = `esp32/${device}/do${doNum + 1}`; // fallback\n        if (cache.doTopics && cache.doTopics[device] && cache.doTopics[device][doNum]) {\n            targetTopic = cache.doTopics[device][doNum];\n        }\n        msgs.push({\n            topic: targetTopic,\n            payload: msg.payload\n        });\n    }\n    return [msgs];\n} else {\n    let targetTopic = `esp32/${selectedDevice}/${doTopic}`;\n    if (cache.doTopics && cache.doTopics[selectedDevice] && cache.doTopics[selectedDevice][doNum]) {\n        targetTopic = cache.doTopics[selectedDevice][doNum];\n    }\n    msg.topic = targetTopic;\n    return msg;\n}",
+        "func": "let selectedDeviceDO = flow.get(\"selectedDeviceDO\");\nif (!selectedDeviceDO) return null;\n\nlet doTopic = msg.topic;\nlet doNum = parseInt(doTopic.replace(\"do\", \"\")) - 1;\nlet cache = flow.get(\"esp32_cache\") || { devices: {}, do: {}, doTopics: {} };\n\n// 1) INFINITE LOOP BREAKER\nif (cache.do && cache.do[selectedDeviceDO]) {\n    let currentESP32State = cache.do[selectedDeviceDO][doNum];\n    if (currentESP32State === msg.payload.toString()) {\n        return null;\n    }\n}\n\n// ANTI-BOUNCE TIMESTAMP\nlet lockouts = flow.get(\"do_lockouts\") || {};\nif (!lockouts[selectedDeviceDO]) lockouts[selectedDeviceDO] = {};\nlockouts[selectedDeviceDO][doNum] = Date.now();\nflow.set(\"do_lockouts\", lockouts);\n\n// 2) SEND TO CUSTOM TOPICS\nlet targetTopic = `esp32/${selectedDeviceDO}/${doTopic}`;\nif (cache.doTopics && cache.doTopics[selectedDeviceDO] && cache.doTopics[selectedDeviceDO][doNum]) {\n    targetTopic = cache.doTopics[selectedDeviceDO][doNum];\n}\nmsg.topic = targetTopic;\nreturn msg;",
         "outputs": 1,
         "timeout": "",
         "noerr": 0,
         "initialize": "",
         "finalize": "",
         "libs": [],
-        "x": 1010,
-        "y": 660,
+        "x": 1190,
+        "y": 180,
         "wires": [
             [
                 "7663f50fddc8423e"
@@ -1020,7 +949,7 @@
         "name": "DO1 Control",
         "label": "DO1 (Relay 1)",
         "group": "f8d563ecb7a67481",
-        "order": 1,
+        "order": 2,
         "width": 2,
         "height": 0,
         "passthru": false,
@@ -1038,8 +967,8 @@
         "offvalueType": "str",
         "officon": "",
         "offcolor": "",
-        "x": 700,
-        "y": 600,
+        "x": 950,
+        "y": 40,
         "wires": [
             [
                 "79bbb893d0231627"
@@ -1053,7 +982,7 @@
         "name": "DO2 Control",
         "label": "DO2 (Relay 2)",
         "group": "f8d563ecb7a67481",
-        "order": 3,
+        "order": 4,
         "width": 2,
         "height": 0,
         "passthru": false,
@@ -1071,8 +1000,8 @@
         "offvalueType": "str",
         "officon": "",
         "offcolor": "",
-        "x": 700,
-        "y": 640,
+        "x": 950,
+        "y": 80,
         "wires": [
             [
                 "79bbb893d0231627"
@@ -1086,7 +1015,7 @@
         "name": "DO3 Control",
         "label": "DO3 (Relay 3)",
         "group": "f8d563ecb7a67481",
-        "order": 5,
+        "order": 6,
         "width": 2,
         "height": 0,
         "passthru": false,
@@ -1104,8 +1033,8 @@
         "offvalueType": "str",
         "officon": "",
         "offcolor": "",
-        "x": 700,
-        "y": 680,
+        "x": 950,
+        "y": 120,
         "wires": [
             [
                 "79bbb893d0231627"
@@ -1119,7 +1048,7 @@
         "name": "DO4 Control",
         "label": "DO4 (Relay 4)",
         "group": "f8d563ecb7a67481",
-        "order": 7,
+        "order": 8,
         "width": 2,
         "height": 0,
         "passthru": false,
@@ -1137,8 +1066,8 @@
         "offvalueType": "str",
         "officon": "",
         "offcolor": "",
-        "x": 700,
-        "y": 720,
+        "x": 950,
+        "y": 160,
         "wires": [
             [
                 "79bbb893d0231627"
@@ -1152,7 +1081,7 @@
         "name": "DO5 Control",
         "label": "DO5 (Relay 5)",
         "group": "f8d563ecb7a67481",
-        "order": 9,
+        "order": 10,
         "width": 2,
         "height": 0,
         "passthru": false,
@@ -1170,8 +1099,8 @@
         "offvalueType": "str",
         "officon": "",
         "offcolor": "",
-        "x": 700,
-        "y": 760,
+        "x": 950,
+        "y": 200,
         "wires": [
             [
                 "79bbb893d0231627"
@@ -1185,7 +1114,7 @@
         "name": "DO6 Control",
         "label": "DO6 (Relay 6)",
         "group": "f8d563ecb7a67481",
-        "order": 11,
+        "order": 12,
         "width": 2,
         "height": 0,
         "passthru": false,
@@ -1203,8 +1132,8 @@
         "offvalueType": "str",
         "officon": "",
         "offcolor": "",
-        "x": 700,
-        "y": 800,
+        "x": 950,
+        "y": 240,
         "wires": [
             [
                 "79bbb893d0231627"
@@ -1218,7 +1147,7 @@
         "name": "DO7 Control",
         "label": "DO7 (Relay 7)",
         "group": "f8d563ecb7a67481",
-        "order": 13,
+        "order": 14,
         "width": 2,
         "height": 0,
         "passthru": false,
@@ -1236,8 +1165,8 @@
         "offvalueType": "str",
         "officon": "",
         "offcolor": "",
-        "x": 700,
-        "y": 840,
+        "x": 950,
+        "y": 280,
         "wires": [
             [
                 "79bbb893d0231627"
@@ -1251,7 +1180,7 @@
         "name": "DO8 Control",
         "label": "DO8 (Relay 8)",
         "group": "f8d563ecb7a67481",
-        "order": 15,
+        "order": 16,
         "width": 2,
         "height": 0,
         "passthru": false,
@@ -1269,8 +1198,8 @@
         "offvalueType": "str",
         "officon": "",
         "offcolor": "",
-        "x": 700,
-        "y": 880,
+        "x": 950,
+        "y": 320,
         "wires": [
             [
                 "79bbb893d0231627"
@@ -1282,7 +1211,7 @@
         "type": "ui-text",
         "z": "bc29ce5df0b271fd",
         "group": "f8d563ecb7a67481",
-        "order": 2,
+        "order": 3,
         "width": 2,
         "height": 0,
         "name": "DI1 Display",
@@ -1297,8 +1226,8 @@
         "className": "",
         "value": "payload",
         "valueType": "msg",
-        "x": 700,
-        "y": 940,
+        "x": 950,
+        "y": 380,
         "wires": []
     },
     {
@@ -1306,7 +1235,7 @@
         "type": "ui-text",
         "z": "bc29ce5df0b271fd",
         "group": "f8d563ecb7a67481",
-        "order": 4,
+        "order": 5,
         "width": 2,
         "height": 0,
         "name": "DI2 Display",
@@ -1321,8 +1250,8 @@
         "className": "",
         "value": "payload",
         "valueType": "msg",
-        "x": 700,
-        "y": 980,
+        "x": 950,
+        "y": 420,
         "wires": []
     },
     {
@@ -1330,7 +1259,7 @@
         "type": "ui-text",
         "z": "bc29ce5df0b271fd",
         "group": "f8d563ecb7a67481",
-        "order": 6,
+        "order": 7,
         "width": 2,
         "height": 0,
         "name": "DI3 Display",
@@ -1345,8 +1274,8 @@
         "className": "",
         "value": "payload",
         "valueType": "msg",
-        "x": 700,
-        "y": 1020,
+        "x": 950,
+        "y": 460,
         "wires": []
     },
     {
@@ -1354,7 +1283,7 @@
         "type": "ui-text",
         "z": "bc29ce5df0b271fd",
         "group": "f8d563ecb7a67481",
-        "order": 8,
+        "order": 9,
         "width": 2,
         "height": 0,
         "name": "DI4 Display",
@@ -1369,8 +1298,8 @@
         "className": "",
         "value": "payload",
         "valueType": "msg",
-        "x": 700,
-        "y": 1060,
+        "x": 950,
+        "y": 500,
         "wires": []
     },
     {
@@ -1378,7 +1307,7 @@
         "type": "ui-text",
         "z": "bc29ce5df0b271fd",
         "group": "f8d563ecb7a67481",
-        "order": 10,
+        "order": 11,
         "width": 2,
         "height": 0,
         "name": "DI5 Display",
@@ -1393,8 +1322,8 @@
         "className": "",
         "value": "payload",
         "valueType": "msg",
-        "x": 700,
-        "y": 1100,
+        "x": 950,
+        "y": 540,
         "wires": []
     },
     {
@@ -1402,7 +1331,7 @@
         "type": "ui-text",
         "z": "bc29ce5df0b271fd",
         "group": "f8d563ecb7a67481",
-        "order": 12,
+        "order": 13,
         "width": 2,
         "height": 0,
         "name": "DI6 Display",
@@ -1417,8 +1346,8 @@
         "className": "",
         "value": "payload",
         "valueType": "msg",
-        "x": 700,
-        "y": 1140,
+        "x": 950,
+        "y": 580,
         "wires": []
     },
     {
@@ -1426,7 +1355,7 @@
         "type": "ui-text",
         "z": "bc29ce5df0b271fd",
         "group": "f8d563ecb7a67481",
-        "order": 14,
+        "order": 15,
         "width": 2,
         "height": 0,
         "name": "DI7 Display",
@@ -1441,8 +1370,8 @@
         "className": "",
         "value": "payload",
         "valueType": "msg",
-        "x": 700,
-        "y": 1180,
+        "x": 950,
+        "y": 620,
         "wires": []
     },
     {
@@ -1450,7 +1379,7 @@
         "type": "ui-text",
         "z": "bc29ce5df0b271fd",
         "group": "f8d563ecb7a67481",
-        "order": 16,
+        "order": 17,
         "width": 2,
         "height": 0,
         "name": "DI8 Display",
@@ -1465,8 +1394,8 @@
         "className": "",
         "value": "payload",
         "valueType": "msg",
-        "x": 700,
-        "y": 1220,
+        "x": 950,
+        "y": 660,
         "wires": []
     },
     {
@@ -1492,44 +1421,42 @@
         "typeIsComboBox": true,
         "msgTrigger": "onClose",
         "x": 700,
-        "y": 200,
+        "y": 800,
         "wires": [
             [
-                "61a09a4946dc636d",
-                "f5466232eab410ba"
+                "61a09a4946dc636d"
             ]
         ]
     },
     {
-        "id": "ea9dd93b3d441040",
-        "type": "mqtt-broker",
-        "name": "EMQX Broker (WS)",
-        "broker": "ws://10.12.27.21:8083/mqtt",
-        "port": "8083",
-        "clientid": "Node-RED_Middleware_Websocket",
-        "autoConnect": true,
-        "usetls": false,
-        "protocolVersion": "4",
-        "keepalive": 60,
-        "cleansession": true,
-        "autoUnsubscribe": true,
-        "birthTopic": "",
-        "birthQos": "0",
-        "birthRetain": "false",
-        "birthPayload": "",
-        "birthMsg": {},
-        "closeTopic": "",
-        "closeQos": "0",
-        "closeRetain": "false",
-        "closePayload": "",
-        "closeMsg": {},
-        "willTopic": "",
-        "willQos": "0",
-        "willRetain": "false",
-        "willPayload": "",
-        "willMsg": {},
-        "userProps": "",
-        "sessionExpiry": ""
+        "id": "f20fded88ad5bf13",
+        "type": "ui-dropdown",
+        "z": "bc29ce5df0b271fd",
+        "group": "f8d563ecb7a67481",
+        "name": "Select Device",
+        "label": "Select Machine",
+        "tooltip": "",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "multiple": false,
+        "chips": false,
+        "clearable": false,
+        "options": [],
+        "payload": "",
+        "topic": "topic",
+        "topicType": "msg",
+        "className": "",
+        "typeIsComboBox": true,
+        "msgTrigger": "onClose",
+        "x": 500,
+        "y": 460,
+        "wires": [
+            [
+                "f5466232eab410ba"
+            ]
+        ]
     },
     {
         "id": "f7c9eba65970f8fc",
@@ -1692,7 +1619,7 @@
         }
     },
     {
-        "id": "3f26d5f06d039c1c",
+        "id": "bf3dbbc8bf1564f0",
         "type": "global-config",
         "env": [],
         "modules": {
