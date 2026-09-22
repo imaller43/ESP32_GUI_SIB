@@ -150,9 +150,11 @@
           <div class="mqtt-broker-section">
             <h3>Broker Settings</h3>
 
-            <div class="mqtt-field-row" style="margin-bottom:15px; border-bottom:1px solid var(--border-color); padding-bottom:15px;">
+            <div class="mqtt-field-row"
+              style="margin-bottom:15px; border-bottom:1px solid var(--border-color); padding-bottom:15px;">
               <label style="font-weight:600;">Device Name</label>
-              <input type="text" id="deviceName" placeholder="e.g. Machine1" spellcheck="false" autocomplete="off" style="font-weight:bold; color:var(--primary-color);">
+              <input type="text" id="deviceName" placeholder="e.g. Machine1" spellcheck="false" autocomplete="off"
+                style="font-weight:bold; color:var(--primary-color);">
             </div>
 
             <div style="margin-bottom:10px;">
@@ -263,7 +265,8 @@
                   <span class="th-pubms">Pub ms</span>
                 </div>
                 <div id="diInputs"></div>
-                <p class="mqtt-hint" style="margin-top:4px;">Pub ms: 0 = on change only &nbsp;|&nbsp; &gt;0 = periodic
+                <p class="mqtt-hint" style="margin-top:4px;">Pub ms: 0 = on state change only &nbsp;|&nbsp; &gt;0 =
+                  periodic
                   heartbeat interval</p>
               </div>
               <div class="io-box">
@@ -274,7 +277,9 @@
                   <span class="th-pubms">Pub ms</span>
                 </div>
                 <div id="doInputs"></div>
-                <p class="mqtt-hint" style="margin-top:4px;">Pub ms: 0 = on state change only</p>
+                <p class="mqtt-hint" style="margin-top:4px;">Pub ms: 0 = on state change only &nbsp;|&nbsp; &gt;0 =
+                  periodic
+                  heartbeat interval</p>
               </div>
             </div>
           </div>
@@ -502,7 +507,7 @@
 
     document.getElementById('mqttForm').onsubmit = async function (e) {
       e.preventDefault();
-      
+
       const payload = {
         deviceName: document.getElementById('deviceName').value,
         mqttMode: currentMode,
@@ -520,7 +525,7 @@
 
       let base = document.getElementById('baseTopic').value;
       if (base && !base.endsWith('/')) base += '/';
-      
+
       document.querySelectorAll('#diInputs .topic-row').forEach((row) => {
         payload.inputs.push(base + row.querySelector('.topic-suffix-input').value);
         payload.inputPubMs.push(parseInt(row.querySelector('.pub-input').value) || 0);
@@ -541,15 +546,15 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
-        
-        if (r.ok) { 
+
+        if (r.ok) {
           alert('MQTT config saved. ESP32 will reconnect if broker changed.');
           btn.innerText = origText;
           btn.disabled = false;
-          setTimeout(pollMqttStatusGuarded, 1500); 
+          setTimeout(pollMqttStatusGuarded, 1500);
         }
         else throw new Error('Save failed');
-      } catch(err) {
+      } catch (err) {
         alert('Save failed.');
         btn.innerText = origText;
         btn.disabled = false;

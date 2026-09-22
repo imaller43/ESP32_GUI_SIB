@@ -242,7 +242,7 @@
         "y": 1140,
         "wires": [
             [
-                "ea1e6fe826d24981",
+                "telegram_queue_1234",
                 "b8a2c46081de318b"
             ]
         ]
@@ -267,10 +267,10 @@
                 "1bab3905d2fec3ae"
             ],
             [
-                "ea1e6fe826d24981"
+                "telegram_queue_1234"
             ],
             [
-                "ea1e6fe826d24981"
+                "telegram_queue_1234"
             ]
         ]
     },
@@ -771,7 +771,7 @@
         "y": 1180,
         "wires": [
             [
-                "ea1e6fe826d24981",
+                "telegram_queue_1234",
                 "49c7d49b019ea7c6"
             ]
         ]
@@ -1768,5 +1768,30 @@
             "@flowfuse/node-red-dashboard": "1.30.2",
             "node-red-contrib-telegrambot": "19.0.0"
         }
+    },
+    {
+        "id": "telegram_queue_1234",
+        "type": "delay",
+        "z": "bc29ce5df0b271fd",
+        "name": "Telegram Queue (1 msg/sec)",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 1000,
+        "y": 1140,
+        "wires": [
+            [
+                "ea1e6fe826d24981"
+            ]
+        ]
     }
 ]
