@@ -14,6 +14,7 @@ The following rules MUST be followed at all times when working on this project:
 
 ## 3. Firmware Coding Standards
 - **Digital Outputs:** Always use the `setOutput(int ch, bool state)` function rather than directly writing to the PCF8574 expander. This ensures MQTT events are published and state is correctly tracked.
+- **Flash Wear Leveling:** Never write metrics or state variables to LittleFS inside a tight loop or upon every single trigger. Always use a timer interval (e.g., 30 seconds) COMBINED with a dirty flag (`metricsChanged`) to ensure flash memory is only written when absolutely necessary, preventing burnout.
 
 ## 4. Frontend & UI Design Rules
 - **Color Palette:** The Sapura Industrial Berhad (SIB) Color Palette MUST be used for UI changes:

@@ -45,6 +45,12 @@ It features:
 - **Endpoint Structure**: The JS fetches real-time data via specific endpoints (e.g., `/status`, `/getHealth`, `/getDoRules`). If you add UI elements requiring new backend data, implement the corresponding `server.on("/...", ...)` handler in the `.ino` file.
 - **File Limits**: Keep frontend files lightweight. Avoid importing large external libraries unless absolutely necessary.
 
+### 3.3 Node-RED Integration & Fleet Scaling (v3.0+)
+- **Dynamic Fleet UI**: Node-RED dashboards must dynamically populate "Active Machines" (for DO/DI telemetry control) vs "All Machines" (for config/settings) from a global cache (`flow.set("esp32_cache")`). This allows the system to scale to 20+ machines without duplicating nodes.
+- **Switch Debouncing**: Implement a 1.5s lockout timestamp array in Node-RED when toggling DO UI switches to prevent the delayed MQTT state echo from visually "bouncing" the switch back to its old state.
+- **Telegram Rate Limiting**: Always route Telegram alerts through a Delay node configured as a Queue (Limit Rate: 1 msg/s, drop intermediate: false) to prevent Telegram API 429 Rate Limit bans during fleet-wide reboots.
+- **MQTT Namespace & Overlapping Subscriptions**: Never mix global application topics into machine wildcard namespaces. If Node-RED listens to `esp32/#` for telemetry, global Telegram topics MUST be placed outside this path (e.g., `telegram/esp32/out`). Certain brokers (like EMQX) will deliver physical duplicate packets over TCP if a single client connection has overlapping subscriptions (`esp32/#` and `esp32/telegram/out`).
+
 ## 4. Key JSON Configuration Files (LittleFS)
 
 The filesystem splits files into two categories: **Static** (served as-is to the frontend, overwritten during updates) and **Stateful** (dynamically created/modified by ESP32 logic, backed up to RAM during LittleFS updates).
